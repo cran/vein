@@ -7,8 +7,8 @@
 #'
 #' @param veh Numeric vector with length of elements equals to number of streets
 #' @param lkm Length of each link
-#' @param ef List of functions of emission factors
-#' @param efcold List of functions of cold start emission factors
+#' @param ef List of functions of emission factors of vehicular categories
+#' @param efcold List of functions of cold start emission factors of vehicular categories
 #' @param beta Datraframe with the hourly cold-start distribution to each day
 #' of the period. Number of rows are hours and columns are days
 #' @param speed List of speeds
@@ -60,12 +60,13 @@
 #'             lefc[[length(lefc)]],lefc[[length(lefc)]],lef[[length(lef)]])
 #' class(lefec)
 #' PC_CO_COLD <- emis_cold(veh = pc1, lkm = net$lkm, ef = lef, efcold = lefec,
-#' beta = pcf, speed = speed, agemax = 41, profile = pc_profile, hour = 24,
+#' beta = pcf, speed = speed, profile = pc_profile, hour = 24,
 #' day = 7, array = T)
 #' class(PC_CO_COLD)
 #' plot(PC_CO_COLD)
 #' }
-emis_cold <- function (veh, lkm, ef, efcold, beta, speed, agemax, profile,
+emis_cold <- function (veh, lkm, ef, efcold, beta, speed, agemax = ncol(veh),
+                       profile,
                        hour = 1, day = 1, array = F) {
   veh <- as.data.frame(veh)
   lkm <- as.numeric(lkm)
@@ -77,8 +78,8 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed, agemax, profile,
       lapply(1:hour,function(i){
         lapply(1:agemax, function(k){
           beta[i,j]*veh[, k]*profile[i,j]*lkm*ef[[k]](speed[[j]][[i]])*
-            ifelse((efcold[[i]](speed[[j]][[i]])-1)<0,0,
-                   (efcold[[i]](speed[[j]][[i]])-1))
+            ifelse((efcold[[k]](speed[[j]][[i]])-1)<0,0,
+                   (efcold[[k]](speed[[j]][[i]])-1))
           })
       })
     })
@@ -96,8 +97,8 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed, agemax, profile,
           simplify2array(
             lapply(1:agemax, function(k){
               beta[i,j]*veh[, k]*profile[i,j]*lkm*ef[[k]](speed[[j]][[i]])*
-                ifelse((efcold[[i]](speed[[j]][[i]])-1)<0,0,
-                       (efcold[[i]](speed[[j]][[i]])-1))
+                ifelse((efcold[[k]](speed[[j]][[i]])-1)<0,0,
+                       (efcold[[k]](speed[[j]][[i]])-1))
               })
             )
           })

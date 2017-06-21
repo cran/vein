@@ -1,3 +1,21 @@
+vein v0.2.1-8 (Release date: 2017-06-21)
+==============
+* In emis, emis_cold and emis_paved: agemax  =  ncol(veh) by default
+
+vein v0.2.1-7 (Chiba) (Release date: 2017-05-18)
+==============
+* More documentation on emission factors. Fix EmissionFactorsList. Delete
+call to library(DiagrammeR) in demo
+
+vein v0.2.1-6 (Release date: 2017-05-17)
+==============
+* FC  PC <=1400cc fixed
+
+vein v0.2.1-5 (Release date: 2017-05-15)
+==============
+* Fix emis_cold. efcold[[i]] now is efcold[[k]]. Add doc in ef_ldv_speed.
+Fix class EmissionFactors. Not it works for numerics
+
 vein v0.2.1-4 (Release date: 2017-05-14)
 ==============
 * Fix Classes and temp_fact. Remove non-ASCII

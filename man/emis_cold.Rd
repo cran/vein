@@ -4,17 +4,17 @@
 \alias{emis_cold}
 \title{Estimation of cold start emissions hourly for the of the week}
 \usage{
-emis_cold(veh, lkm, ef, efcold, beta, speed, agemax, profile, hour = 1,
-  day = 1, array = F)
+emis_cold(veh, lkm, ef, efcold, beta, speed, agemax = ncol(veh), profile,
+  hour = 1, day = 1, array = F)
 }
 \arguments{
 \item{veh}{Numeric vector with length of elements equals to number of streets}
 
 \item{lkm}{Length of each link}
 
-\item{ef}{List of functions of emission factors}
+\item{ef}{List of functions of emission factors of vehicular categories}
 
-\item{efcold}{List of functions of cold start emission factors}
+\item{efcold}{List of functions of cold start emission factors of vehicular categories}
 
 \item{beta}{Datraframe with the hourly cold-start distribution to each day
 of the period. Number of rows are hours and columns are days}
@@ -84,7 +84,7 @@ lefec <- c(lefc,lefc[[length(lefc)]],lefc[[length(lefc)]],
             lefc[[length(lefc)]],lefc[[length(lefc)]],lef[[length(lef)]])
 class(lefec)
 PC_CO_COLD <- emis_cold(veh = pc1, lkm = net$lkm, ef = lef, efcold = lefec,
-beta = pcf, speed = speed, agemax = 41, profile = pc_profile, hour = 24,
+beta = pcf, speed = speed, profile = pc_profile, hour = 24,
 day = 7, array = T)
 class(PC_CO_COLD)
 plot(PC_CO_COLD)

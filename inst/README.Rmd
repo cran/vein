@@ -11,6 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [![Travis-CI Build Status](https://travis-ci.org/ibarraespinosa/vein.svg?branch=master)](https://travis-ci.org/ibarraespinosa/vein)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ibarraespinosa/vein?branch=master&svg=true)](https://ci.appveyor.com/project/ibarraespinosa/vein)
+[![Rdoc](http://www.rdocumentation.org/badges/version/vein)](http://www.rdocumentation.org/packages/vein)
+[![](http://cranlogs.r-pkg.org/badges/vein)](http://cran.rstudio.com/web/packages/vein/index.html)
+
+
 
 ![vein](p2.png)
 
@@ -34,13 +38,20 @@ Also, if you want to properly run the demo, install these packages:
 - ggplot2
 - RColorBrewer
 
-
 ```{r eval=F}
+# 0.2.1-7
 library(devtools)
 install_github("ibarraespinosa/vein")
-library(vein)
-demo("VEIN")
 ```
+
+or
+
+```{r eval=F}
+# 0.2.1-4
+install.packages("vein")
+```
+
+
 
 I've created the following classes:
 
@@ -55,14 +66,10 @@ I've created the following classes:
 
 Each class has the methods print, plot and summary.
 
-Soon, all units will be fully implemented in VEIN.
-
-VEIN is currently in its testing phase - to identify software bugs and errors. 
-
 New information will also be added to the documentation of emission factors.
 
 If you encounter any issues while using VEIN, please submit your issues to: https://github.com/ibarraespinosa/vein/issues/
 
-Thanks and enjoy VEIN!
+If you have any suggestions just let me know to zergioibarra@gmail.com
 
-13/05/2017: The process of migrating to 'sf' has started
+Thanks and enjoy VEIN!

@@ -42,12 +42,64 @@ different combinations that returns emission factors. If a combination of
 any option is wrong it will return an empty value. Therefore, it is
 important ti know the combinations.
 }
+\note{
+t = "ALL" and cc == "ALL" works for several pollutants because emission
+fators are the same. Some exceptions are with NOx and FC because size of engine.
+}
 \examples{
 \dontrun{
 # Do not run
+# Passenger Cars PC
+# Emission factor function
 V <- 0:150
-ef1 <- ef_ldv_speed(v = "PC",t = "PRE_ECE", cc = "ALL", f = "G", eu = "PRE", p = "CO")
-plot(1:150, ef1(1:150))
+ef1 <- ef_ldv_speed(v = "PC",t = "ALL", cc = "ALL", f = "G", eu = "PRE",
+p = "CO")
+efs <- EmissionFactors(ef1(1:150))
+plot(Speed(1:150), efs, xlab = "speed[km/h]")
+
+# List of Copert emission factors for 40 years fleet of Passenger Cars.
+# Assuming a euro distribution of euro V, IV, III, II, and I of
+# 5 years each and the rest 15 as PRE euro:
+euro <- c(rep("V", 5), rep("IV", 5), rep("III", 5), rep("II", 5),
+          rep("I", 5), rep("PRE", 15))
+speed <- 25
+lef <- lapply(1:40, function(i) {
+ef_ldv_speed(v = "PC", t = "ALL", cc = "ALL", f = "G",
+          eu = euro[i], p = "CO", show.equation = F)(25) })
+# to check the emission factor with a plot
+efs <- EmissionFactors(unlist(lef)) #returns 'units'
+plot(efs, xlab = "age")
+lines(efs, type = "l")
+
+# Light Commercial Vehicles
+V <- 0:150
+ef1 <- ef_ldv_speed(v = "LCV",t = "ALL", cc = "ALL", f = "G", eu = "PRE",
+p = "CO")
+efs <- EmissionFactors(ef1(1:150))
+plot(Speed(1:150), efs, xlab = "speed[km/h]")
+lef <- lapply(1:40, function(i) {
+ef_ldv_speed(v = "LCV", t = "ALL", cc = "ALL", f = "G",
+          eu = euro[i], p = "CO", show.equation = F)(25) })
+# to check the emission factor with a plot
+efs <- EmissionFactors(unlist(lef)) #returns 'units'
+plot(efs, xlab = "age")
+lines(efs, type = "l")
+
+# Motorcycles
+V <- 0:150
+ef1 <- ef_ldv_speed(v = "Motorcycle",t = "4S", cc = "<=250", f = "G",
+eu = "PRE", p = "CO")
+efs <- EmissionFactors(ef1(1:150))
+plot(Speed(1:150), efs, xlab = "speed[km/h]")
+# euro for motorcycles
+eurom <- c(rep("III", 5), rep("II", 5), rep("I", 5), rep("PRE", 25))
+lef <- lapply(1:30, function(i) {
+ef_ldv_speed(v = "Motorcycle", t = "4S", cc = "<=250", f = "G",
+eu = eurom[i], p = "CO",
+show.equation = F)(25) })
+efs <- EmissionFactors(unlist(lef)) #returns 'units'
+plot(efs, xlab = "age")
+lines(efs, type = "l")
 }
 }
 \keyword{emission}
