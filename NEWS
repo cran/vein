@@ -1,3 +1,28 @@
+vein v0.2.2-3 (Release date: 2017-08-03)
+==============
+* speed in emis and emis cold is now a dataframe with columns as number of hours.
+* netspeed argument isList changed to scheme. Fix emis_post for arrays with 3-d
+
+vein v0.2.2-2 (Release date: 2017-07-29)
+==============
+* emis now allows veh as list of "Vehicles" dataframe. The length of the list
+is equal to the hours considered in the estimation.
+* agemax in emis and emis_cold varies
+* In emis and emis_cold defaults hour = 24, day = 7, array = T
+
+vein v0.2.2-1 (Release date: 2017-07-29)
+==============
+* None of the options of ldv emission factors includes the option "ALL".
+* github updates includes '-' in description
+
+vein v0.2.2 (Release date: 2017-06-28)
+==============
+* Versions with three numbers. Fix speciate for "iag"
+
+vein v0.2.1-9 (Release date: 2017-06-28)
+==============
+* Corrected sysdata for PC with gasoline euro PRE pollutant HC
+
 vein v0.2.1-8 (Release date: 2017-06-21)
 ==============
 * In emis, emis_cold and emis_paved: agemax  =  ncol(veh) by default

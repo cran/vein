@@ -5,13 +5,15 @@
 #' The estimation considers beta
 #' parameter, the fraction of mileage driven
 #'
-#' @param veh Numeric vector with length of elements equals to number of streets
+#' @param veh "Vehicles" data-frame or list of "Vehicles" data-frame. Each data-frame
+#' as number of columns matching the age distribution of that ype of vehicle.
+#' The number of rows is equal to the number of streets link
 #' @param lkm Length of each link
 #' @param ef List of functions of emission factors of vehicular categories
 #' @param efcold List of functions of cold start emission factors of vehicular categories
 #' @param beta Datraframe with the hourly cold-start distribution to each day
 #' of the period. Number of rows are hours and columns are days
-#' @param speed List of speeds
+#' @param speed Speed data-frame with number of columns as hours
 #' @param agemax Age of oldest vehicles for that category
 #' @param profile Numerical or dataframe with nrows equal to 24 and ncol 7 day
 #' of the week
@@ -41,15 +43,14 @@
 #' veh <- data.frame(PC_G = PC_G)
 #' pc1 <- my_age(x = net$ldv, y = PC_G, name = "PC")
 #' pcw <- temp_fact(net$ldv+net$hdv, pc_profile)
-#' speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1,
-#' isList = T)
+#' speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
 #' pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
 #' cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = pckma[1:11])
 #' cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = pckma[12:24])
 #' #vehicles newer than pre-euro
 #' co1 <- fe2015[fe2015$Pollutant=="CO", ] #24 obs!!!
 #' cod <- c(co1$PC_G[1:24]*c(cod1,cod2),co1$PC_G[25:nrow(co1)])
-#' lef <- ef_ldv_scaled(co1, cod, v = "PC", t = "ALL", cc = "ALL",
+#' lef <- ef_ldv_scaled(co1, cod, v = "PC", cc = "<=1400",
 #'                      f = "G",p = "CO", eu=co1$Euro_LDV)
 #' lef <- c(lef,lef[length(lef)],lef[length(lef)],lef[length(lef)],
 #'          lef[length(lef)],lef[length(lef)])
@@ -64,11 +65,29 @@
 #' day = 7, array = T)
 #' class(PC_CO_COLD)
 #' plot(PC_CO_COLD)
+#' lpc <- list(pc1, pc1)
+#' PC_CO_COLDv2 <- emis_cold(veh = pc1, lkm = net$lkm, ef = lef, efcold = lefec,
+#' beta = pcf, speed = speed, profile = pc_profile, hour = 2,
+#' day = 1, array = T)
+#' class(PC_CO_COLDv2)
+#' plot(PC_CO_COLDv2)
 #' }
-emis_cold <- function (veh, lkm, ef, efcold, beta, speed, agemax = ncol(veh),
+emis_cold <- function (veh, lkm, ef, efcold, beta, speed,
+                       agemax = if (!inherits(x = veh, what = "list")) {
+                         ncol(veh)
+                       } else {
+                         ncol(veh[[1]])
+                       },
                        profile,
-                       hour = 1, day = 1, array = F) {
-  veh <- as.data.frame(veh)
+                       hour = 24, day = 7, array = T) {
+
+  lkm <- as.numeric(lkm)
+  speed <- as.data.frame(speed)
+  for (i  in 1:ncol(speed) ) {
+    speed[, i] <- as.numeric(speed[, i])
+  }
+  if (!inherits(x = veh, what = "list")) {
+    veh <- as.data.frame(veh)
   lkm <- as.numeric(lkm)
   for(i in 1:ncol(veh)){
     veh[,i] <- as.numeric(veh[,i])
@@ -77,16 +96,15 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed, agemax = ncol(veh),
     lista <- lapply(1:day,function(j){
       lapply(1:hour,function(i){
         lapply(1:agemax, function(k){
-          beta[i,j]*veh[, k]*profile[i,j]*lkm*ef[[k]](speed[[j]][[i]])*
-            ifelse((efcold[[k]](speed[[j]][[i]])-1)<0,0,
-                   (efcold[[k]](speed[[j]][[i]])-1))
+          beta[i,j]*veh[, k]*profile[i,j]*lkm*ef[[k]](speed[, i])*
+            ifelse((efcold[[k]](speed[, i]) - 1) < 0, 0,
+                   (efcold[[k]](speed[, i]) - 1))
           })
       })
     })
     return(EmissionsList(lista))
   } else {
     veh <- as.data.frame(veh)
-    lkm <- as.numeric(lkm)
     for(i in 1:ncol(veh)){
       veh[,i] <- as.numeric(veh[,i])
     }
@@ -96,16 +114,36 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed, agemax = ncol(veh),
         lapply(1:hour,function(i){
           simplify2array(
             lapply(1:agemax, function(k){
-              beta[i,j]*veh[, k]*profile[i,j]*lkm*ef[[k]](speed[[j]][[i]])*
-                ifelse((efcold[[k]](speed[[j]][[i]])-1)<0,0,
-                       (efcold[[k]](speed[[j]][[i]])-1))
-              })
-            )
-          })
-        )
-      })
-    )
+              beta[i,j]*veh[, k]*profile[i,j]*lkm*ef[[k]](speed[, i])*
+                ifelse((efcold[[k]](speed[, i]) - 1) < 0, 0,
+                       (efcold[[k]](speed[, i]) - 1))
+              }) ) }) ) }) )
   return(EmissionsArray(d))
+  }
+  } else {
+    for (j in 1:length(veh)) {
+      for (i  in 1:ncol(veh[[j]]) ) {
+        veh[[j]][,i] <- as.numeric(veh[[j]][,i])
+      } }
+    if(array == F){
+      lista <- lapply(1:length(veh),function(i){
+          lapply(1:agemax, function(k){
+            unlist(beta)[i]*veh[[i]][, k]*lkm*ef[[k]](speed[, i])*
+              ifelse((efcold[[k]](speed[, i]) - 1) < 0, 0,
+                     (efcold[[k]](speed[, i]) - 1))
+        }) })
+      return(EmissionsList(lista))
+    } else {
+      d <-  simplify2array(
+            lapply(1:length(veh),function(i){
+              simplify2array(
+                lapply(1:agemax, function(k){
+                  unlist(beta)[i]*veh[[i]][, k]*lkm*ef[[k]](speed[, i])*
+                    ifelse((efcold[[k]](speed[, i]) - 1) < 0, 0,
+                           (efcold[[k]](speed[, i]) - 1))
+                }) ) }) )
+      return(EmissionsArray(d))
+    }
   }
 }
 

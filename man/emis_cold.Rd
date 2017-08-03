@@ -4,11 +4,14 @@
 \alias{emis_cold}
 \title{Estimation of cold start emissions hourly for the of the week}
 \usage{
-emis_cold(veh, lkm, ef, efcold, beta, speed, agemax = ncol(veh), profile,
-  hour = 1, day = 1, array = F)
+emis_cold(veh, lkm, ef, efcold, beta, speed, agemax = if (!inherits(x = veh,
+  what = "list")) {     ncol(veh) } else {     ncol(veh[[1]]) }, profile,
+  hour = 24, day = 7, array = T)
 }
 \arguments{
-\item{veh}{Numeric vector with length of elements equals to number of streets}
+\item{veh}{"Vehicles" data-frame or list of "Vehicles" data-frame. Each data-frame
+as number of columns matching the age distribution of that ype of vehicle.
+The number of rows is equal to the number of streets link}
 
 \item{lkm}{Length of each link}
 
@@ -19,7 +22,7 @@ emis_cold(veh, lkm, ef, efcold, beta, speed, agemax = ncol(veh), profile,
 \item{beta}{Datraframe with the hourly cold-start distribution to each day
 of the period. Number of rows are hours and columns are days}
 
-\item{speed}{List of speeds}
+\item{speed}{Speed data-frame with number of columns as hours}
 
 \item{agemax}{Age of oldest vehicles for that category}
 
@@ -65,15 +68,14 @@ PC_G <- c(33491,22340,24818,31808,46458,28574,24856,28972,37818,49050,87923,
 veh <- data.frame(PC_G = PC_G)
 pc1 <- my_age(x = net$ldv, y = PC_G, name = "PC")
 pcw <- temp_fact(net$ldv+net$hdv, pc_profile)
-speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1,
-isList = T)
+speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
 pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
 cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = pckma[1:11])
 cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = pckma[12:24])
 #vehicles newer than pre-euro
 co1 <- fe2015[fe2015$Pollutant=="CO", ] #24 obs!!!
 cod <- c(co1$PC_G[1:24]*c(cod1,cod2),co1$PC_G[25:nrow(co1)])
-lef <- ef_ldv_scaled(co1, cod, v = "PC", t = "ALL", cc = "ALL",
+lef <- ef_ldv_scaled(co1, cod, v = "PC", cc = "<=1400",
                      f = "G",p = "CO", eu=co1$Euro_LDV)
 lef <- c(lef,lef[length(lef)],lef[length(lef)],lef[length(lef)],
          lef[length(lef)],lef[length(lef)])
@@ -88,5 +90,11 @@ beta = pcf, speed = speed, profile = pc_profile, hour = 24,
 day = 7, array = T)
 class(PC_CO_COLD)
 plot(PC_CO_COLD)
+lpc <- list(pc1, pc1)
+PC_CO_COLDv2 <- emis_cold(veh = pc1, lkm = net$lkm, ef = lef, efcold = lefec,
+beta = pcf, speed = speed, profile = pc_profile, hour = 2,
+day = 1, array = T)
+class(PC_CO_COLDv2)
+plot(PC_CO_COLDv2)
 }
 }

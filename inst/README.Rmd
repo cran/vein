@@ -11,13 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [![Travis-CI Build Status](https://travis-ci.org/ibarraespinosa/vein.svg?branch=master)](https://travis-ci.org/ibarraespinosa/vein)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ibarraespinosa/vein?branch=master&svg=true)](https://ci.appveyor.com/project/ibarraespinosa/vein)
-[![Rdoc](http://www.rdocumentation.org/badges/version/vein)](http://www.rdocumentation.org/packages/vein)
 [![](http://cranlogs.r-pkg.org/badges/vein)](http://cran.rstudio.com/web/packages/vein/index.html)
+[![Rdoc](http://www.rdocumentation.org/badges/version/vein)](http://www.rdocumentation.org/packages/vein)
 
 
 
 ![vein](p2.png)
-
+a) Emisions with VEIN for MASP (kgCO/m2/s) and b) emissions for MASP from EDGAR (kgCO/m2/s)
 
 ## Vein Package
 
@@ -27,11 +27,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Read the DESCRIPTION file. You need several packages to run **vein**.
 
-- sp
-- units
-- raster
-- rgdal
-- rgeos
+- [sp](https://github.com/edzer/sp/) 
+- [units](https://github.com/edzer/units/) 
+- [raster](http://cran.r-project.org/package=raster)
+- [rgdal](https://github.com/cran/rgdal)
+- [rgeos](https://github.com/cran/rgeos)
 
 Also, if you want to properly run the demo, install these packages:
 
@@ -39,16 +39,20 @@ Also, if you want to properly run the demo, install these packages:
 - RColorBrewer
 
 ```{r eval=F}
-# 0.2.1-7
+# 0.2.2-3
 library(devtools)
 install_github("ibarraespinosa/vein")
+library(vein)
+demo(VEIN)
 ```
 
 or
 
 ```{r eval=F}
-# 0.2.1-4
+# 0.2.2-3
 install.packages("vein")
+library(vein)
+demo(VEIN)
 ```
 
 
@@ -73,3 +77,12 @@ If you encounter any issues while using VEIN, please submit your issues to: http
 If you have any suggestions just let me know to zergioibarra@gmail.com
 
 Thanks and enjoy VEIN!
+
+### **Roadmap** (not in order)
+
+- Improve vehicle classification (all vehicle includes engine size)
+- Estimation of evaporative emissions with Copert Tier 3
+- Graphical interface (probably similar [MODIStsp](https://github.com/lbusett/MODIStsp))
+- More speciations
+- Topdown estimation
+- Migrate to [sf](https://github.com/edzer/sfr/)
