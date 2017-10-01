@@ -1,3 +1,60 @@
+## vein v0.2.2-25 (Release date: 2017-09-28)
+- Fix #32
+
+## vein v0.2.2-24 (Release date: 2017-09-19)
+- Fix #31
+- Updated speciation of paintings for CBMZ
+- Update message in emis
+## vein v0.2.2-23 (Release date: 2017-09-18)
+- Fix #29
+## vein v0.2.2-22 (Release date: 2017-09-18)(Viva Chile)
+- Fix #27. 
+## vein v0.2.2-21 (Release date: 2017-09-18)
+- Fix #11 (reopen). Now prints in kg
+## vein v0.2.2-20 (Release date: 2017-09-16)
+- Fix #26
+## vein v0.2.2-19 (Release date: 2017-09-15)
+- Experimental: adding NMHC speciation for industrial and buildings painting
+## vein v0.2.2-18 (Release date: 2017-09-11)
+- Fix #25
+## vein v0.2.2-17 (Release date: 2017-09-10)
+- Fix #24
+## vein v0.2.2-16 (Release date: 2017-09-09)
+- Fix #23
+## vein v0.2.2-15 (Release date: 2017-09-09)
+- Fix #22
+## vein v0.2.2-14 (Release date: 2017-09-09)
+- Fix #11
+## vein v0.2.2-13 (Release date: 2017-09-09)
+- Fix #7 
+## vein v0.2.2-12 (Release date: 2017-09-09)
+- Fix #21 
+## vein v0.2.2-11 (Release date: 2017-09-09)
+- Fix #20
+## vein v0.2.2-10 (Release date: 2017-09-04)
+- Fix #10, #17 and #18 and demo
+## vein v0.2.2-9 (Release date: 2017-09-02)
+- Fix #3 and #15
+## vein v0.2.2-8 (Release date: 2017-09-01)
+- Fix #14, emis_wrf
+## vein v0.2.2-7 (Release date: 2017-08-30)
+- Fix #12, speciate now returns mol/h when spec = iag
+## vein v0.2.2-6 (Release date: 2017-08-23)
+- Minor update #8, to exclude na in veh of function my_age
+## vein v0.2.2-5 (Release date: 2017-08-07)
+- Update evaporative emissions emis_evap  to include lists of 'Vehicles' data-
+frame
+____________________________________________________________________________________
+
+## vein v0.2.2-4 (Release date: 2017-08-05)
+
+- emis and emis_cold include stop when ncol(veh) != length(ef) and when
+veh is a list, length(veh) != ncol(speed). In emis agemax determined by ncol of
+vehicles
+- Fix demo
+
+____________________________________________________________________________________
+
 ## vein v0.2.2-3 (Release date: 2017-08-03)
 
 - speed in emis and emis cold is now a dataframe with columns as number of hours.
@@ -26,6 +83,7 @@ the name was changed to Vehicular Emissions INventory Model (vein).
 ____________________________________________________________________________________
 
 ###  REMI v0.1.0-31 (Release date: 2017-03-13)
+
 - New function: my_age. Distribute vehicle data using own vehicle distribution
 from a numeric vector.
 - Description title changed from "An R package for elaborating emissions
@@ -40,6 +98,23 @@ The category <=800 remains.
 Now fixed.
 - Age function nows append element equal to the last element of the
 vector.
+
+____________________________________________________________________________________
+
+###  REMI v0.1.0-21 (Amanda) (Release date: 2017-01-08)
+
+- Age function nows append element equal to the last element of the
+vector.
+- bus fix in emissions_dow and emissions_cold when array=F.
+- emissions 24 were changed to lapply over the length of ef.
+- includes function vkm to calculate vkm.
+- includes function emissions_paved for estimating resuspension from paved roads.
+- Includes function ef_ldv_cold_list for list of cold start emission factors.
+  Also, the function emissions_cold.
+- The internal dataframe with EMEP emission factor for ldv vehicles
+  changes type from "PRE_ECE" to "PRE".
+- bus fix in emissions_dow and emissions_cold when array=F.
+- emissions 24 were changed to lapply over the length of ef.
 
 ____________________________________________________________________________________
 

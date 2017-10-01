@@ -17,6 +17,7 @@
 #' lt <- Vehicles(rnorm(100, 300, 10))
 #' LT_B5 <- age_hdv(x = lt,name = "LT_B5")
 #' plot(LT_B5)
+#'
 #' }
 age_hdv <- function (x, name, a = 0.2, b = 17, agemin = 1, agemax = 50, k = 1,
                      bystreet = F){
@@ -47,6 +48,13 @@ age_hdv <- function (x, name, a = 0.2, b = 17, agemin = 1, agemax = 50, k = 1,
     message(paste("Average age of",name, "is",
                   round(sum(seq(1,agemax)*base::colSums(df)/sum(df)), 2),
                   sep=" "))
+    message(paste("Number of",name, "is",
+                  round(sum(df*k, na.rm = T)/1000, 2),
+                  "* 10^3 veh",
+                  sep=" ")
+    )
+    cat("\n")
+
   } else {
     suca <- function (t) {1/(1 + exp(a*(t+b)))+1/(1 + exp(a*(t-b)))}
     anos <- seq(agemin,agemax)
@@ -62,6 +70,12 @@ age_hdv <- function (x, name, a = 0.2, b = 17, agemin = 1, agemax = 50, k = 1,
     message(paste("Average age of",name, "is",
                   round(sum(seq(1,agemax)*base::colSums(df)/sum(df)), 2),
                   sep=" "))
+    message(paste("Number of",name, "is",
+                  round(sum(df*k, na.rm = T)/1000, 2),
+                  "* 10^3 veh",
+                  sep=" ")
+    )
+    cat("\n")
   }
   df <- Vehicles(df*k)
   return(df)
