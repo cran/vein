@@ -1,6 +1,6 @@
 #' Construction function for class "Vehicles"
 #'
-#' @description Returns a tranformed object with class "Vehicles" and units
+#' @description \code{Vehicles} returns a tranformed object with class "Vehicles" and units
 #'  1/h. The type of objects supported are of classes "matrix", "data.frame",
 #'  "numeric" and "array". If the object is a matrix it is converted to data.frame.
 #'  If the object is "numeric" it is converted to class "units". The function
@@ -13,7 +13,8 @@
 #' @param x Object with class "Vehicles"
 #' @param object Object with class "Vehicles"
 #' @param ... ignored
-#' @importFrom units parse_unit
+#' @param message message with average age
+#' @importFrom units as_units
 #'
 #' @rdname Vehicles
 #' @aliases Vehicles print.Vehicles summary.Vehicles plot.Vehicles
@@ -33,20 +34,20 @@ Vehicles <- function(x, ...) {
   if  ( is.matrix(x) ) {
     veh <- as.data.frame(x)
     for(i in 1:ncol(veh)){
-      veh[,i] <- veh[,i]*units::parse_unit("km h-1")
+      veh[,i] <- veh[,i]*units::as_units("km h-1")
     }
     class(veh) <- c("Vehicles",class(x))
   } else if ( is.data.frame(x) ) {
     veh <- x
     for(i in 1:ncol(veh)){
-      veh[,i] <- veh[,i]*units::parse_unit("h-1")
+      veh[,i] <- veh[,i]*units::as_units("h-1")
     }
     class(veh) <- c("Vehicles",class(x))
   } else if ( class(x) == "units" ) {
     veh <- x
     message("Check units are 1/h")
   } else if( class(x) == "numeric" | class(x) == "integer" ) {
-    veh <- x*units::parse_unit("h-1")
+    veh <- x*units::as_units("h-1")
   }
   return(veh)
 }
@@ -79,15 +80,16 @@ summary.Vehicles <- function(object, ...) {
 #' @rdname Vehicles
 #' @method plot Vehicles
 #' @export
-plot.Vehicles <- function(x,  ...) {
+plot.Vehicles <- function(x,  ..., message = TRUE) {
   veh <- x
   if ( inherits(veh, "data.frame") ) {
     avage <- sum(seq(1,ncol(veh)) * colSums(veh)/sum(veh))
     Veh <- colSums(veh)
-    Veh <- Veh*units::parse_unit("h-1")
+    Veh <- Veh*units::as_units("h-1")
     graphics::plot(Veh, type="l", ...)
     graphics::abline(v = avage, col="red")
+    if(message){
     cat("\nAverage = ",round(avage,2))
-  }
+  }}
 }
 

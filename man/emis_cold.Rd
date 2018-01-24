@@ -4,8 +4,8 @@
 \alias{emis_cold}
 \title{Estimation of cold start emissions hourly for the of the week}
 \usage{
-emis_cold(veh, lkm, ef, efcold, beta, speed, agemax = if (!inherits(x = veh,
-  what = "list")) {     ncol(veh) } else {     ncol(veh[[1]]) }, profile,
+emis_cold(veh, lkm, ef, efcold, beta, speed = 34, agemax = if (!inherits(x =
+  veh, what = "list")) {     ncol(veh) } else {     ncol(veh[[1]]) }, profile,
   hour = 24, day = 7, array = T)
 }
 \arguments{
@@ -41,10 +41,10 @@ expects a profile as a dataframe producing an array with dimensions
 EmissionsArray  g/h
 }
 \description{
-The vehicular emissions are estimated as the product of the vehicles on a
-road, length of the road, emission factor avaliated at the respective speed.
-The estimation considers beta
-parameter, the fraction of mileage driven
+\code{emis_cold} emissions are estimated as the product of the
+vehicles on a road, length of the road, emission factor avaliated at the
+respective speed.The estimation considers beta parameter, the fraction of
+mileage driven
 }
 \note{
 Actually dcold is not necessary, it would be enough to multiply
@@ -82,8 +82,8 @@ lef <- c(lef,lef[length(lef)],lef[length(lef)],lef[length(lef)],
 # Mohtly average temperature 18 Celcius degrees
 lefc <- ef_ldv_cold_list(df = co1, ta = 18, cc = "<=1400", f = "G",
                           eu = co1$Euro_LDV, p = "CO" )
-lefec <- c(lefc,lefc[[length(lefc)]],lefc[[length(lefc)]],
-            lefc[[length(lefc)]],lefc[[length(lefc)]],lef[[length(lef)]])
+length(lefc) != ncol(pc1)
+#emis change length of 'ef' to match ncol of 'veh'
 class(lefec)
 PC_CO_COLD <- emis_cold(veh = pc1, lkm = net$lkm, ef = lef, efcold = lefec,
 beta = pcf, speed = speed, profile = pc_profile, hour = 24,

@@ -4,7 +4,7 @@
 \alias{vkm}
 \title{Estimation of VKM}
 \usage{
-vkm(veh, lkm, profile, hour = 1, day = 1, array = F)
+vkm(veh, lkm, profile, hour = 24, day = 7, array = T)
 }
 \arguments{
 \item{veh}{Numeric vector with number of vehicles per street}
@@ -24,15 +24,15 @@ profile as a dataframe producing an array with dimensions (streets x hours x day
 emission estimation  of vkm
 }
 \description{
-VKM consists in the product of the number of vehicles and the distance driven
-by these vehicles in km. This function reads hourly vehciles and then
-extrapolates the vehicles
+\code{vkm} consists in the product of the number of vehicles and
+the distance driven by these vehicles in km. This function reads hourly
+vehiles and then extrapolates the vehicles
 }
 \examples{
 \dontrun{
 # Do not run
 pc <- lkm <- abs(rnorm(10,1,1))*100
 pro <- matrix(abs(rnorm(24*7,0.5,1)), ncol=7, nrow=24)
-vkms  <- vkm(veh = pc, lkm = lkm, profile = pro, hour = 24, day = 7, array = T)
+vkms  <- vkm(veh = pc, lkm = lkm, profile = pro)
 }
 }

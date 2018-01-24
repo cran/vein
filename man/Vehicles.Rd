@@ -16,7 +16,7 @@ Vehicles(x, ...)
 
 \method{summary}{Vehicles}(object, ...)
 
-\method{plot}{Vehicles}(x, ...)
+\method{plot}{Vehicles}(x, ..., message = TRUE)
 }
 \arguments{
 \item{x}{Object with class "Vehicles"}
@@ -24,12 +24,14 @@ Vehicles(x, ...)
 \item{...}{ignored}
 
 \item{object}{Object with class "Vehicles"}
+
+\item{message}{message with average age}
 }
 \value{
 Objects of class "Vehicles" or "units"
 }
 \description{
-Returns a tranformed object with class "Vehicles" and units
+\code{Vehicles} returns a tranformed object with class "Vehicles" and units
  1/h. The type of objects supported are of classes "matrix", "data.frame",
  "numeric" and "array". If the object is a matrix it is converted to data.frame.
  If the object is "numeric" it is converted to class "units". The function

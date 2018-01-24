@@ -9,39 +9,55 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-[![Travis-CI Build Status](https://travis-ci.org/ibarraespinosa/vein.svg?branch=master)](https://travis-ci.org/ibarraespinosa/vein)
+[![Travis-CI Build Status](https://travis-ci.org/atmoschem/vein.svg?branch=master)](https://travis-ci.org/atmoschem/vein)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ibarraespinosa/vein?branch=master&svg=true)](https://ci.appveyor.com/project/ibarraespinosa/vein)
 [![](http://cranlogs.r-pkg.org/badges/vein)](http://cran.rstudio.com/web/packages/vein/index.html)
 [![Rdoc](http://www.rdocumentation.org/badges/version/vein)](http://www.rdocumentation.org/packages/vein)
+[![DOI](https://zenodo.org/badge/88201850.svg)](https://zenodo.org/badge/latestdoi/88201850)
 
 
 
-![](p2.png)
+![](logovein_small.png)
+
+
 
 ## Vein Package
 
 **V**ehicular **E**missions **IN**ventory **(VEIN)** model.
 
 
+### System requirements
 
-Read the DESCRIPTION file. You need several packages to run **vein**.
+vein imports functions from spatial packages listed below. In order to
+install these packages, firstly the user must install the requirements
+mentioned [here](https://www.github.com/r-spatial/sf).
+
+### Packages needed
+
+After installing system dependencies, you need these packages:
 
 - [sp](https://github.com/edzer/sp/) 
 - [units](https://github.com/edzer/units/) 
 - [raster](http://cran.r-project.org/package=raster)
 - [rgdal](https://github.com/cran/rgdal)
 - [rgeos](https://github.com/cran/rgeos)
+- [sf](https://github.com/r-spatial/sf)
 
-Also, if you want to properly run the demo, install these packages:
+At the current version of vein, sf is not imported but suggested. Future version
+of vein will import or depend on sf, so it is recommended to install it now. Also,
+if you want to properly run the demo, install:
 
-- ggplot2
-- RColorBrewer
+- [ggplot2](https://github.com/tidyverse/ggplot2)
+
+
+### Installation
+
+VEIN can be installed via CRAN or github
 
 ```{r eval=F}
-
-# 0.2.2-25
+# 0.2.3
 library(devtools)
-install_github("ibarraespinosa/vein")
+install_github("atmoschem/vein")
 library(vein)
 demo(VEIN)
 ```
@@ -49,14 +65,15 @@ demo(VEIN)
 or
 
 ```{r eval=F}
-# 0.2.2-3
+# 0.2.3
 install.packages("vein")
 library(vein)
 ```
 
 
+## Classes
 
-I've created the following classes:
+VEIN has the following classes:
 
 - Vehicles (1/h) 
 - Speed  (km/h)
@@ -69,20 +86,56 @@ I've created the following classes:
 
 Each class has the methods print, plot and summary.
 
-New information will also be added to the documentation of emission factors.
+### How to use vein
 
-If you encounter any issues while using VEIN, please submit your issues to: https://github.com/ibarraespinosa/vein/issues/
+VEIN consist of: "Elaboration of vehicular emissions inventories,
+    consisting in four stages, pre-processing activity data, preparing 
+    emissions factors, estimating the emissions and post-processing of emissions 
+    in maps and databases."
 
-If you have any suggestions just let me know to zergioibarra@gmail.com
+This implies the use of several functions in a coordinates ans structured way,
+therefore it is added the new function **vein** which creates a structured
+set of directories and scripts to run VEIN. Please, read the examples in the
+documentation of each function and run the demo.
+
+```{r eval = FALSE}
+vein::inventory(name = "YourCity")
+```
+
+
+###  Issues
+
+If you encounter any issues while using VEIN, please submit your issues to: https://github.com/atmoschem/vein/issues/
+
+If you have any suggestions just let me know to sergio.ibarra@usp.br.
 
 Thanks and enjoy VEIN!
 
-### **Roadmap** (not in order)
+### **future steps**
 
-- 0.3: Migrate to [sf](https://github.com/edzer/sfr/)
-- 0.4: **Estimator** structured folders and scripts???
-- 0.5: Graphical interface (probably similar [MODIStsp](https://github.com/lbusett/MODIStsp))
-- Improve vehicle classification (all vehicle includes engine size)
+- Migrate to [sf](https://github.com/r-spatial/sf/)
 - Estimation of evaporative emissions with Copert Tier 3
 - More speciations
-- Topdown estimation
+- Solve issues
+- Vignettes, blogs and a book (hopefully released in 2018)
+
+#### Note:
+The current versioning in VEIN is X.X.X-X. This is because version 0.2.2 is
+in a paper on GMDD under open review: 
+
+Ibarra-Espinosa, S., Ynoue, R., O'Sullivan, S., Pebesma, E.,
+  Andrade, M. D. F., and Osses, M. (2017). VEIN v0.2.2: an R
+  package for bottom-up Vehicular Emissions Inventories Geosci.
+  Model Dev. Discus, https://doi.org/10.5194/gmd-2017-193, in
+  review, 2017.
+
+However, once the paper is ready, the new versioning of VEIN will be:
+
+- CRAN: X.X.X
+- GITHUB: X.X.X-X (which will be more frequent from now)
+- .9000 developemnt or experimental.
+
+For example: Github: 0.2.2-30, next relase would be CRAN: 0.2.3.
+If you use VEIN, please, cite it:
+
+https://doi.org/10.5194/gmd-2017-193
