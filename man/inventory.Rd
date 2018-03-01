@@ -2,10 +2,10 @@
 % Please edit documentation in R/inventory.R
 \name{inventory}
 \alias{inventory}
-\title{Vehicular Emissions Inventory (VEIN) inventory function.}
+\title{Inventory function.}
 \usage{
-inventory(name, vehcomp = c(PC = 4, LCV = 5, HGV = 5, BUS = 3, MC = 9),
-  scripts = TRUE, show.dir = TRUE, show.scripts = TRUE, clear = TRUE)
+inventory(name, vehcomp = c(PC = 1, LCV = 1, HGV = 1, BUS = 1, MC = 1),
+  scripts = TRUE, show.dir = FALSE, show.scripts = FALSE, clear = TRUE)
 }
 \arguments{
 \item{name}{one word indicating the name of the main directory for running
@@ -13,13 +13,13 @@ vein}
 
 \item{vehcomp}{Vehicular composition of the fleet. It is required a named
 numerical vector with the names "PC", "LCV", "HGV", "BUS" and "MC". In the
-case that there are no vehicles for one category of the composition, the name
-should be included with the number zero, for example, PC = 0. The maximum
+case that tthere are no vehiles for one category of the composition, the name
+should be included with the number zero, for example PC = 0. The maximum
 number allowed is 99 per category.}
 
 \item{scripts}{Boolean value for aggregate or no scripts.}
 
-\item{show.dir}{Boolean value for printing the created directories.}
+\item{show.dir}{Boolean alue for printing the created directories.}
 
 \item{show.scripts}{Boolean value for printing the created scripts.}
 
@@ -28,7 +28,7 @@ another one.}
 }
 \value{
 Structure of directories and scripts for automating compilation of
-vehicular emissions inventory. The structure can be used with another type of
+vehicular emissions inventory. The structure can be used with other type of
 sources of emissions. The structure of the directories is: daily, ef, emi,
 est, images, network and veh. This structure is a suggestion and the user can
 use another.
@@ -37,22 +37,25 @@ daily: it is for storing the profiles saved as .csv files
 
 ef: it is for storing the emission factors data-frame, similar to data(fe2015)
 but including one column for each of the categories of the vehicular
-composition. For instance, if PC = 5, there should be 5 columns with emission
+composition. For intance, if PC = 5, there should be 5 columns with emission
 factors in this file. If LCV = 5, another 5 columns should be present, and
 so on.
 
 emi: Directory for saving the estimates. It is suggested to use .rds
 extension instead of .rda.
 
+est: Directory with subdirectories matching the vehicular composition for
+storing the scripts named input.R.
+
 images: Directory for saving images.
 
 network: Directory for saving the road network with the required attributes.
-This file will include the vehicular flow per street to be used by age*
+This file will includes the vehicular flow per street to be used by age*
 functions.
 
 veh: Directory for storing the distribution by age of use of each category of
 the vehicular composition. Those are data-frames with number of columns with
-the age distribution and the number of rows as the number of streets. The class
+the age distribution and number of rows as the number of streets. The class
 of these objects is "Vehicles". Future versions of vein will generate
 Vehicles objects with the explicit spatial component.
 
@@ -64,18 +67,15 @@ creates the scripts input.R where the user must specify the inputs for the
 estimation of emissions of each category. Also, there is a file called
 traffic.R to generates objects of class "Vehicles".
 The user can rename these scripts.
-The user can rename these scripts.
 }
 \description{
-\code{inventory} produces a structure of directories and scripts
+\code{inventory} produces an structure of directories and scripts
 in order to run vein. It is required to know the vehicular composition of the
 fleet.
 }
 \examples{
-\dontrun{
-# Do not run
-getwd()
-inventory(name = "cityVEIN", show.dir = T)
-setwd("cityVEIN")
+{
+inventory(name = file.path(tempdir(), "YourCity"), show.dir = TRUE,
+          show.scripts = TRUE)
 }
 }

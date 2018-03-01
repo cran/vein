@@ -22,6 +22,7 @@
 #' # Do not run
 #' data(net)
 #' data(pc_profile)
+#' data(profiles)
 #' data(fe2015)
 #' data(fkm)
 #' PC_G <- c(33491,22340,24818,31808,46458,28574,24856,28972,37818,49050,87923,
@@ -43,19 +44,19 @@
 #' length(lef) != ncol(pc1)
 #' #emis change length of 'ef' to match ncol of 'veh'
 #' E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed,
-#'              profile = pc_profile, hour = 24, day = 7, array = T)
+#'              profile = profiles$PC_JUNE_2014)
 #' class(E_CO)
 #' lpc <- list(pc1, pc1)
 #' E_COv2 <- emis(veh = lpc,lkm = net$lkm, ef = lef, speed = speed,
-#'                hour = 2, day = 1, array = T)
+#'                hour = 2, day = 1)
 #' # Entering wrong results
 #' pc1[ , ncol(pc1) + 1] <- pc1$PC_1
 #' dim(pc1)
 #' length(lef)
 #' E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed,
-#'              profile = pc_profile, hour = 24, day = 7, array = T)
+#'              profile = profiles$PC_JUNE_2014)
 #' E_COv2 <- emis(veh = lpc,lkm = net$lkm, ef = lef, speed = speed,
-#'                hour = 2, day = 1, array = T)
+#'                hour = 2, day = 1)
 #' }
 emis <- function (veh, lkm, ef, speed = 34,
                   agemax = if (!inherits(x = veh, what = "list")) {
@@ -75,15 +76,15 @@ emis <- function (veh, lkm, ef, speed = 34,
   }
   # veh is "Vehicles" data-frame
   if (!inherits(x = veh, what = "list")) {
-      veh <- as.data.frame(veh)
-      for (i  in 1:ncol(veh) ) {
-        veh[,i] <- as.numeric(veh[,i])
-      }
-      if(ncol(veh) != length(ef)){
-        message("Number of columns of 'veh' is different than length of 'ef'")
-        cat("\nadjusting length of ef to the number of colums of 'veh'\n")
-        if(ncol(veh) > length(ef)){
-          for(i in (ncol(veh) - length(ef)):ncol(veh) ){
+    veh <- as.data.frame(veh)
+    for (i  in 1:ncol(veh) ) {
+      veh[,i] <- as.numeric(veh[,i])
+    }
+    if(ncol(veh) != length(ef)){
+      message("Number of columns of 'veh' is different than length of 'ef'")
+      message("adjusting length of ef to the number of colums of 'veh'\n")
+      if(ncol(veh) > length(ef)){
+        for(i in (length(ef) + 1):ncol(veh) ){
             ef[[i]] <- ef[[length(ef)]]
           }
           if (ncol(veh) < length(ef)){
@@ -97,13 +98,14 @@ emis <- function (veh, lkm, ef, speed = 34,
       }
 
       if(array == F){
-      lista <- lapply(1:day,function(j){
-        lapply(1:hour,function(i){
-          lapply(1:agemax, function(k){
+        lista <- lapply(1:day,function(j){
+          lapply(1:hour,function(i){
+            lapply(1:agemax, function(k){
             veh[, k]*profile[i,j]*lkm*ef[[k]](speed[, i])
             }) }) })
         return(EmissionsList(lista))
       } else {
+
       d <-  simplify2array(
         lapply(1:day,function(j){
           simplify2array(
@@ -118,10 +120,21 @@ emis <- function (veh, lkm, ef, speed = 34,
       }
   # veh is a list of "Vehicles" data-frames
   } else {
-    if (ncol(veh[[1]]) != length(ef)){
-      stop("Number of columns in 'veh' must be the same as length of ef")
-    } else if(length(veh) != ncol(speed)) {
-      stop("Length of 'veh' must be the same as number of columns of speed")
+    if(ncol(veh[[1]]) != length(ef)){
+      message("Number of columns of 'veh' is different than length of 'ef'")
+      message("adjusting length of ef to the number of colums of 'veh'\n")
+      if(ncol(veh[[1]]) > length(ef)){
+        for(i in (length(ef) + 1):ncol(veh[[1]]) ){
+          ef[[i]] <- ef[[length(ef)]]
+        }
+        if (ncol(veh[[1]]) < length(ef)){
+          ff <- list()
+          for(i in 1:ncol(veh[[1]])){
+            ff[[i]] <- ef[[i]]
+          }
+          ef <- ff
+        }
+      }
     }
     for (j in 1:length(veh)) {
         for (i  in 1:ncol(veh[[j]]) ) {

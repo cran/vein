@@ -18,8 +18,7 @@
 #' of expanded traffic
 #' @importFrom units as_units
 #' @export
-#' @examples \dontrun{
-#' # Do not run
+#' @examples {
 #' data(net)
 #' data(pc_profile)
 #' p1 <- pc_profile[, 1]
@@ -45,7 +44,7 @@
 #'             p_hgv = p1,
 #'             p_bus = p1*0, # when zero, must be the same size
 #'             p_mc = p1,
-#'             T)
+#'             TRUE)
 #' head(adt2)
 #' plot(adt2) # Class Vehicles
 #' }
@@ -63,6 +62,9 @@ adt <- function(pc, lcv, hgv, bus, mc,
      return(df*units::as_units("d-1"))
    } else{
      df <- df_pc + df_lcv + df_hgv + df_bus + df_mc
+     for (i  in 1:ncol(df) ) {
+       df[, i] <- as.numeric(df[, i])
+     }
      return(Vehicles(df))
      }
    }

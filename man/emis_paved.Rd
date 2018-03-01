@@ -36,7 +36,7 @@ It is assumed dry hours and anual aggregation should consider moisture factor.
 It depends on Average Daily Traffic (ADT)
 }
 \examples{
-\dontrun{
+{
 # Do not run
 veh <- array(pnorm(q=c(1:100), mean=500, sd = 100),
              c(100,24,7))
@@ -46,6 +46,8 @@ sL1 <- 0.6
 emi  <- emis_paved(veh = veh, lkm = lkm, k = 0.65,
                        sL1 = sL1, sL2 = sL1/4, sL3 = sL1/16, sL4 = sL1/32,
                        W = W)
+class(emi)
+head(emi)
 }
 }
 \references{

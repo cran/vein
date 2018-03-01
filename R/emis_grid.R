@@ -2,30 +2,21 @@
 #'
 #' @description \code{emis_grid} allocates emissions proportionally to each grid
 #'  cell. The process is performed by intersection between geometries and the grid.
-#'  Geometries uported, so, far are lines with raster::intersect and points with
-#' sp::over. The allocation of lines is by interaction, then update the
-#' pollutant values according the new length of road inside each grid cell.
 #' It means that requires "sr" according with your location for the projection.
-#' It is assumed that soobj is a spatial*DataFrame with the pollutant in data.
-#' Also, it is required that, when is a SpatialLinesDataFrame, there is a field
-#' called lkm, with the length of the road, in this case, in km.
-#' This function accepts data with "units" but they are converted internally
-#' to numeric and then return SpatialPolygonsDataFrame with numeric data.frame
+#' It is assumed that spobj is a spatial*DataFrame or an "sf" with the pollutants
+#' in data. This function return an object class "sf".
 #'
-#' @param spobj A spatial dataframe of class sp
-#' @param g A grid with class SpatialPolygonsDataFrame
-#' @param sr Spatial reference, default is "+init=epsg:4326"
-#' @param type type of geometry: "lines" or "points"
-#' @importFrom raster intersect
-#' @importFrom rgeos gLength
-#' @importFrom stats aggregate
-#' @import sp
-#' @import rgdal
+#' @param spobj A spatial dataframe of class "sp" or "sf". When class is "sp"
+#' it is transformed to "sf".
+#' @param g A grid with class "SpatialPolygonsDataFrame" or "sf".
+#' @param sr Spatial reference e.g: 31983. It is required if spobj and g are
+#' not projected. Please, see http://spatialreference.org/.
+#' @param type type of geometry: "lines" or "points".
+#' @importFrom sf st_sf st_dimension st_transform st_length st_cast st_intersection
+#' @importFrom data.table data.table .SD
 #' @export
-#' @note A future version of VEIN will imports or depend on the new package
-#' 'spatial features'. The migration for VEIN will be converting the 'Spatial'
-#' objects (class of sp) into 'sf'. Also, a new version of this function will
-#' import some functions from 'data.table'.
+#' @note When spobj is a 'Spatial' object (class of sp), they are converted
+#'  into 'sf'. Also, The aggregation of data ise done with data.table functions.
 #' @examples \dontrun{
 #' data(net)
 #' data(pc_profile)
@@ -47,46 +38,70 @@
 #' cod <- c(co1$PC_G[1:24]*c(cod1,cod2),co1$PC_G[25:nrow(co1)])
 #' lef <- ef_ldv_scaled(co1, cod, v = "PC", t = "4S", cc = "<=1400",
 #'                      f = "G",p = "CO", eu=co1$Euro_LDV)
-#' lef <- c(lef,lef[length(lef)],lef[length(lef)],lef[length(lef)],
-#'          lef[length(lef)],lef[length(lef)])
 #' E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed, agemax = 41,
-#'              profile = pc_profile, hour = 24, day = 7, array = T)
+#'              profile = pc_profile, hour = 24, day = 7, array = TRUE)
 #' # arguments required: arra, pollutant ad by
 #' E_CO_STREETS <- emis_post(arra = E_CO, pollutant = "CO", by = "streets_wide")
 #' net@data <- cbind(net@data, E_CO_STREETS)
 #' head(net@data)
-#' g <- make_grid(net, 1/102.47/2, 1/102.47/2, polygon = T) #500m in degrees
+#' g <- make_grid(net, 1/102.47/2, 1/102.47/2) #500m in degrees
+#'
 #' net@data <- net@data[,- c(1:9)]
 #' names(net)
-#' E_CO_g <- emis_grid(spobj = net, g = g, sr= "+init=epsg:31983")
-#' head(E_CO_g@data)
+#' E_CO_g <- emis_grid(spobj = net, g = g, sr= 31983)
+#' head(E_CO_g) #class sf
+#' E_CO_g$V138 <- as.numeric(E_CO_g$V138)
+#' E_CO_g <- as(E_CO_g, "Spatial")
 #' spplot(E_CO_g, "V138", scales=list(draw=T),cuts=8,
 #' colorkey = list(space = "bottom", height = 1),
 #' col.regions = rev(bpy.colors(9)),
 #' sp.layout = list("sp.lines", net, pch = 16, cex = 2, col = "black"))
 #' }
-emis_grid <- function(spobj, g, sr, type="lines"){
-  if (type == "lines" ) {
-    net <- spobj
-    for( i in 1:ncol(net@data) ){
-      net@data[,i] <- as.numeric(net@data[,i])
-    }
-    net$lkm <-  rgeos::gLength(sp::spTransform(net,CRS(sr)),byid = T)/1000
-    netg <- raster::intersect(net,g)
-    netg$lkm2 <-  rgeos::gLength(sp::spTransform(netg,CRS(sr)),byid = T)/1000
-    netg@data[,1:(ncol(netg@data)-3)] <-  netg@data[,1:(ncol(netg@data)-3)] * netg$lkm2/netg$lkm
-    dfm <- stats::aggregate(cbind(netg@data[,1:(ncol(netg@data)-3)]),
-                            by=list(netg$id), sum, na.rm=TRUE)
-    colnames(dfm)[1] <- "id"
-    gg <- merge(g, dfm, by="id")
-    # for(i in 2:ncol(gg)){
-    #   gg@data[,i] <- gg@data[,i] * units::as_units("g h-1")
-    # } # spplot does not work with units
-    return(gg)
-  } else if ( type == "points" ){
-      g@data <- sp::over(g,spobj, fn=sum)
-      #Add units
-      return(g)
-    }
+emis_grid <- function(spobj, g, sr, type = "lines"){
+  net <- sf::st_as_sf(spobj)
+  net$id <- NULL
+  g <- sf::st_as_sf(g)
+
+  if(!missing(sr)){
+    message("Transforming spatial objects to 'sr' ")
+  net <- sf::st_transform(net, sr)
+  g <- sf::st_transform(g, sr)
   }
+
+  if (type == "lines" ) {
+    ncolnet <- ncol(sf::st_set_geometry(net, NULL))
+    namesnet <- names(sf::st_set_geometry(net, NULL))
+    net$LKM <- sf::st_length(sf::st_cast(net[sf::st_dimension(net) == 1,]))
+    netg <- suppressWarnings(st_intersection(net, g))
+    netg$LKM2 <- sf::st_length(sf::st_cast(netg[sf::st_dimension(netg) == 1,]))
+    xgg <- data.table::data.table(netg)
+    xgg[, 1:ncolnet] <- xgg[, 1:ncolnet] * as.numeric(xgg$LKM2/xgg$LKM)
+    dfm <- xgg[, lapply(.SD, sum, na.rm=TRUE),
+               by = "id",
+               .SDcols = namesnet]
+    names(dfm) <- c("id", namesnet)
+    gx <- data.frame(id = g$id)
+    gx <- merge(gx, dfm, by="id", all.x = TRUE)
+    gx[is.na(gx)] <- 0
+    gx <- sf::st_sf(gx, geometry = g$geometry)
+  # if(array){
+  #     return(GriddedEmissionsArray(gx, rows = , cols, times = ))
+  #   } else{
+      return(gx)
+    # }
+  } else if ( type == "points" ){
+    xgg <- data.table::data.table(
+      sf::st_set_geometry(sf::st_intersection(net, g), NULL)
+      )
+    dfm <- xgg[, lapply(.SD, sum, na.rm=TRUE),
+               by = "id",
+               .SDcols = namesnet ]
+    names(dfm) <- c("id", namesnet)
+    gx <- data.frame(id = g$id)
+    gx <- merge(gx, dfm, by = "id", all.x = TRUE)
+    gx[is.na(gx)] <- 0
+    gx <- sf::st_sf(gx, geometry = g$geometry)
+    return(gx)
+  }
+}
 

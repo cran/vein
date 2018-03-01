@@ -52,23 +52,23 @@
 #' cod <- c(co1$PC_G[1:24]*c(cod1,cod2),co1$PC_G[25:nrow(co1)])
 #' lef <- ef_ldv_scaled(co1, cod, v = "PC", cc = "<=1400",
 #'                      f = "G",p = "CO", eu=co1$Euro_LDV)
-#' lef <- c(lef,lef[length(lef)],lef[length(lef)],lef[length(lef)],
-#'          lef[length(lef)],lef[length(lef)])
 #' # Mohtly average temperature 18 Celcius degrees
-#' lefc <- ef_ldv_cold_list(df = co1, ta = 18, cc = "<=1400", f = "G",
+#' lefec <- ef_ldv_cold_list(df = co1, ta = 18, cc = "<=1400", f = "G",
 #'                           eu = co1$Euro_LDV, p = "CO" )
-#' length(lefc) != ncol(pc1)
+#' lefec <- c(lefec,lefec[length(lefec)], lefec[length(lefec)],
+#'            lefec[length(lefec)], lefec[length(lefec)],
+#'            lefec[length(lefec)])
+#' length(lefec) == ncol(pc1)
 #' #emis change length of 'ef' to match ncol of 'veh'
 #' class(lefec)
 #' PC_CO_COLD <- emis_cold(veh = pc1, lkm = net$lkm, ef = lef, efcold = lefec,
-#' beta = pcf, speed = speed, profile = pc_profile, hour = 24,
-#' day = 7, array = T)
+#' beta = pcf, speed = speed, profile = pc_profile)
 #' class(PC_CO_COLD)
 #' plot(PC_CO_COLD)
 #' lpc <- list(pc1, pc1)
 #' PC_CO_COLDv2 <- emis_cold(veh = pc1, lkm = net$lkm, ef = lef, efcold = lefec,
 #' beta = pcf, speed = speed, profile = pc_profile, hour = 2,
-#' day = 1, array = T)
+#' day = 1)
 #' class(PC_CO_COLDv2)
 #' plot(PC_CO_COLDv2)
 #' }
@@ -79,7 +79,7 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed = 34,
                          ncol(veh[[1]])
                        },
                        profile,
-                       hour = 24, day = 7, array = T) {
+                       hour = 24, day = 7, array = TRUE) {
 
   if(units(lkm)$numerator == "m" ){
     warning("Units of lkm is 'm' ")
@@ -90,16 +90,18 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed = 34,
     speed[, i] <- as.numeric(speed[, i])
   }
   if (!inherits(x = veh, what = "list")) {
-          veh <- as.data.frame(veh)
-        lkm <- as.numeric(lkm)
-        for(i in 1:ncol(veh)){
-          veh[,i] <- as.numeric(veh[,i])
-        }
-        if(ncol(veh) != length(ef)){
-          message("Number of columns of 'veh' is different than length of 'ef'")
-          cat("\nadjusting length of ef to the number of colums of 'veh'\n")
-          if(ncol(veh) > length(ef)){
-            for(i in (ncol(veh) - length(ef)):ncol(veh) ){
+    veh <- as.data.frame(veh)
+    lkm <- as.numeric(lkm)
+    for(i in 1:ncol(veh)){
+      veh[,i] <- as.numeric(veh[,i])
+    }
+    if(ncol(veh) != length(ef)){
+      message("Number of columns of 'veh' is different than length of 'ef'")
+      message("adjusting length of ef to the number of colums of 'veh'\n")
+      if(ncol(veh) > length(ef)){
+        for(i in (length(ef) + 1):ncol(veh) ){
+
+            # for(i in (ncol(veh) - length(ef)):ncol(veh) ){
               ef[[i]] <- ef[[length(ef)]]
             }
             if (ncol(veh) < length(ef)){
@@ -137,15 +139,26 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed = 34,
                     ifelse((efcold[[k]](speed[, i]) - 1) < 0, 0,
                            (efcold[[k]](speed[, i]) - 1))
                   }) ) }) ) }) )
-        message(round(sum(d, na.rm = T)/1000,2),
+        message(round(sum(d, na.rm = TRUE)/1000,2),
                 " kg emissions in ", hour, " hours and ", day, " days")
         return(EmissionsArray(d))
       }
   } else {
-    if (ncol(veh[[1]]) != length(ef)){
-      stop("Number of columns in 'veh' must be the same as length of ef")
-    } else if(length(veh) != ncol(speed)) {
-      stop("Length of 'veh' must be the same as number of columns of speed")
+    if(ncol(veh[[1]]) != length(ef)){
+      message("Number of columns of 'veh' is different than length of 'ef'")
+      message("adjusting length of ef to the number of colums of 'veh'\n")
+      if(ncol(veh[[1]]) > length(ef)){
+        for(i in (length(ef) + 1):ncol(veh[[1]]) ){
+          ef[[i]] <- ef[[length(ef)]]
+        }
+        if (ncol(veh[[1]]) < length(ef)){
+          ff <- list()
+          for(i in 1:ncol(veh[[1]])){
+            ff[[i]] <- ef[[i]]
+          }
+          ef <- ff
+        }
+      }
     }
     for (j in 1:length(veh)) {
           for (i  in 1:ncol(veh[[j]]) ) {
@@ -168,7 +181,7 @@ emis_cold <- function (veh, lkm, ef, efcold, beta, speed = 34,
                         ifelse((efcold[[k]](speed[, i]) - 1) < 0, 0,
                                (efcold[[k]](speed[, i]) - 1))
                     }) ) }) )
-          message(round(sum(d, na.rm = T)/1000,2),
+          message(round(sum(d, na.rm = TRUE)/1000,2),
                   " kg emissions in ", hour, " hours and ", day, " days")
           return(EmissionsArray(d))
         }

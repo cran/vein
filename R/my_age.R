@@ -10,11 +10,12 @@
 #' @param message message with average age and total numer of vehicles.
 #' @return dataframe of age distrubution of vehicles.
 #' @export
-#' @examples \dontrun{
+#' @examples {
 #' # Do not run
 #' pc <- rnorm(100, 300, 10)
 #' dpc <- c(rnorm(10, 99, 1), NA, NA, NA)
 #' PC_E25_1400 <- my_age(x = pc, y = dpc, name = "PC_E25_1400")
+#' plot(PC_E25_1400)
 #' }
 my_age <- function (x, y, name,  k = 1, message = TRUE){
   if (missing(x) | is.null(x)) {

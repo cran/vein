@@ -39,9 +39,10 @@
 #' # Do not run
 #' }
 emis_wrf <- function(sdf,nr = 1, dmyhm, tz, crs = "+init=epsg:4326", islist){
+  warning("emis_wrf depends on the NCL script AAS4WRF. To create wrfchemi directly use the package 'eixport' https://CRAN.R-project.org/package=eixport")
   if(nr <= 0){
     stop("The argument 'nr' must be positive")
-  } else if (islist==FALSE) {
+  } else if (islist == FALSE) {
     dft <- as.data.frame(sp::coordinates(
       sp::spTransform(sdf, CRSobj = sp::CRS(crs))))
     dftid <- data.frame(id = 1:nrow(dft))

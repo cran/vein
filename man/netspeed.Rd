@@ -5,7 +5,7 @@
 \title{Calculate speeds of traffic network}
 \usage{
 netspeed(q = 1, ps, ffs, cap, lkm, alpha = 0.15, beta = 4,
-  scheme = FALSE, distance = "km", time = "h")
+  scheme = FALSE, distance = "km", time = "h", isList)
 }
 \arguments{
 \item{q}{Data-frame of traffic flow to each hour (veh/h)}
@@ -37,6 +37,8 @@ default  profile. It needs ffs and ps:
 \item{distance}{Character specifying the units for distance. Default is "km"}
 
 \item{time}{Character specifying the units for time Default is "h".}
+
+\item{isList}{Deprecated}
 }
 \value{
 dataframe speeds with units.
@@ -46,15 +48,14 @@ dataframe speeds with units.
 and each link based on morning rush traffic data
 }
 \examples{
-\dontrun{
-# Do not run
+{
 data(net)
 data(pc_profile)
 pc_week <- temp_fact(net$ldv+net$hdv, pc_profile)
 df <- netspeed(pc_week, net$ps, net$ffs, net$capacity, net$lkm)
 class(df)
 plot(df) #plot of the average speed at each hour, +- sd
-df <- netspeed(ps = net$ps, ffs = net$ffs, scheme = T)
+df <- netspeed(ps = net$ps, ffs = net$ffs, scheme = TRUE)
 class(df)
 plot(df) #plot of the average speed at each hour, +- sd
 }

@@ -4,30 +4,34 @@
 \alias{make_grid}
 \title{Creates rectangular grid for emission allocation}
 \usage{
-make_grid(spobj, width, height, polygon = T)
+make_grid(spobj, width, height, polygon, crs, ...)
 }
 \arguments{
-\item{spobj}{A spatial object of class sp}
+\item{spobj}{A spatial object of class sp or sf.}
 
-\item{width}{Width of grid cell, units according sr}
+\item{width}{Width of grid cell. It is recommended to use projected values.}
 
-\item{height}{Height of grid cell, units according sr}
+\item{height}{Height of grid cell. Deprecated!}
 
-\item{polygon}{whe TRUE return a polygon grid, when FALSE a SpatialGridDataFrame}
+\item{polygon}{Deprecated! \code{\link{make_grid}} returns only sf grid of
+polygons.}
+
+\item{crs}{coordinate reference system in numeric format from
+http://spatialreference.org/ to transform/project spatial data using sf::st_transform}
+
+\item{...}{ignored}
 }
 \value{
-A 'SpatialPolygonsDataFrame' or a 'SpatialGridDataFrame'
+A grid of polygons class 'sf'
 }
 \description{
 \code{make_grid} creates a SpatialGridDataFrame. The spatial
 reference is taken from the spatial object.
 }
 \examples{
-\dontrun{
-#do not run
+{
 data(net)
-grid <- make_grid(net, width = 0.5/102.47, height = 0.5/102.47) #500 mts
-spplot(net, scales=list(draw=T),
-sp.layout = list("sp.polygons", grid, pch = 16, cex = 2, col = "black"))
+grid <- make_grid(net, width = 0.5/102.47) #500 mts
+plot(grid, axes = TRUE) #class sf
 }
 }
