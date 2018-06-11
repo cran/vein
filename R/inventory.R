@@ -4,18 +4,19 @@
 #' in order to run vein. It is required to know the vehicular composition of the
 #' fleet.
 #'
-#' @param name one word indicating the name of the main directory for running
-#' vein
+#' @param name Character, one word indicating the name of the main directory for running
+#' vein. It is better to write the pull path to the new directory.
 #' @param vehcomp Vehicular composition of the fleet. It is required a named
 #' numerical vector with the names "PC", "LCV", "HGV", "BUS" and "MC". In the
 #' case that tthere are no vehiles for one category of the composition, the name
 #' should be included with the number zero, for example PC = 0. The maximum
 #' number allowed is 99 per category.
-#' @param scripts Boolean value for aggregate or no scripts.
-#' @param show.dir Boolean alue for printing the created directories.
-#' @param show.scripts Boolean value for printing the created scripts.
-#' @param clear Boolean value for removing recursively the directory and create
+#' @param scripts Logical value for aggregate or no scripts.
+#' @param show.dir Logical value for printing the created directories.
+#' @param show.scripts Logical value for printing the created scripts.
+#' @param clear Logical value for removing recursively the directory and create
 #' another one.
+#' @param rush.hour Logical, to create a template for morning rush hour.
 #' @return Structure of directories and scripts for automating compilation of
 #' vehicular emissions inventory. The structure can be used with other type of
 #' sources of emissions. The structure of the directories is: daily, ef, emi,
@@ -57,22 +58,30 @@
 #' traffic.R to generates objects of class "Vehicles".
 #' The user can rename these scripts.
 #' @export
-#' @examples {
-#' inventory(name = file.path(tempdir(), "YourCity"), show.dir = TRUE,
-#'           show.scripts = TRUE)
+#' @examples \dontrun{
+#' ## Not run:
+#' name = file.path(tempdir(), "YourCity")
+#' inventory(name = name, show.dir = TRUE, show.scripts = TRUE)
+#' source(paste0(name, "/main.R"))
+#' ## End(**Not run**)
 #' }
 inventory <- function(name,
                       vehcomp = c(PC = 1, LCV = 1, HGV = 1, BUS = 1, MC = 1),
                       scripts = TRUE,
-                      show.dir = FALSE,
+                      show.dir = TRUE,
                       show.scripts = FALSE,
-                      clear = TRUE){
+                      clear = TRUE,
+                      rush.hour = FALSE){
   # directorys
   dovein <- function(){
     dir.create(path = name)
-    dir.create(path = paste0(name, "/daily"))
+    dir.create(path = paste0(name, "/profiles"))
     dir.create(path = paste0(name, "/ef"))
     dir.create(path = paste0(name, "/emi"))
+    dir.create(path = paste0(name, "/post"))
+    dir.create(path = paste0(name, "/post/grids"))
+    dir.create(path = paste0(name, "/post/streets"))
+    dir.create(path = paste0(name, "/post/df"))
     dir.create(path = paste0(name, "/est"))
     dir.create(path = paste0(name, "/images"))
     dir.create(path = paste0(name, "/network"))
@@ -82,10 +91,8 @@ inventory <- function(name,
       for(i in 1:vehcomp[1]){
         if(i < 10) {
           dir.create(path = paste0(name, "/emi/PC_0", i))
-          dir.create(path = paste0(name, "/est/PC_0", i))
         } else {
           dir.create(path = paste0(name, "/emi/PC_", i))
-          dir.create(path = paste0(name, "/est/PC_", i))
         }}
     } else {message("no PC")}
 
@@ -93,10 +100,8 @@ inventory <- function(name,
       for(i in 1:vehcomp[2]){
         if(i < 10) {
           dir.create(path = paste0(name, "/emi/LCV_0", i))
-          dir.create(path = paste0(name, "/est/LCV_0", i))
         } else {
           dir.create(path = paste0(name, "/emi/LCV_", i))
-          dir.create(path = paste0(name, "/est/LCV_", i))
         }}
     } else {message("no LCV")}
 
@@ -104,10 +109,8 @@ inventory <- function(name,
       for(i in 1:vehcomp[3]){
         if(i < 10) {
           dir.create(path = paste0(name, "/emi/HGV_0", i))
-          dir.create(path = paste0(name, "/est/HGV_0", i))
         } else {
           dir.create(path = paste0(name, "/emi/HGV_", i))
-          dir.create(path = paste0(name, "/est/HGV_", i))
         }}
     } else {message("no HGV")}
 
@@ -115,10 +118,8 @@ inventory <- function(name,
       for(i in 1:vehcomp[4]){
         if(i < 10) {
           dir.create(path = paste0(name, "/emi/BUS_0", i))
-          dir.create(path = paste0(name, "/est/BUS_0", i))
         } else {
           dir.create(path = paste0(name, "/emi/BUS_", i))
-          dir.create(path = paste0(name, "/est/BUS_", i))
         }}
     } else {message("no BUS")}
 
@@ -126,10 +127,8 @@ inventory <- function(name,
       for(i in 1:vehcomp[5]){
         if(i < 10) {
           dir.create(path = paste0(name, "/emi/MC_0", i))
-          dir.create(path = paste0(name, "/est/MC_0", i))
         } else {
           dir.create(path = paste0(name, "/emi/MC_", i))
-          dir.create(path = paste0(name, "/est/MC_", i))
         }}
     } else {message("no MC")}
   }
@@ -143,13 +142,15 @@ inventory <- function(name,
   if(scripts == FALSE){
     message("no scripts")
   } else{
-    lista <- list.dirs(path = paste0(name,"/est"))
+    lista <- list.dirs(path = paste0(name,"/emi"))
     lista <- lista[2:length(lista)]
     lista2 <- gsub(pattern = name, x = lista, replacement = "")
-    lista3 <- gsub(pattern = "/est/", x = lista2, replacement = "")
+    lista3 <- gsub(pattern = "/emi/", x = lista2, replacement = "")
+
+    dirs <- list.dirs(path = name, full.names = TRUE)
 
     for (i in 1:length(lista)){
-      sink(paste0(lista[[i]], "/input.R"))
+      sink(paste0(dirs[1], "/est/", lista3[i],"_input.R"))
       cat("# Network \n")
       cat("net <- readRDS('network/net.rds')\n")
       cat("lkm <- net$lkm\n")
@@ -158,13 +159,17 @@ inventory <- function(name,
       cat(paste0("veh <- readRDS('veh/", lista3[[i]], ".rds')"), "\n")
       cat("# Profiles\n")
       cat("data(profiles)\n")
-      cat("pc <- profiles[[1]]\n")
-      cat("# pc <- read.csv('daily/pc.csv') #Change accordingly with your data\n")
+      if(rush.hour){
+        cat("pc <- matrix(1)\n")
+      } else{
+        cat("pc <- profiles[[1]]\n")
+      }
+      cat("# pc <- read.csv('profiles/pc.csv') #Change with your data\n")
       cat("# Emission Factors data-set\n")
       cat("data(fe2015)\n")
       cat("efe <- fe2015\n")
       cat("# efe <- read.csv('ef/fe2015.csv')\n")
-      cat("efeco <- 11 #Number of column of the respective EF\n")
+      cat("efeco <- 11 # Number of column of the respective EF\n")
       cat("efero <- ifelse(is.data.frame(veh), ncol(veh), ncol(veh[[1]]))\n")
       cat("# efero reads the number of the vehicle distribution\n")
       cat("trips_per_day <- 5\n\n")
@@ -175,10 +180,10 @@ inventory <- function(name,
       cat("# Sulphur\n")
       cat("# sulphur <- 50 # ppm\n\n\n")
       cat("# Input and Output\n\n")
-      cat(paste0("directory <- ", deparse(lista3[[i]]), "\n"))
+      cat(paste0("directory <- ", deparse(lista3[i]), "\n"))
       cat("vfuel <- 'E_25' \n")
       cat("vsize <- '' # It can be small/big/<=1400, one word\n")
-      cat("vname <- ", deparse(lista3[[i]]), "\n")
+      cat("vname <- ", deparse(lista3[i]), "\n")
       cat("\n\n")
       cat("# CO \n")
       cat("pol <- 'CO' \n")
@@ -190,10 +195,12 @@ inventory <- function(name,
       cat("                  fuel = vfuel, pollutant = pol, by = 'veh')\n")
       cat("x_STREETS <- emis_post(arra = array_x, pollutant = pol,\n")
       cat("                       by = 'streets_wide') \n")
-      cat("saveRDS(x_DF, file = paste0('emi/', pol, '_', ",
-          deparse(lista3[i]),", '_DF.rds'))\n")
-      cat("saveRDS(x_STREETS, file = paste0('emi/', pol, '_', ",
-          deparse(lista3[i]),", '_STREETS.rds'))\n")
+      cat("saveRDS(x_DF, file = paste0('emi/',",
+          deparse(lista3[i]),
+          ",'_', pol, '_DF.rds'))\n")
+      cat("saveRDS(x_STREETS, file = paste0('emi/',",
+          deparse(lista3[i]),
+          ",'_', pol, '_STREETS.rds'))\n")
       cat("rm(array_x, x_DF, x_STREETS, pol, lefe)\n\n")
       cat("# Other Pollutants...")
       sink()
@@ -204,16 +211,30 @@ inventory <- function(name,
     cat(paste0("setwd('", dirs[1], "')\n"))
     cat("library(vein)\n")
     cat("sessionInfo()\n\n")
+    cat("# 0 Delete previous emissions? ####\n")
+    cat("# borrar <- list.files('emi',\n")
+    cat("#                      pattern = '.rds', recursive = TRUE,\n")
+    cat("#                      full.names = TRUE)\n\n")
     cat("# 1) Network ####\n")
     cat("# Edit your net information and save net.rds it in network directory\n")
     cat("# Your net must contain traffic per street at morning rush hour\n")
     cat("# Below an example using the data in VEIN\n")
     cat("data(net)\n")
-    cat("head(net)\n")
-    cat("# Are you going to need Speed?\n")
-    cat("# if yes, follow the example in netspeed\n")
-    cat("# ?netspeed\n")
+    cat("net <- sf::st_as_sf(net)\n")
+    cat("net <- sf::st_transform(net, 31983)\n")
     cat("saveRDS(net, 'network/net.rds')\n\n")
+    cat("## Are you going to need Speed?\n")
+    cat("data(pc_profile)\n")
+
+    if(rush.hour){
+      cat("speed <- data.frame(S8 = net$ps)\n")
+      cat("saveRDS(speed, 'network/speed.rds')\n\n")
+    } else{
+      cat("pc_week <- temp_fact(net$ldv+net$hdv, pc_profile)\n")
+      cat("speed <- netspeed(pc_week, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)\n")
+      cat("saveRDS(speed, 'network/speed.rds')\n\n")
+    }
+
     cat("# 2) Traffic ####\n")
     cat("# Edit your file traffic.R\n\n")
     cat("source('traffic.R') # Edit traffic.R\n\n")
@@ -222,18 +243,15 @@ inventory <- function(name,
     cat("# You must have all the information required in each input.R\n")
     cat("inputs <- list.files(path = 'est', pattern = 'input.R',\n")
     cat("                     recursive = TRUE, full.names = TRUE)\n")
-    cat("for (i in 2:length(inputs)){\n")
+    cat("for (i in 1:length(inputs)){\n")
+    cat( "  print(inputs[i])\n" )
     cat( "  source(inputs[i])\n" )
     cat("}\n")
     cat("# 4) Post-estimation #### \n")
-    cat("CO <- emis_merge('CO', net = net, crs = 31983)\n")
-    cat("g <- make_grid(net, 1/102.47, crs = 31983)\n")
-    cat("gCO <- emis_grid(CO, g)\n")
-    cat("plot(gCO['V1'], axes = TRUE)\n")
-    cat("dfco <- emis_merge('CO', what = 'DF.rds', FALSE)\n")
-    cat("head(dfco)\n")
-    cat("aggregate(dfco$g, by = list(dfco$veh), sum)\n")
+    cat("g <- make_grid(net, 1000)\n")
+    cat("source('post.R')\n")
     sink()
+
     sink(paste0(name, "/traffic.R"))
     cat("net <- readRDS('network/net.rds')\n")
     cat("PC_01 <- age_ldv(x = net$ldv, name = 'PC', k = 3/4)\n")
@@ -251,6 +269,20 @@ inventory <- function(name,
     cat(" # Add more\n")
     sink()
 
+    sink(paste0(name, "/post.R"))
+    cat("# streets ####\n")
+    cat("CO <- emis_merge('CO', net = net)\n")
+    cat("saveRDS(CO, 'post/streets/CO.rds')\n\n")
+    cat("# grids ####\n")
+    cat("gCO <- emis_grid(CO, g)\n")
+    cat("print(plot(gCO['V1'], axes = TRUE)) # only an example\n\n")
+    cat("saveRDS(gCO, 'post/grids/gCO.rds')\n\n")
+    cat("# df ####\n")
+    cat("dfCO <- emis_merge('CO', what = 'DF.rds', FALSE)\n")
+    cat("saveRDS(dfCO, 'post/df/dfCO.rds')\n")
+    cat("aggregate(dfCO$g, by = list(dfCO$veh), sum, na.rm = TRUE) # Only an example\n\n")
+    cat(" # Add more\n")
+    sink()
   }
 
   if(show.dir){

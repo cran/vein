@@ -7,7 +7,7 @@
 ef_ldv_scaled(df, dfcol, SDC = 34.12, v, t = "4S", cc, f, eu, p)
 }
 \arguments{
-\item{df}{Dataframe with local emission factor}
+\item{df}{Deprecated}
 
 \item{dfcol}{Column of the dataframe with the local emission factors eg df$dfcol}
 
@@ -27,7 +27,8 @@ Moped: "<=50". LCV :  "<3.5" for gross weight.}
 
 \item{eu}{Euro standard: "PRE", "I", "II", "III", "III+DPF", "IV", "V", "VI", "VIc"}
 
-\item{p}{Pollutant: "CO", "FC", "NOx", "HC" or "PM"}
+\item{p}{Pollutant: "CO", "FC", "NOx", "HC" or "PM". If your pollutant dfcol
+is based on fuel, use "FC", if it is based on "HC", use "HC".}
 }
 \value{
 A list of scaled emission factors  g/km
@@ -44,18 +45,23 @@ FTP-75 test procedure, SDC = 34.12 km/h.
 }
 \note{
 The length of the list should be equal to the name of the age categories of
-a specific type of vehicle. Thanks to Glauber Camponogara by the help.
+a specific type of vehicle. Thanks to Glauber Camponogara for the help.
 }
 \examples{
 {
-# Do not run
 data(fe2015)
 co1 <- fe2015[fe2015$Pollutant=="CO", ]
-lef <- ef_ldv_scaled(co1, co1$PC_G, v = "PC", t = "4S", cc = "<=1400", f = "G",
+lef <- ef_ldv_scaled(dfcol = co1$PC_G, v = "PC", t = "4S", cc = "<=1400", f = "G",
 eu = co1$Euro_LDV, p = "CO")
 length(lef)
 lef[[1]](40) # First element of the lit of speed functions at 40 km/h
 lef[[36]](50) # 36th element of the lit of speed functions at 50 km/h
+plot(x = 0:150, y = lef[[36]](0:150), col = "red", type = "b", ylab = "[g/km]",
+pch = 16, xlab = "[km/h]",
+main = "Variation of emissions with speed of oldest vehicle")
+plot(x = 0:150, y = lef[[1]](0:150), col = "blue", type = "b", ylab = "[g/km]",
+pch = 16, xlab = "[km/h]",
+main = "Variation of emissions with speed of newest vehicle")
 }
 }
 \seealso{
