@@ -66,6 +66,7 @@ g <- makinggrid(x = net, cellsize = c(width, height))
     }
   return(gg)
 } else {
+  message("path to wrfinput")
   gg <- eixport::wrf_grid(spobj,
                           type = "wrfinput",
                           matrix = F,

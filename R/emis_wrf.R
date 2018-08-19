@@ -18,6 +18,7 @@
 #' @param islist logical value to indicate if sdf is a list or not
 #' @importFrom sp coordinates spTransform CRS
 #' @importFrom sf st_coordinates  st_transform st_set_geometry st_as_sf
+#' @importFrom methods as
 #' @return data-frame of gridded emissions  (mass)/h. Remember convert to mol.
 #' @export
 #' @note

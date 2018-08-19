@@ -59,12 +59,11 @@
 #' The user can rename these scripts.
 #' @export
 #' @examples \dontrun{
-#' ## Not run:
 #' name = file.path(tempdir(), "YourCity")
 #' inventory(name = name, show.dir = TRUE, show.scripts = TRUE)
 #' source(paste0(name, "/main.R"))
-#' ## End(**Not run**)
 #' }
+#'
 inventory <- function(name,
                       vehcomp = c(PC = 1, LCV = 1, HGV = 1, BUS = 1, MC = 1),
                       scripts = TRUE,

@@ -1,7 +1,23 @@
 NEWS
 ===========
 
-# vein 0.3.35 (Release date: 2018-06-11)
+# vein 0.4.2 (Release date: 2018-08-18)
+
+- add function ef_fun #103.
+
+## vein 0.4.1 (Release date: 2018-08-07)
+
+- add bystreet in my_age.
+
+## vein 0.4.0 (Release date: 2018-07-13)
+
+- add emis_dist. Add test. 
+
+## vein 0.3.36 (Release date: 2018-07-11)
+
+- add emis_order (alias weekly) and emis_source. Also, updated reference.
+
+## vein 0.3.35 (Release date: 2018-06-11)
 
 - Fix emis_wrf. Minor fix for GMD.
 

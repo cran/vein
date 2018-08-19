@@ -78,10 +78,9 @@ fleet.
 }
 \examples{
 \dontrun{
-## Not run:
 name = file.path(tempdir(), "YourCity")
 inventory(name = name, show.dir = TRUE, show.scripts = TRUE)
 source(paste0(name, "/main.R"))
-## End(**Not run**)
 }
+
 }
