@@ -1,7 +1,49 @@
 NEWS
 ===========
 
-# vein 0.4.2 (Release date: 2018-08-18)
+# vein 0.5.2 (Release date: 2018-10-02)
+
+- Adds grid_emis. This function allocates a grid of emissions into streets by
+each grid cell.
+- Improves emis_dist.
+- Improves emis_grid.
+- Add verbose in emis_dist and grid_emis.
+
+
+## vein 0.5.1 (Release date: 2018-09-30)
+
+- Improves emis_dist
+
+## vein 0.5.0 (Release date: 2018-09-24) 'Takamatsu'
+
+- Consolidates all news functions.
+- Add function ef_im for emission factors with normal deterioration that would
+be approved in a inspection and mantainence program.
+- Add ef_fe for taking into account for high emitters.
+
+# vein 0.4.6 (Release date: 2018-09-06)
+
+- Add base emission factors from IVE model.
+- Add argument utc to convert local emissions into UTC emissions.
+
+## vein 0.4.5 (Release date: 2018-09-05)
+
+- enhances emis_order. Now covers GriddedEmissionsArray, sf, data.frame, matrix,
+or any Spatial. Fix #110.
+
+## vein 0.4.4 (Release date: 2018-09-02)
+
+- add function vein_notes.
+- add ef_cetesb #90. 
+
+## vein 0.4.3 (Release date: 2018-08-29)
+
+- add function ef_fun #106.
+- Fix missing isopentane #92.
+- Fix #107.
+- included more options to emis_merge
+
+## vein 0.4.2 (Release date: 2018-08-18)
 
 - add function ef_fun #103.
 

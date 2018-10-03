@@ -4,8 +4,8 @@
 \alias{fuel_corr}
 \title{Correction due Fuel effects}
 \usage{
-fuel_corr(euro, g = c(e100 = 52, aro = 39, o2 = 0.4, e150 = 86, olefin = 10, s
-  = 165), d = c(den = 840, pah = 9, cn = 51, t95 = 350, s = 400))
+fuel_corr(euro, g = c(e100 = 52, aro = 39, o2 = 0.4, e150 = 86, olefin =
+  10, s = 165), d = c(den = 840, pah = 9, cn = 51, t95 = 350, s = 400))
 }
 \arguments{
 \item{euro}{Character; Euro standards ("PRE", "I", "II", "III", "IV", "V",
@@ -30,6 +30,19 @@ nota degradation function.
 \note{
 This function cannot be used to account for deterioration, therefore,
 it is restricted to values between 0 and 1.
+Parameters for gasoline (g):
+O2 = Oxygenates in %,
+S = Sulphur content in ppm,
+ARO = Aromatics content in %,
+OLEFIN = Olefins content in %,
+E100 = Mid range volatility in %,
+E150 = Tail-end volatility in %
+Parameters for diesel (d):
+DEN = Density at 15 C (kg/m3 ),
+S = Sulphur content in ppm,
+PAH = Polycyclic aromatics content in %,
+CN = Cetane number,
+T95 = Back-end distillation in o C.
 }
 \examples{
 {
