@@ -1,7 +1,54 @@
 NEWS
 ===========
 
-# vein 0.5.2 (Release date: 2018-10-02)
+
+# vein 0.6.0 (Release date: 2019-01-11)
+
+- Add PM characteristics:
+- Add Active Surface (cm2/km): "AS_urban", "AS_rural", "AS_highway",
+- Add number of particles: "N_urban", "N_rural", "N_highway",
+"N_50nm_urban", "N_50_100nm_rural", "N_100_1000nm_highway".
+
+# vein 0.5.9 (Release date: 2019-01-11)
+
+- fix #134.
+
+## vein 0.5.8 (Release date: 2018-12-29)
+
+- Fix EF of metals fix #91.
+
+## vein 0.5.7 (Release date: 2018-11-29)
+
+- Opens main.R in inventory(, fix #132.
+- Adds matvect in any age* by row, fix #130.
+- emis can read vehicles as 'sf' objects setting geometry to NULL, fix #116.
+- Fix message on age* function when there is a NA in traffic, fix #131.
+- Enhance inventory.
+
+## vein 0.5.6 (Release date: 2018-11-26)
+
+- Add matvect, just a helper function to multiply matrices by row or 
+column with vectors.
+- Add logo at help page.
+- Add tests.
+
+## vein 0.5.5 (Release date: 2018-11-13)
+
+- Fix top-down estimation
+
+## vein 0.5.4 (Release date: 2018-10-02)
+
+- Fix evaporative emission factors on CETESB.
+- Remove SO2 from cetesb. It must be calculated based on FC and content
+of S. The same applies for Pb.
+- Add ignore in emis_merge.
+
+
+## vein 0.5.3 (Release date: 2018-10-02)
+
+- Adds evaporative emission factors on CETESB.
+
+## vein 0.5.2 (Release date: 2018-10-02)
 
 - Adds grid_emis. This function allocates a grid of emissions into streets by
 each grid cell.

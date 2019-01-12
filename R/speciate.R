@@ -99,7 +99,7 @@ pmdf <- data.frame(c("e_so4i", "e_so4j", "e_no3i", "e_no3j", "e_pm2.5i",
 
   # black carbon and organic matter
   if (spec=="bcom") {
-    bcom <- sysdata[[4]]
+    bcom <- sysdata$bcom
     df <- bcom[bcom$VEH == veh & bcom$FUEL == fuel & bcom$STANDARD == eu , ]
     dfb <- Emissions(data.frame(BC = x*df$BC/100,
                                 OM = (df$OM/100)*(x*df$BC/100)))
@@ -136,7 +136,7 @@ pmdf <- data.frame(c("e_so4i", "e_so4j", "e_no3i", "e_no3j", "e_pm2.5i",
     }
     # iag ####
   } else if (spec=="iag") {
-    iag <- sysdata[[6]]
+    iag <- sysdata$iag
     df <- iag[iag$VEH == veh & iag$FUEL == fuel & iag$STANDARD == eu , ]
     if (is.data.frame(x)) {
       for (i in 1:ncol(x)) {
@@ -170,7 +170,7 @@ pmdf <- data.frame(c("e_so4i", "e_so4j", "e_no3i", "e_no3j", "e_pm2.5i",
     }
     # names PMIAG ####
   } else if (spec %in% nvoc) {
-    iag <- sysdata[[6]]
+    iag <- sysdata$iag
     df <- iag[iag$VEH == veh & iag$FUEL == fuel & iag$STANDARD == eu , spec]
     df <- data.frame(spec = df)
     names(df) <- spec
@@ -209,7 +209,7 @@ pmdf <- data.frame(c("e_so4i", "e_so4j", "e_no3i", "e_no3j", "e_pm2.5i",
 
     # nmhc ####
   } else if (spec=="nmhc") {
-    iag <- sysdata[[9]]
+    iag <- sysdata$nmhc
     df <- iag[iag$VEH == veh & iag$FUEL == fuel & iag$STANDARD == eu , ]
     if (is.data.frame(x)) {
       for (i in 1:ncol(x)) {
@@ -244,7 +244,7 @@ pmdf <- data.frame(c("e_so4i", "e_so4j", "e_no3i", "e_no3j", "e_pm2.5i",
     }
     # nox ####
   } else if (spec=="nox") {
-    bcom <- sysdata[[7]]
+    bcom <- sysdata$nox
     df <- bcom[bcom$VEH == veh & bcom$FUEL == fuel & bcom$STANDARD == eu , ]
     dfb <- Emissions(data.frame(NO2 = x*df$NO2,
                                 NO =  x*df$NO))
@@ -253,7 +253,7 @@ pmdf <- data.frame(c("e_so4i", "e_so4j", "e_no3i", "e_no3j", "e_pm2.5i",
     }
     # PM2.5 IAG ####
   } else if(spec == "pmiag"){
-    message("To be used in emissions grid only, emissions must be in g/(Xkm^2)/h\n")
+    message("For emissions grid only, emissions must be in g/(Xkm^2)/h\n")
     message("PM.2.5-10 must be calculated as substraction of PM10-PM2.5 to enter this variable into WRF")
     if(class(x)[1] == "sf"){
       x <- sf::st_set_geometry(x, NULL)

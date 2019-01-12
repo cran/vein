@@ -16,7 +16,8 @@ ef_hdv_speed(v, t, g, eu, x, gr = 0, l = 0.5, p, k = 1,
 ">7.5 & <=12", ">12 & <=14", ">14 & <=20", ">20 & <=26", ">26 & <=28", ">28 & <=32",
 ">32", ">20 & <=28", ">28 & <=34", ">34 & <=40", ">40 & <=50" or ">50 & <=60"}
 
-\item{eu}{Euro emission standard: "PRE", "I", "II", "III", "IV" and "V"}
+\item{eu}{Euro emission standard: "PRE", "I", "II", "III", "IV", "V", "II+CRDPF",
+"III+CRDPF", "IV+CRDPF", "II+SCR", "III+SCR" and "V+SCR".}
 
 \item{x}{Numeric; if pollutant is "SO2", it is sulphur in fuel in ppm, if is
 "Pb", Lead in fuel in ppm.}
@@ -25,9 +26,10 @@ ef_hdv_speed(v, t, g, eu, x, gr = 0, l = 0.5, p, k = 1,
 
 \item{l}{Load of the vehicle: 0.0, 0.5 or 1.0}
 
-\item{p}{Character; pollutant: "CO", "FC", "NOx", "HC", "PM", "NMHC", "CH4",
+\item{p}{Character; pollutant: "CO", "FC", "NOx", "NO", "NO2", "HC", "PM", "NMHC", "CH4",
 "CO2",  "SO2" or "Pb". Only when p is "SO2" pr "Pb" x is needed. Also
-polycyclic aromatic hydrocarbons (PAHs) and persistent organi pollutants (POPs).}
+polycyclic aromatic hydrocarbons (PAHs), persistent organi pollutants (POPs),
+and Number of particles and Active Surface.}
 
 \item{k}{Multiplication factor}
 
@@ -42,10 +44,10 @@ comes from the guidelines  EMEP/EEA air pollutant emission inventory guidebook
 http://www.eea.europa.eu/themes/air/emep-eea-air-pollutant-emission-inventory-guidebook
 }
 \note{
-\strong{Pollutants}: "CO", "NOx", "HC", "PM", "CH4", "NMHC", "CO2", "SO2",
+\strong{Pollutants (g/km)}: "CO", "NOx", "HC", "PM", "CH4", "NMHC", "CO2", "SO2",
 "Pb".
 
-\strong{PAH and POP}: "indeno(1,2,3-cd)pyrene", "benzo(k)fluoranthene",
+\strong{PAH and POP (g/km)}: "indeno(1,2,3-cd)pyrene", "benzo(k)fluoranthene",
 "benzo(b)fluoranthene", "benzo(ghi)perylene", "fluoranthene",
 "benzo(a)pyrene", "pyrene", "perylene",  "anthanthrene", "benzo(b)fluorene",
 "benzo(e)pyrene", "triphenylene", "benzo(j)fluoranthene",
@@ -54,40 +56,57 @@ http://www.eea.europa.eu/themes/air/emep-eea-air-pollutant-emission-inventory-gu
 "chrysene", "phenanthrene", "napthalene",  "anthracene", "coronene",
 "dibenzo(ah)anthracene".
 
-\strong{Dioxins and furans}: PCDD, PCDF and PCB expressed as (g equivalent
-toxicity / km).
+\strong{Dioxins and furans (g equivalent toxicity / km)}: PCDD, PCDF and PCB..
 
-\strong{Metals}: "As", "Cd", "Cr", "Cu", "Hg", "Ni", "Pb", "Se", "Zn" (g/km).
-\strong{NMHC}:
+\strong{Metals (g/km)}: "As", "Cd", "Cr", "Cu", "Hg", "Ni", "Pb", "Se", "Zn" (g/km).
+\strong{NMHC (g/km)}:
 
-\emph{ALKANES}: "ethane", "propane", "butane", "isobutane", "pentane",
+\emph{ALKANES (g/km)}: "ethane", "propane", "butane", "isobutane", "pentane",
 "isopentane", "hexane", "heptane", "octane", "TWO_methylhexane", "nonane",
 "TWO_methylheptane", "THREE_methylhexane", "decane", "THREE_methylheptane",
 "alcanes_C10_C12", "alkanes_C13".
 
-\emph{CYCLOALKANES}: "cycloalcanes".
+\emph{CYCLOALKANES (g/km)}: "cycloalcanes".
 
-\emph{ALKENES}: "ethylene", "propylene", "propadiene", "ONE_butene",
+\emph{ALKENES (g/km)}: "ethylene", "propylene", "propadiene", "ONE_butene",
 "isobutene", "TWO_butene", "ONE_3_butadiene", "ONE_pentene", "TWO_pentene",
 "ONE_hexene", "dimethylhexene".
 
-\emph{ALKYNES}:"ONE_butine", "propine", "acetylene".
+\emph{ALKYNES (g/km)}:"ONE_butine", "propine", "acetylene".
 
-\emph{ALDEHYDES}: "formaldehyde", "acetaldehyde", "acrolein", "benzaldehyde",
+\emph{ALDEHYDES (g/km)}: "formaldehyde", "acetaldehyde", "acrolein", "benzaldehyde",
 "crotonaldehyde", "methacrolein", "butyraldehyde", "isobutanaldehyde",
 "propionaldehyde", "hexanal", "i_valeraldehyde", "valeraldehyde",
 "o_tolualdehyde", "m_tolualdehyde", "p_tolualdehyde".
 
-\emph{KETONES}: "acetone", "methylethlketone".
+\emph{KETONES (g/km)}: "acetone", "methylethlketone".
 
-\emph{AROMATICS}: "toluene", "ethylbenzene", "m_p_xylene", "o_xylene",
+\emph{AROMATICS (g/km)}: "toluene", "ethylbenzene", "m_p_xylene", "o_xylene",
 "ONE_2_3_trimethylbenzene", "ONE_2_4_trimethylbenzene",
 "ONE_3_5_trimethylbenzene", "styrene", "benzene", "C9", "C10", "C13".
+
+\emph{Active Surface (cm2/km)}: "AS_urban", "AS_rural", "AS_highway"
+
+\emph{Total Number of particles (N/km)}: "N_urban", "N_rural", "N_highway",
+"N_50nm_urban", "N_50_100nm_rural", "N_100_1000nm_highway".
+
+The available standards for Active Surface or number of particles are:
+Euro II and III
+Euro II and III + CRDPF
+Euro II and III + SCR
+Euro IV + CRDPF
+Euro V + SCR
+
+The categories Pre Euro and Euro I were assigned with the factors of Euro II and Euro III
+The categories euro IV and euro V were assigned with euro III + SCR
 }
 \examples{
 {
 # Quick view
-pol <- c("CO", "NOx", "HC", "NMHC", "CH4", "FC", "PM", "CO2", "SO2")
+pol <- c("CO", "NOx", "HC", "NMHC", "CH4", "FC", "PM", "CO2", "SO2",
+"AS_urban", "AS_rural", "AS_highway",
+"N_urban", "N_rural", "N_highway",
+"N_50nm_urban", "N_50_100nm_rural", "N_100_1000nm_highway")
 f <- sapply(1:length(pol), function(i){
 print(pol[i])
 ef_hdv_speed(v = "Trucks",t = "RT", g = "<=7.5", e = "II", gr = 0,

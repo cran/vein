@@ -19,6 +19,7 @@
 #' http://spatialreference.org/ to transform/project spatial data using sf::st_transform
 #' @param under "Character"; "after" when you stored your pollutant x as 'X_'
 #' "before" when '_X' and "none" for merging directly the files.
+#' @param ignore "Logical"; Would you liek your selection?
 #' @param as_list "Logical"; for returning the results as list or not.
 #' @return 'Spatial feature' of lines or a dataframe of emissions
 #' @importFrom data.table rbindlist .SD
@@ -35,12 +36,15 @@ emis_merge <- function (pol = "CO",
                         path = "emi",
                         crs,
                         under = "after",
+                        ignore = FALSE,
                         as_list = FALSE){
+
   x <- list.files(path = path,
                   pattern = what,
                   all.files = T,
                   full.names = T,
                   recursive = T)
+
   if(under == "after"){
     x <- x[grep(pattern = paste0(pol, "_"), x = x)]
   } else if (under == "before"){
@@ -48,6 +52,8 @@ emis_merge <- function (pol = "CO",
   } else {
     x <-  x[grep(pattern = pol, x = x)]
   }
+
+
 
 nx <- gsub(pattern = paste0(getwd(), '/', path),
            replacement = "", x = x)
@@ -58,6 +64,10 @@ nx <- kk
 
   cat("\nReading emissions from:\n")
   print(x)
+  if(ignore) {
+    ignore_this <- readline("Which ones would you to exclude?\n")
+    x <- x[!x %in% ignore_this]
+  }
   x_rds <- lapply(x, readRDS)
   names(x_rds) <- nx
   if(as_list) return(x_rds)

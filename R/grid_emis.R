@@ -39,7 +39,7 @@
 #' lef <- EmissionFactorsList(ef_cetesb("CO", "PC_G"))
 #' E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef,
 #'             profile = 1)
-#' E_CO_STREETS <- emis_post(arra = E_CO, by = "streets_wide", net = net)
+#' E_CO_STREETS <- emis_post(arra = E_CO, by = "streets", net = net)
 #'
 #' g <- make_grid(net, 1/102.47/2) #500m in degrees
 #'
@@ -78,7 +78,7 @@ grid_emis <- function(spobj, g, sr, pro, osm, verbose = TRUE){
   net$lkm1 <- as.numeric(sf::st_length(net))
 
   geo <- sf::st_geometry(net)
-  xg <- suppressWarnings(sf::st_intersection(net, g))
+  xg <- suppressMessages(suppressWarnings(sf::st_intersection(net, g)))
 
   if(sf::st_crs(g) != sf::st_crs(net)){
     if(verbose) message("Changing CRS of 'spobj' to match 'g'")
