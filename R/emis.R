@@ -1,6 +1,6 @@
 #' Estimation of emissions
 #'
-#' @description \code{emis} estimates vehicular emissions as the product of the
+#' @description \code{\link{emis}} estimates vehicular emissions as the product of the
 #' vehicles on a road, length of the road, emission factor avaliated at the
 #' respective speed. \eqn{E = VEH*LENGTH*EF(speed)}
 #'
@@ -106,17 +106,25 @@ emis <- function (veh,
                   day = ncol(profile),
                   array = T,
                   verbose = FALSE) {
+  # Check units
   if(class(lkm) != "units"){
     stop("lkm neeeds to has class 'units' in 'km'. Please, check package 'units'")
   }
-  #At least, on e of these
+  if(units(lkm)$numerator == "m" ){
+    stop("Units of lkm is 'm'. Please, check package '?units::set_units'")
+  }
+  # At least, on e of these
   if(any(!class(ef) %in% c("list", "units", "EmissionFactorsList",
                            "EmissionFactors", "data.frame"))){
     stop("ef must be either of 'list', 'units', 'EmissionFactorsList', 'EmissionFactors' or 'data.frame'")
   }
-
+  # Checking sf
   if(any(class(veh) %in% "sf")){
+    if(verbose) message("converting sf to data.frame")
     veh <- sf::st_set_geometry(veh, NULL)
+  }
+  if(!missing(hour) | !missing(day)){
+    warning("Arguments  hour and day will be deprecated, they will derived from profile")
   }
 
   lkm <- as.numeric(lkm)
@@ -172,8 +180,8 @@ emis <- function (veh,
     }
 
     if(array == F){
-      lista <- lapply(1:day,function(j){
-        lapply(1:hour,function(i){
+      lista <- lapply(1:ncol(profile),function(j){
+        lapply(1:nrow(profile),function(i){
           lapply(1:agemax, function(k){
             veh[, k]*profile[i,j]*lkm*ef[[k]](speed[, i])
           }) }) })
@@ -181,15 +189,14 @@ emis <- function (veh,
     } else {
 
       d <-  simplify2array(
-        lapply(1:day,function(j){
+        lapply(1:ncol(profile),function(j){
           simplify2array(
-            lapply(1:hour,function(i){
+            lapply(1:nrow(profile),function(i){
               simplify2array(
                 lapply(1:agemax, function(k){
                   veh[, k]*profile[i,j]*lkm*ef[[k]](speed[, i*j])
                 }) ) }) ) }) )
-      message(round(sum(d, na.rm = T)/1000,2),
-              " kg emissions in ", hour, " hours and ", day, " days")
+      if(verbose) message(round(sum(d, na.rm = T)/1000,2), " kg emissions")
       return(EmissionsArray(d))
     }
     # veh is a list of "Vehicles" data-frames
@@ -227,7 +234,7 @@ emis <- function (veh,
             lapply(1:agemax, function(k){
               veh[[i]][, k]*lkm*ef[[k]](speed[, i])
             }) ) }) )
-      if(verbose) message(round(sum(d, na.rm = T)/1000,2), " kg emissions in ", hour, " hours")
+      if(verbose) message(round(sum(d, na.rm = T)/1000,2), " kg emissions ")
       return(EmissionsArray(d))
     }
   }

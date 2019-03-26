@@ -1,15 +1,114 @@
 NEWS
 ===========
 
+# vein 0.7.0  (Release date: 2019-03-25)
 
-# vein 0.6.0 (Release date: 2019-01-11)
+- Consolditation fo all minor release.
+
+## vein 0.6.12 (Release date: 2019-03-25)
+
+- Fix #168 update ef cetesb 2017.
+- fix #169. Adds function age, which incorporated survival functions:
+Gompertz, Weibull, logistic, including literature references. This function aims
+to replace age_ldv, age_moto and age_hdv.
+- Improves documentation age*
+
+
+## vein 0.6.11 (Release date: 2019-03-18)
+
+- Fix ef_*_scale. 
+- The problem was solved adding k2 to ef*speed
+
+## vein 0.6.10 (Release date: 2019-03-01)
+
+- Enhances vein_notes.
+
+## vein 0.6.9 (Release date: 2019-02-25)
+
+- Fix #157. age_ldv(1, agemax = 1) now returns 1 [veh]
+- Fix #158, new argument namerows to change row.names oin age* functions.
+- Change argument message to verbose in all age* functions default = FALSE.
+- Add emission factors of hybrid vehicles. EMEP/EEA air pollutant emission inventory
+guidebook 2016 (Leonidas Ntziachristos, Zissis Samaras, 2016), only publish
+factors for Euro IV technology. In order to have a complete data base I projected
+these factors to euro V, VI and VIc with the same values as IV. When new 
+literature is available this will be updated.
+
+## vein 0.6.8 (Release date: 2019-02-21)
+
+- Fix #152. Adds emis_hot_td hot exhaust estimation with top-down approach.
+- Improve documentation.
+- Allow pro_month varies across each simple feature or row os Vehicle data.frame.
+- Fix minor bugs.
+
+## vein 0.6.7 (Release date: 2019-02-18)
+
+- Fix #150. Add options to emis_cold_td and emis_evap to add columns to output.
+- Add verbose argument in emis_cold_td and emis_evap.
+- Add message in emis. hour and day will be deprecated.
+- Add warnings in ef_evap, and now has options for months and accepts several ef.
+- Add argument speed in ef_ldv_speed, ef_hdv_speed and ef_ldv_cold.
+
+
+## vein 0.6.6 (Release date: 2019-02-14)
+
+- Fix #146. now dt of ef_evap accept numeric or character vectors.
+- Other arguments of ef_evap can be several.
+- Add stop message on ef_evap.
+- Add argument of ltrip to convert g/trip in g/km and kmday to convert g/day to g/km
+- Add new emis_evap function, and the older now has the name emis_evap2.
+- Deprecates running_losses and hot_soak and replaced by the new emis_evap
+function.
+
+## vein 0.6.5 (Release date: 2019-02-12)
+
+- Created function emis_cold_td for top-down approach. Fix #142
+- no more time units,fix #118
+- Add new unit 'veh', for vehicles, dimensionless.
+- Deprecates classes Evaporative and EmissionsList.
+
+## vein 0.6.4 (Release date: 2019-02-11)
+
+- Adds support for top-down estimation in emis_cold. Fix ##142.]
+This is, it returns a data-frame when profile is missing.
+What would happen if annaul activity is used when profile?
+WHat happen if this profile are normalized projections for future?
+The result would be an EmissionsArray with emissions projections.
+However, the emission factors would be contant, which would be incorrect
+due to emissions degradations. Thusm it would be a good idea start to think
+in a dedicated function for top-down estimations, which ideally, would cover
+cold start and evaporative cases. Also, what happens for automatic monthly estimation?
+Perhaps, 0.7.
+- Adds cold_mileage depending on length of trip and temperature, from 
+EMEP/EEA air pollutant emission inventory guidebook, p60.
+
+
+## vein 0.6.3 (Release date: 2019-02-07)
+
+- Fix milage equation of  fkm$KM_LDV_GNV. Fix #137.
+- Fix "V", "VI", "VIc". Fix #138
+- Fix #139
+- Fix #140. Add base year in ef_cetesb.
+- Fix #141
+    
+## vein 0.6.2 (Release date: 2019-01-29)
+
+- fix some metals in ldv, m
+- Adds data with name of all pollutants covered.
+
+
+## vein 0.6.1 (Release date: 2019-01-11)
+
+- Adds split_emis. Fix #135
+
+## vein 0.6.0 (Release date: 2019-01-11) 'Changchung'
 
 - Add PM characteristics:
 - Add Active Surface (cm2/km): "AS_urban", "AS_rural", "AS_highway",
 - Add number of particles: "N_urban", "N_rural", "N_highway",
 "N_50nm_urban", "N_50_100nm_rural", "N_100_1000nm_highway".
 
-# vein 0.5.9 (Release date: 2019-01-11)
+## vein 0.5.9 (Release date: 2019-01-11)
 
 - fix #134.
 
@@ -494,3 +593,5 @@ inventories for cities with lack of data. Journal of Earth Sciences &
 Geotechnical Engineering. issn 1792--9660.
 URL =
 https://www.researchgate.net/publication/313253283_REMI_model_Bottom-up_emissions_inventories_for_cities_with_lack_of_data
+
+

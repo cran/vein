@@ -12,7 +12,7 @@ library(ggplot2)
 data(net)
 class(net$ldv) <- "numeric"
 
-spplot(net, "ldv", scales=list(draw=T),cuts=12,
+spplot(net, "ldv", scales=list(Draw=T),cuts=12,
        colorkey = list(space = "bottom", height = 1),
        col.regions = rev(bpy.colors(13)))
 
@@ -91,7 +91,7 @@ net@data$nts <- as.factor(
 
 net@data <- cbind(net@data,df)
 
-spplot(net, c("S8","S23"), scales=list(draw=T),
+spplot(net, c("S8","S23"), scales=list(Draw=T),
        col.regions = rev(bpy.colors(16)))
 
 speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
@@ -119,10 +119,10 @@ data(pc_profile)
 data(fkm)
 pckm <- fkm[[1]](1:24)
 pckma <- cumsum(pckm)
-cod1 <- emis_det(po = "CO", cc = 1000,
-                 eu = "III", km = pckma[1:11])
-cod2 <- emis_det(po = "CO", cc = 1000,
-                 eu = "I", km = pckma[12:24])
+kma <- units::set_units(pckma[1:11], km)
+kmb <- units::set_units(pckma[12:24], km)
+cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = kma)
+cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = kmb)
 co1 <- fe2015[fe2015$Pollutant=="CO", ]
 cod <- c(co1$PC_G[1:24] * c(cod1,cod2),
          co1$PC_G[25:nrow(co1)])
@@ -131,8 +131,8 @@ cod <- c(co1$PC_G[1:24] * c(cod1,cod2),
 data(fe2015)
 data(fkm)
 pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
-cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = pckma[1:11])
-cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = pckma[12:24])
+cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = kma)
+cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = kmb)
 #vehicles newer than pre-euro
 co1 <- fe2015[fe2015$Pollutant == "CO", ] #24 obs!!!
 cod <- c(co1$PC_G[1:24] * c(cod1, cod2), co1$PC_G[25:nrow(co1)])
@@ -163,7 +163,7 @@ df$day <- factor(df$Day,
                  levels =  c("Monday", "Tuesday", "Wednesday", "Thursday",
                              "Friday", "Saturday", "Sunday"))
 
-ggplot(df, aes(x=Hour, y=unclass(g_CO), colour = day, shape = day)) +
+ggplot(df, aes(x=Hour, y=unclass(g_CO), colour = day)) +
   geom_line() + geom_point(size = 4) + theme_bw() +
   theme(legend.key.size = unit(0.6,"cm")) +
   labs(x="Hour", y=expression(g%.%h^-1))
@@ -212,9 +212,9 @@ for (i in 1:ncol(E_CO_STREETS)) {
   E_CO_STREETS[,i] <- as.numeric(E_CO_STREETS[,i])
 }
 net@data <- cbind(net@data, E_CO_STREETS)
-g <- make_grid(net, 1/102.47/2, 1/102.47/2, polygon = T)
+g <- make_grid(net, 1/102.47/2, 1/102.47/2)
 gg <- as(g, "Spatial")
-spplot(net, "V138", scales=list(draw=T), cuts = 15,
+spplot(net, "V138", scales=list(Draw=T), cuts = 15,
        colorkey = list(space = "bottom", height = 1),
        col.regions = rev(bpy.colors(16)),
        sp.layout = list("sp.polygons", gg, pch = 13, cex = 2))
@@ -223,7 +223,7 @@ spplot(net, "V138", scales=list(draw=T), cuts = 15,
 net@data <- net@data[,- c(1:9)]
 E_CO_g <- emis_grid(spobj = net, g = g, sr = 31983, type = "lines")
 E_CO_g <- as(E_CO_g, "Spatial")
-spplot(E_CO_g, "V138", scales=list(draw=T),cuts=8,
+spplot(E_CO_g, "V138", scales=list(Draw=T),cuts=8,
        colorkey = list(space = "bottom", height = 1),
        col.regions = rev(bpy.colors(9)),
        sp.layout = list("sp.lines", net, pch = 16, cex = 2, col = "black"))

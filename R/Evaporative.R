@@ -1,7 +1,7 @@
 #' Construction function for class "Evaporative"
 #'
 #' @description \code{Evaporative} returns a tranformed object with class "Evaporative" and
-#' units g/day. This class represents the daily emissions presented by
+#' units g. This class represents the daily emissions presented by
 #' Mellios G and Ntziachristos (2016) Gasoline evaporation, Tier 2. Eventually
 #' it will be incorporated the techniques of Tier 3.
 #'
@@ -11,24 +11,28 @@
 #' @param x Object with class "numeric"
 #' @param object Object with class "Evaporative"
 #' @param ... ignored
-#' @rdname Evaporative
 #' @aliases Evaporative print.Evaporative summary.Evaporative
 #' plot.Evaporative
-#' @examples {
-#' ef1 <- ef_evap(ef = "erhotc",v = "PC", cc = "<=1400", dt = "0_15", ca = "no")
-#' ef1
-#' }
+#' @name vein-deprecated
+#' @seealso \code{\link{vein-deprecated}}
+#' @keywords internal
+NULL
+
+#' @rdname vein-deprecated
+#' @section \code{Evaporative}:
+#' For \code{Evaporative}, use \code{\link{emis_evap}}.
 #' @export
+#' @examples \dontrun{
+#' # do not run
+#' # DEPRECATED
+#' }
 Evaporative <- function(x, ...) {
-  ev <- x
-if ( is.numeric(ev) ) {
-    ev <- ev*units::as_units("g d-1")
-    class(ev) <- c("Evaporative",class(ev))
-  }
-  return(ev)
+  .Deprecated("EmissionsList")
+  "EmissionsList"
+
 }
 
-#' @rdname Evaporative
+#' @rdname vein-deprecated
 #' @method print Evaporative
 #' @export
 print.Evaporative <- function(x, ...) {
@@ -36,7 +40,7 @@ print.Evaporative <- function(x, ...) {
   print(x,  ...)
 }
 
-#' @rdname Evaporative
+#' @rdname vein-deprecated
 #' @method summary Evaporative
 #' @export
 summary.Evaporative <- function(object, ...) {
@@ -44,10 +48,10 @@ summary.Evaporative <- function(object, ...) {
   print(summary(unclass(object)))
 }
 
-#' @rdname Evaporative
+#' @rdname vein-deprecated
 #' @method plot Evaporative
 #' @export
 plot.Evaporative <- function(x,  ...) {
   ev <- x
-    NextMethod("plot", ev, ...)
+  NextMethod("plot", ev, ...)
 }

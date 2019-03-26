@@ -4,32 +4,71 @@
 \alias{emis_det}
 \title{Determine deterioration factors for urban conditions}
 \usage{
-emis_det(po, cc, eu, km)
+emis_det(po, cc, eu, speed = Speed(18.9), km, verbose = FALSE,
+  show.equation = FALSE)
 }
 \arguments{
-\item{po}{Pollutant}
+\item{po}{Character; Pollutant "CO", "NOx" or "HC"}
 
-\item{cc}{Size of engine in cc}
+\item{cc}{Character; Size of engine in cc converin "<=1400", "1400_2000" or ">2000"}
 
-\item{eu}{Euro standard: "PRE", "I", "II", "III", "III", "IV", "V", "VI"}
+\item{eu}{Character; Euro standard:  "I", "II", "III", "III", "IV", "V", "VI", "VIc"}
 
-\item{km}{mileage in km}
+\item{speed}{Numeric; Speed to return Number of emission factor and not a function.
+It needs units in km/h}
+
+\item{km}{Numeric; accumulated mileage in km.}
+
+\item{verbose}{Logical; To show more information}
+
+\item{show.equation}{Option to see or not the equation parameters}
 }
 \value{
-It returns a numeric vector without "units"
+It returns a numeric vector representing the increase in emissions due to normal deterioring
 }
 \description{
-\code{emis_det} returns deterioration factors. The emission
+\code{\link{emis_det}} returns deterioration factors. The emission
 factors comes from the guidelines for developing emission factors of the
 EMEP/EEA air pollutant emission inventory guidebook
 http://www.eea.europa.eu/themes/air/emep-eea-air-pollutant-emission-inventory-guidebook
 This function subset an internal database of emission factors with each argument
 }
+\note{
+The deterioration factors functions are available for technologies
+euro "II", "III" and "IV". In order to cover all euro technologies, this
+function assumes that the deterioration function of "III" and "IV" applies
+for "V", "VI" and "VIc". However, as these technologies are relative
+new,  accumulated milage is low and hence, deteerioration factors small.
+}
 \examples{
-\dontrun{
+{
 data(fkm)
 pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
-cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = pckma[1:11])
+km <- units::set_units(pckma[1:11], km)
+# length eu = length km = 1
+emis_det(po = "CO", cc = "<=1400", eu = "III", km = km[5], show.equation = TRUE)
+# length eu = length km = 1, length speed > 1
+emis_det(po = "CO", cc = "<=1400", eu = "III", km = km[5], speed = Speed(1:10))
+# length km != length eu error
+# (cod1 <- emis_det(po = "CO", cc = "<=1400", eu = c("III", "IV"), speed = Speed(30),
+# km = km[4]))
+# length eu = 1 length km > 1
+emis_det(po = "CO", cc = "<=1400", eu = "III", km = km)
+# length eu = 2, length km = 2 (if different length, error!)
+(cod1 <- emis_det(po = "CO", cc = "<=1400", eu = c("III", "IV"), km = km[4:5]))
+# length eu = 2, length km = 2, length speed > 1
+(cod1 <- emis_det(po = "CO", cc = "<=1400", eu = c("III", "IV"), speed = Speed(0:130),
+km = km[4:5]))
+euros <- c("V","V","V", "IV", "IV", "IV", "III", "III", "III", "III")
+# length eu = 2, length km = 2, length speed > 1
+(cod1 <- emis_det(po = "CO", cc = "<=1400", eu = euros, speed = Speed(1:100),
+km = km[1:10]))
+cod1 <- as.matrix(cod1[, 1:11])
+filled.contour(cod1, col = cptcity::cpt(6277, n = 20))
+filled.contour(cod1, col = cptcity::lucky(n = 19))
+euro <- c(rep("V", 5), rep("IV", 5), "III")
+euros <- rbind(euro, euro)
+(cod1 <- emis_det(po = "CO", cc = "<=1400", eu = euros, km = km))
 }
 }
 \keyword{deterioration}

@@ -4,29 +4,42 @@
 \alias{ef_evap}
 \title{Evaporative emission factor}
 \usage{
-ef_evap(ef, v, cc, dt, ca, k = 1, show = FALSE)
+ef_evap(ef, v, cc, dt, ca, k = 1, ltrip, kmday, show = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{ef}{Name of  evaporative emission factor as *eshotc*: mean hot-soak with
 carburator, *eswarmc*: mean cold and warm-soak with carburator, eshotfi: mean
 hot-soak with fuel injection, *erhotc*: mean hot running losses with
 carburator, *erwarmc* mean cold and warm running losses, *erhotfi* mean hot
-running losses with fuel injection}
+running losses with fuel injection. Length of ef 1.}
 
-\item{v}{Type of vehicles, "PC", "Motorcycles", "Motorcycles_2S" and "Moped"}
+\item{v}{Type of vehicles, "PC", "Motorcycle", "Motorcycle_2S" and "Moped"}
 
-\item{cc}{Size of engine in cc. PC "<=1400",  "1400_2000" and "2000"
-Motorcycles_2S:  "<=50". Motorcyces: ">50", "<250", "250_750" and ">750"}
+\item{cc}{Size of engine in cc. PC "<=1400",  "1400_2000" and ">2000"
+Motorcycle_2S:  "<=50". Motorcyces: ">50", "<=250", "250_750" and ">750".
+Only engines of >750 has canister.}
 
-\item{dt}{Average daily temperature variation: "-5_10", "0_15", "10_25"
-and "20_35"}
+\item{dt}{Character or Numeric: Average monthly temperature variation: "-5_10", "0_15", "10_25"
+and "20_35". This argument can vector with several elements. dt can also be data.frame,
+but it is recommended that the number of columns are each month. So that dt
+varies in each row and each column.}
 
 \item{ca}{Size of canister: "no" meaning no canister, "small", "medium" and
-"large"}
+"large".}
 
 \item{k}{multiplication factor}
 
+\item{ltrip}{Numeric; Length of trip. Experimental feature to conter g/trip
+and g/proced (assuming proced similar to trip) in g/km.}
+
+\item{kmday}{Numeric; average daily mileage. Experimental option
+to convert g/day in g/km.
+it is an information more solid than to know the average number of trips per day.}
+
 \item{show}{when TRUE shows row of table with respective emission factor.}
+
+\item{verbose}{Logical; To show more information}
 }
 \value{
 emission factors in g/trip or g/proced. The object has class (g)
@@ -36,11 +49,36 @@ but it order to know it is g/trip or g/proceed the argument show must by T
 \code{\link{ef_evap}} is a lookup table with tier 2 evaporative emission factors
 from EMEP/EEA emisison guidelines
 }
+\note{
+Diurnal loses occur with daily temperature variations. Running loses
+occur during vehicles use. Hot soak emission occur following vehicles use.
+}
 \examples{
-\dontrun{
+{
 # Do not run
-ef_evap(ef = "erhotc",v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
+ef_evap(ef = "ed", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
 show = TRUE)
+ef_evap(ef = c("erhotc", "erhotc"), v = "PC", cc = "<=1400",
+dt = "0_15", ca = "no",
+show = TRUE)
+ef_evap(ef = c("erhotc", "erhotc"), v = "PC", cc = "<=1400",
+ dt = "0_15", ca = "no",
+show = FALSE)
+ef_evap(ef = "eshotc", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
+show = TRUE)
+ef_evap(ef = "erhotc", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
+show = TRUE)
+temps <- 10:20
+ef_evap(ef = "erhotc", v = "PC", cc = "<=1400", dt = temps, ca = "no",
+show = TRUE)
+dt <- matrix(rep(1:24,5), ncol = 12) # 12 months
+ef_evap(ef ="erhotc", v = "PC", cc = "<=1400",
+dt = dt, ca = "no")
+lkm <- units::set_units(10, km)
+ef_evap(ef ="erhotc", v = "PC", cc = "<=1400", ltrip = lkm,
+dt = dt, ca = "no")
+ef_evap(ef = rep("erhotc", 8), v = "PC", cc = "<=1400", ltrip = lkm,
+dt = dt, ca = "no")
 }
 }
 \references{

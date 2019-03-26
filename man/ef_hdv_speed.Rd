@@ -5,7 +5,7 @@
 \title{Emissions factors for Heavy Duty Vehicles based on average speed}
 \usage{
 ef_hdv_speed(v, t, g, eu, x, gr = 0, l = 0.5, p, k = 1,
-  show.equation = FALSE)
+  show.equation = FALSE, speed, fcorr = rep(1, 8))
 }
 \arguments{
 \item{v}{Category vehicle: "Coach", "Trucks" or "Ubus"}
@@ -16,8 +16,9 @@ ef_hdv_speed(v, t, g, eu, x, gr = 0, l = 0.5, p, k = 1,
 ">7.5 & <=12", ">12 & <=14", ">14 & <=20", ">20 & <=26", ">26 & <=28", ">28 & <=32",
 ">32", ">20 & <=28", ">28 & <=34", ">34 & <=40", ">40 & <=50" or ">50 & <=60"}
 
-\item{eu}{Euro emission standard: "PRE", "I", "II", "III", "IV", "V", "II+CRDPF",
-"III+CRDPF", "IV+CRDPF", "II+SCR", "III+SCR" and "V+SCR".}
+\item{eu}{Euro emission standard: "PRE", "I", "II", "III", "IV", "V". Also "II+CRDPF",
+"III+CRDPF", "IV+CRDPF", "II+SCR", "III+SCR" and "V+SCR" for pollutants
+Number of particles and Active Surface.}
 
 \item{x}{Numeric; if pollutant is "SO2", it is sulphur in fuel in ppm, if is
 "Pb", Lead in fuel in ppm.}
@@ -34,6 +35,13 @@ and Number of particles and Active Surface.}
 \item{k}{Multiplication factor}
 
 \item{show.equation}{Option to see or not the equation parameters}
+
+\item{speed}{Numeric; Speed to return Number of emission factor and not a function.
+It needs units in km/h}
+
+\item{fcorr}{Numeric; Correction by fuel properties by euro technology.
+See \code{\link{fuel_corr}}. The order from first to last is
+"PRE", "I", "II", "III", "IV", "V", VI, "VIc". Default is 1}
 }
 \value{
 an emission factor function which depends of the average speed V  g/km
@@ -47,47 +55,43 @@ http://www.eea.europa.eu/themes/air/emep-eea-air-pollutant-emission-inventory-gu
 \strong{Pollutants (g/km)}: "CO", "NOx", "HC", "PM", "CH4", "NMHC", "CO2", "SO2",
 "Pb".
 
-\strong{PAH and POP (g/km)}: "indeno(1,2,3-cd)pyrene", "benzo(k)fluoranthene",
-"benzo(b)fluoranthene", "benzo(ghi)perylene", "fluoranthene",
-"benzo(a)pyrene", "pyrene", "perylene",  "anthanthrene", "benzo(b)fluorene",
-"benzo(e)pyrene", "triphenylene", "benzo(j)fluoranthene",
-"dibenzo(a,j)anthacene", "dibenzo(a,l)pyrene", "3,6-dimethyl-phenanthrene",
-"benzo(a)anthracene", "acenaphthylene", "acenapthene", "fluorene",
-"chrysene", "phenanthrene", "napthalene",  "anthracene", "coronene",
-"dibenzo(ah)anthracene".
+\strong{Black CArbon and Organic Matter (g/km)}: "BC", "OM"
 
-\strong{Dioxins and furans (g equivalent toxicity / km)}: PCDD, PCDF and PCB..
+\strong{PAH and POP (g/km)}: "indeno(1,2,3-cd)pyrene", "benzo(k)fluoranthene",
+"benzo(ghi)perylene", "fluoranthene",
+"benzo(a)pyrene", "pyrene", "perylene",  "anthanthrene", "benzo(b)fluorene",
+"benzo(e)pyrene", "triphenylene", "3,6-dimethyl-phenanthrene",
+"benzo(a)anthracene",  "phenanthrene", "napthalene",  "anthracene"
+
+\strong{Dioxins and furans (g equivalent toxicity / km)}: "PCDD", "PCDF" and "PCB".
 
 \strong{Metals (g/km)}: "As", "Cd", "Cr", "Cu", "Hg", "Ni", "Pb", "Se", "Zn" (g/km).
 \strong{NMHC (g/km)}:
 
 \emph{ALKANES (g/km)}: "ethane", "propane", "butane", "isobutane", "pentane",
-"isopentane", "hexane", "heptane", "octane", "TWO_methylhexane", "nonane",
-"TWO_methylheptane", "THREE_methylhexane", "decane", "THREE_methylheptane",
-"alcanes_C10_C12", "alkanes_C13".
+"isopentane", "heptane", "octane", "2-methylhexane", "nonane",
+"2-methylheptane", "2-methylhexane", "decane", "3-methylheptane",
+"alkanes_C10_C12"
 
-\emph{CYCLOALKANES (g/km)}: "cycloalcanes".
+\emph{CYCLOALKANES (g/km)}: "cycloalkanes".
 
-\emph{ALKENES (g/km)}: "ethylene", "propylene", "propadiene", "ONE_butene",
-"isobutene", "TWO_butene", "ONE_3_butadiene", "ONE_pentene", "TWO_pentene",
-"ONE_hexene", "dimethylhexene".
+\emph{ALKENES (g/km)}: "ethylene", "propylene", "isobutene", "2-butene", "1,3-butadiene"
 
-\emph{ALKYNES (g/km)}:"ONE_butine", "propine", "acetylene".
+\emph{ALKYNES (g/km)}: "acetylene".
 
 \emph{ALDEHYDES (g/km)}: "formaldehyde", "acetaldehyde", "acrolein", "benzaldehyde",
-"crotonaldehyde", "methacrolein", "butyraldehyde", "isobutanaldehyde",
-"propionaldehyde", "hexanal", "i_valeraldehyde", "valeraldehyde",
-"o_tolualdehyde", "m_tolualdehyde", "p_tolualdehyde".
+"crotonaldehyde", "methacrolein", "butyraldehyde",
+"propionaldehyde", "i-valeraldehyde"
 
-\emph{KETONES (g/km)}: "acetone", "methylethlketone".
+\emph{KETONES (g/km)}: "acetone"
 
-\emph{AROMATICS (g/km)}: "toluene", "ethylbenzene", "m_p_xylene", "o_xylene",
-"ONE_2_3_trimethylbenzene", "ONE_2_4_trimethylbenzene",
-"ONE_3_5_trimethylbenzene", "styrene", "benzene", "C9", "C10", "C13".
+\emph{AROMATICS (g/km)}: "toluene", "ethylbenzene", "m,p-xylene", "o-xylene",
+"1,2,3-trimethylbenzene", "1,2,4-trimethylbenzene",
+"1,3,5-trimethylbenzene", "styrene", "benzene", "C9".
 
-\emph{Active Surface (cm2/km)}: "AS_urban", "AS_rural", "AS_highway"
+\emph{Active Surface (cm2/km) (gr = 0 and l = 0.5)}: "AS_urban", "AS_rural", "AS_highway"
 
-\emph{Total Number of particles (N/km)}: "N_urban", "N_rural", "N_highway",
+\emph{Total Number of particles (N/km) (gr = 0 and l = 0.5)}: "N_urban", "N_rural", "N_highway",
 "N_50nm_urban", "N_50_100nm_rural", "N_100_1000nm_highway".
 
 The available standards for Active Surface or number of particles are:
@@ -140,7 +144,19 @@ show.equation = FALSE)(25) })
 efs <- EmissionFactors(unlist(lef)) #returns 'units'
 plot(efs, xlab = "age")
 lines(efs, type = "l")
+a <- ef_hdv_speed(v = "Trucks", t = "RT", g = ">32", gr = 0,
+eu = euro, l = 0.5, p = "NOx", speed = Speed(0:125))
+a$speed <- NULL
+filled.contour(as.matrix(a), col = cptcity::lucky(n = 24),
+xlab = "Speed", ylab = "Age")
+persp(x = as.matrix(a), theta = 35, xlab = "Speed", ylab = "Age",
+zlab = "NOx [g/km]", col = cptcity::lucky(), phi = 25)
+aa <- ef_hdv_speed(v = "Trucks", t = "RT", g = ">32", gr = 0,
+eu = rbind(euro, euro), l = 0.5, p = "NOx", speed = Speed(0:125))
 }
+}
+\seealso{
+\code{\link{fuel_corr}} \code{\link{emis}} \code{\link{ef_ldv_cold}}
 }
 \keyword{emission}
 \keyword{factors}

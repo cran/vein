@@ -16,18 +16,31 @@
 #' @note This function cannot be used to account for deterioration, therefore,
 #' it is restricted to values between 0 and 1.
 #' Parameters for gasoline (g):
-#' O2 = Oxygenates in %,
-#' S = Sulphur content in ppm,
-#' ARO = Aromatics content in %,
-#' OLEFIN = Olefins content in %,
-#' E100 = Mid range volatility in %,
+#'
+#' O2 = Oxygenates in %
+#'
+#' S = Sulphur content in ppm
+#'
+#' ARO = Aromatics content in %
+#'
+#' OLEFIN = Olefins content in %
+#'
+#' E100 = Mid range volatility in %
+#'
 #' E150 = Tail-end volatility in %
+#'
 #' Parameters for diesel (d):
-#' DEN = Density at 15 C (kg/m3 ),
-#' S = Sulphur content in ppm,
-#' PAH = Polycyclic aromatics content in %,
-#' CN = Cetane number,
+#'
+#' DEN = Density at 15 C (kg/m3)
+#'
+#' S = Sulphur content in ppm
+#'
+#' PAH = Aromatics content in %
+#'
+#' CN = Cetane number
+#'
 #' T95 = Back-end distillation in o C.
+#'
 #' @export
 #' @examples {
 #' f <- fuel_corr(euro = "I")
@@ -195,7 +208,7 @@ fuel_corr <- function(euro,
                   olefin = bg2005[["olefin"]],
                   o2 = bg2005[["o2"]],
                   e150 = bg2005[["e150"]])
-  } else {
+  } else if(euro %in% c("V", "VI", "VIc")){
     fco_ldv_g <- fcov_ldv_g <- fnox_ldv_g <- 1
   }
 
@@ -307,8 +320,8 @@ fuel_corr <- function(euro,
                  cn = bd2005[["cn"]],
                  t95 = bd2005[["t95"]],
                  s = bd2005[["s"]])
-  } else {
-    fco_ldv_d <- fco_ldv_d <- fco_ldv_d <- fpm_ldv_d <- 1
+  } else if(euro %in% c("V", "VI", "VIc")){
+    fco_ldv_d <- fcov_ldv_d <- fnox_ldv_d <- fpm_ldv_d <- 1
   }
 
   # } else if(tveh == "HDV"){
@@ -417,10 +430,10 @@ fuel_corr <- function(euro,
                cn = bd2005[["cn"]],
                t95 = bd2005[["t95"]],
                s = bd2005[["s"]])
-  } else {
-    fco_hdv_d <- fcov_hdv_d <- fnox_hdv_d <- fpm_hdv_d <- 1
+  } else if(euro %in% c("V", "VI", "VIc")){
+    fco_hdv <- fcov_hdv <- fnox_hdv <- fpm_hdv <- 1
   }
-  fif <- function(x) ifelse(x > 1, 1, x)
+  fif <- function(x) ifelse(x >= 1, 1, x)
   dfl <- list(
     LDVG = list(CO = list(fif(fco_ldv_g)),
                 COV = list(fif(fcov_ldv_g)),

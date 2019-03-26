@@ -1,4 +1,4 @@
-#' Estimation of average running hot-soak evaporative emissions
+#' Estimation of average daily  hot-soak evaporative emissions
 #'
 #' @description \code{hot_soak} estimates of evaporative emissions from EMEP/EEA
 #' emisison guidelines
@@ -13,16 +13,23 @@
 #' @param eshotfi average daily hot-soak evaporative factor for vehicles
 #' with fuel injection and returnless fuel systems
 #' @return numeric vector of emission estimation in grams
-#' @importFrom units as_units
+#' @name running_losses-deprecated
+#' @seealso \code{\link{vein-deprecated}}
+#' @keywords internal
+NULL
+
+#' @rdname vein-deprecated
+#' @section \code{Evaporative}:
+#' For \code{running_losses}, use \code{\link{emis_evap}}.
+#'
 #' @references Mellios G and Ntziachristos 2016. Gasoline evaporation. In:
 #' EEA, EMEP. EEA air pollutant emission inventory guidebook-2009. European
 #' Environment Agency, Copenhagen, 2009
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' # Do not run
-#' ev <- hot_soak(x = 1:10, carb = 0, p = 1, eshot = 1, eswarmc =1,
-#' eshotfi = 1)
 #' }
 hot_soak <- function(x,carb,p,eshotc,eswarmc,eshotfi) {
-  x*(carb*(p*eshotc+(1-p)*eswarmc)+(1-carb)*eshotfi)*units::as_units("g d-1")
+  .Deprecated("emis_evap")
+  "Evaporative emissions"
 }

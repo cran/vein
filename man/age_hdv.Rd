@@ -5,7 +5,7 @@
 \title{Returns amount of vehicles at each age}
 \usage{
 age_hdv(x, name = "age", a = 0.2, b = 17, agemin = 1,
-  agemax = 50, k = 1, bystreet = F, net, message = TRUE)
+  agemax = 50, k = 1, bystreet = F, net, verbose = FALSE, namerows)
 }
 \arguments{
 \item{x}{Numeric; numerical vector of vehicles with length equal to lines features of raod network}
@@ -20,13 +20,16 @@ age_hdv(x, name = "age", a = 0.2, b = 17, agemin = 1,
 
 \item{agemax}{Integer; age of oldest vehicles for that category}
 
-\item{k}{Integer; multiplication factor. If its length is > 1, it must match the length of x}
+\item{k}{Numeric; multiplication factor. If its length is > 1, it must match the length of x}
 
 \item{bystreet}{Logical; when TRUE it is expecting that 'a' and 'b' are numeric vectors with length equal to x}
 
 \item{net}{SpatialLinesDataFrame or Spatial Feature of "LINESTRING"}
 
-\item{message}{Logical;  message with average age and total numer of vehicles}
+\item{verbose}{Logical;  message with average age and total numer of vehicles}
+
+\item{namerows}{Any vector to be change row.names. For instance, name of
+regions or streets.}
 }
 \value{
 dataframe of age distrubution of vehicles at each street

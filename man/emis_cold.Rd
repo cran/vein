@@ -7,7 +7,7 @@
 emis_cold(veh, lkm, ef, efcold, beta, speed = 34, agemax = if
   (!inherits(x = veh, what = "list")) {     ncol(veh) } else {    
   ncol(veh[[1]]) }, profile, hour = nrow(profile), day = ncol(profile),
-  array = TRUE)
+  array = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{veh}{"Vehicles" data-frame or list of "Vehicles" data-frame. Each data-frame
@@ -37,6 +37,8 @@ of the week}
 \item{array}{When FALSE produces a dataframe of the estimation. When TRUE
 expects a profile as a dataframe producing an array with dimensions
 (streets x columns x hours x days)}
+
+\item{verbose}{Logical; To show more information}
 }
 \value{
 EmissionsArray  g/h
@@ -46,13 +48,6 @@ EmissionsArray  g/h
 vehicles on a road, length of the road, emission factor avaliated at the
 respective speed.The estimation considers beta parameter, the fraction of
 mileage driven
-}
-\note{
-Actually dcold is not necessary, it would be enough to multiply
-an existing cold-start distribution with the daily profile, but it was added
-because it is important to clarify both, the data and the concepts.
-Hour and day will be deprecate because they can be infered from the profile
-matrix.
 }
 \examples{
 \dontrun{

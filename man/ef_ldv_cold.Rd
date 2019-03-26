@@ -5,40 +5,82 @@
 \title{Cold-Start Emissions factors for Light Duty Vehicles}
 \usage{
 ef_ldv_cold(v = "LDV", ta, cc, f, eu, p, k = 1,
-  show.equation = FALSE)
+  show.equation = FALSE, speed, fcorr = rep(1, 8))
 }
 \arguments{
-\item{v}{Category vehicle:  "LDV"}
+\item{v}{Character; Category vehicle:  "LDV"}
 
-\item{ta}{Ambient temperature. Monthly men can be used}
+\item{ta}{Numeric vector or data.frame; Ambient temperature. Monthly mean can be used. When
+ta is a data.frame, one option is that the number of rows should be the number of
+rows of your  Vehicles data.frame. This is convenient for top-down approach
+when each simple feature can be a polygon, with a monthly average temperature for
+each simple feature. In this case, the number of columns can be the 12 months.}
 
-\item{cc}{Size of engine in cc: "<=1400",  "1400_2000" or ">2000"}
+\item{cc}{Character; Size of engine in cc: "<=1400",  "1400_2000" or ">2000"}
 
-\item{f}{Type of fuel: "G", "D" or "LPG"}
+\item{f}{Character; Type of fuel: "G", "D" or "LPG"}
 
-\item{eu}{Euro standard: "PRE", "I", "II", "III",  "IV", "V", "VI" or "VIc"}
+\item{eu}{Character or data.frame of Characters; Euro standard: "PRE", "I",
+"II", "III",  "IV", "V", "VI" or "VIc". When 'eu' is a data.frame and
+'ta' is also a data.frame both has to have the same number of rows. For instance,
+When you want that each simple feature or region has a different emission standard.}
 
-\item{p}{Pollutant: "CO", "FC", "NOx", "HC" or "PM"}
+\item{p}{Character; Pollutant: "CO", "FC", "NOx", "HC" or "PM"}
 
-\item{k}{Multiplication factor}
+\item{k}{Numeric; Multiplication factor}
 
 \item{show.equation}{Option to see or not the equation parameters}
+
+\item{speed}{Numeric; Speed to return Number of emission factor and not a function.}
+
+\item{fcorr}{Numeric; Correction by fuel properties by euro technology.
+See \code{\link{fuel_corr}}. The order from first to last is
+"PRE", "I", "II", "III", "IV", "V", VI, "VIc". Default is 1}
 }
 \value{
 an emission factor function which depends of the average speed V
 and ambient temperature. g/km
 }
 \description{
-This function returns speed functions which depends on ambient temperature
+\code{\link{ef_ldv_cold}} returns speed functions or data.frames which depends on ambient temperature
 average speed. The emission factors comes from the guidelines  EMEP/EEA air pollutant
 emission inventory guidebook
 http://www.eea.europa.eu/themes/air/emep-eea-air-pollutant-emission-inventory-guidebook
 }
 \examples{
 {
-ef1 <- ef_ldv_cold(ta = 15, cc = "<=1400", f ="G", eu = "PRE", p = "CO")
+ef1 <- ef_ldv_cold(ta = 15, cc = "<=1400", f ="G", eu = "PRE", p = "CO",
+show.equation = TRUE)
 ef1(10)
+speed <- Speed(10)
+ef_ldv_cold(ta = 15, cc = "<=1400", f ="G", eu = "PRE", p = "CO", speed = speed)
+# lets create a matrix of ef cold at different speeds and temperatures
+te <- -50:50
+lf <- sapply(1:length(te), function(i){
+ef_ldv_cold(ta = te[i], cc = "<=1400", f ="G", eu = "I", p = "CO", speed = Speed(0:120))
+})
+filled.contour(lf, col= cptcity::lucky())
+euros <- c("V", "V", "IV", "III", "II", "I", "PRE", "PRE")
+ef_ldv_cold(ta = 10, cc = "<=1400", f ="G", eu = euros, p = "CO", speed = Speed(0))
+lf <-  ef_ldv_cold(ta = 10, cc = "<=1400", f ="G", eu = euros, p = "CO", speed = Speed(0:120))
+dt <- matrix(rep(2:25,5), ncol = 12) # 12 months
+ef_ldv_cold(ta = dt, cc = "<=1400", f ="G", eu = "I", p = "CO", speed = Speed(0))
+ef_ldv_cold(ta = dt, cc = "<=1400", f ="G", eu = euros, p = "CO", speed = Speed(34))
+euros2 <- c("V", "V", "V", "IV", "IV", "IV", "III", "III")
+dfe <- rbind(euros, euros2)
+ef_ldv_cold(ta = 10, cc = "<=1400", f ="G", eu = dfe, p = "CO", speed = Speed(0))
+
+ef_ldv_cold(ta = dt[1:2,], cc = "<=1400", f ="G", eu = dfe, p = "CO", speed = Speed(0))
+# Fuel corrections
+fcorr <- c(0.5,1,1,1,0.9,0.9,0.9,0.9)
+ef1 <- ef_ldv_cold(ta = 15, cc = "<=1400", f ="G", eu = "PRE", p = "CO",
+show.equation = TRUE, fcorr = fcorr)
+ef_ldv_cold(ta = 10, cc = "<=1400", f ="G", eu = dfe, p = "CO", speed = Speed(0),
+fcorr = fcorr)
 }
+}
+\seealso{
+\code{\link{fuel_corr}}
 }
 \keyword{cold}
 \keyword{emission}

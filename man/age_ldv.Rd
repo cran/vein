@@ -5,7 +5,7 @@
 \title{Returns amount of vehicles at each age}
 \usage{
 age_ldv(x, name = "age", a = 1.698, b = -0.2, agemin = 1,
-  agemax = 50, k = 1, bystreet = F, net, message = TRUE)
+  agemax = 50, k = 1, bystreet = F, net, verbose = FALSE, namerows)
 }
 \arguments{
 \item{x}{Numeric; numerical vector of vehicles with length equal to lines features of raod network}
@@ -20,19 +20,26 @@ age_ldv(x, name = "age", a = 1.698, b = -0.2, agemin = 1,
 
 \item{agemax}{Integer; age of oldest vehicles for that category}
 
-\item{k}{Integer; multiplication factor. If its length is > 1, it must match the length of x}
+\item{k}{Numeric; multiplication factor. If its length is > 1, it must match the length of x}
 
 \item{bystreet}{Logical; when TRUE it is expecting that 'a' and 'b' are numeric vectors with length equal to x}
 
 \item{net}{SpatialLinesDataFrame or Spatial Feature of "LINESTRING"}
 
-\item{message}{Logical;  message with average age and total numer of vehicles}
+\item{verbose}{Logical;  message with average age and total numer of vehicles}
+
+\item{namerows}{Any vector to be change row.names. For instance, name of
+regions or streets.}
 }
 \value{
 dataframe of age distrubution of vehicles
 }
 \description{
 \code{\link{age_ldv}} returns amount of vehicles at each age
+}
+\note{
+It consists in a Gompertz equation with default parameters from
+1 national emissions inventory for green housegases in Brazil, MCT 2006
 }
 \examples{
 {
