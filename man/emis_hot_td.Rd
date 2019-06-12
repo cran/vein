@@ -13,9 +13,15 @@ The number of rows is equal to the number of streets link}
 
 \item{lkm}{Numeric; mileage by the age of use of each vehicle.}
 
-\item{ef}{Numeric; emission factor with}
+\item{ef}{Numeric or data.frame; emission factors. When it is a data.frame
+number of rows can be for each region, or also, each region repeated
+along 12 months. For instance, if you have 10 regions the number
+of rows of ef can also be 120 (10 * 120).
+when you have emission factors that varies with month, see \code{\link{ef_china}}.}
 
-\item{pro_month}{Numeric; montly profile to distribuite annual mileage in each month.}
+\item{pro_month}{Numeric or data.frame; montly profile to distribuite annual mileage
+in each month. When it is a data.frame, each region (row) can have a different
+monthly profile.}
 
 \item{params}{List of parameters; Add columns with information to returning data.frame}
 
@@ -41,22 +47,35 @@ providing flexibility to the user.
 euros <- c("V", "V", "IV", "III", "II", "I", "PRE", "PRE")
 efh <- ef_ldv_speed(v = "PC", t = "4S", cc = "<=1400", f = "G",
           eu = euros, p = "CO", speed = Speed(34))
-lkm <- units::as_units(18:10, "km")*1000
+lkm <- units::as_units(18:11, "km")*1000
 veh_month <- c(rep(8, 1), rep(10, 5), 9, rep(10, 5))
 veh <- age_ldv(1:10, agemax = 8)
-a <- emis_hot_td(veh = veh, lkm = lkm, ef = efh, verbose = TRUE)
+a <- emis_hot_td(veh = veh,
+                lkm = lkm,
+                ef = EmissionFactors(as.numeric(efh[, 1:8])),
+                verbose = TRUE)
 head(a)
 plot(aggregate(a$emissions, by = list(a$age), sum)$x,type ="b")
-emis_hot_td(veh = veh, lkm = lkm, ef = efh, verbose = TRUE,
-params = list(paste0("data_", 1:10), "moredata"))
-aa <- emis_hot_td(veh = veh, lkm = lkm, ef = efh,
-pro_month = veh_month, verbose = TRUE)
+emis_hot_td(veh = veh,
+            lkm = lkm,
+            ef = EmissionFactors(as.numeric(efh[, 1:8])),
+            verbose = TRUE,
+            params = list(paste0("data_", 1:10), "moredata"))
+aa <- emis_hot_td(veh = veh,
+                  lkm = lkm,
+                  ef = EmissionFactors(as.numeric(efh[, 1:8])),
+                  pro_month = veh_month,
+                  verbose = TRUE)
 head(aa)
-aa <- emis_hot_td(veh = veh, lkm = lkm, ef = efh,
-pro_month = veh_month, verbose = FALSE,
-params = list(paste0("data_", 1:10), "moredata"))
+aa <- emis_hot_td(veh = veh,
+                  lkm = lkm,
+                  ef = EmissionFactors(as.numeric(efh[, 1:8])),
+                  pro_month = veh_month,
+                  verbose = FALSE,
+                  params = list(paste0("data_", 1:10), "moredata"))
+print(aa)
 }
 }
 \seealso{
-\code{\link{ef_ldv_speed}}
+\code{\link{ef_ldv_speed}} \code{\link{ef_china}}
 }

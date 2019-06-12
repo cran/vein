@@ -16,13 +16,9 @@ output: html_document
 [![Package Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Github Stars](https://img.shields.io/github/stars/atmoschem/vein.svg?style=social&label=Github)](https://github.com/atmoschem/vein)
 
-# **V**ehicular **E**missions **IN**ventory **(VEIN)** model. ![](https://i.imgur.com/dp8spyp.png)
+# **V**ehicular **E**missions **IN**ventory **(VEIN)** model. ![](https://camo.githubusercontent.com/e40e5564993bae6edb29498decf1ef9663359edb/68747470733a2f2f692e696d6775722e636f6d2f647038737079702e706e67)
 
-
-You can learn more about VEIN reading the documentation in [PDF](https://cran.r-project.org/web/packages/vein/vein.pdf), [online](https://atmoschem.github.io/vein/), reading the book [online](https://ibarraespinosa.github.io/VEINBOOK/), or buy it in  [Kindle](https://www.amazon.com/VEINBOOK-Estimating-vehicular-emissions-package-ebook-dp-B07L7XRFKC/dp/B07L7XRFKC/ref=mt_kindle?_encoding=UTF8&me=&qid=) or  [Paperback](https://www.amazon.com/gp/product/1791571158?pf_rd_p=1581d9f4-062f-453c-b69e-0f3e00ba2652&pf_rd_r=EMDPZM3G7BWCHAD9F4QP)
-
-![](https://i.imgur.com/RcfNmDm.jpg)
-
+![](https://github.com/atmoschem/vein/raw/master/all_comp.gif)
 
 
 ## What is VEIN?
@@ -30,42 +26,55 @@ You can learn more about VEIN reading the documentation in [PDF](https://cran.r-
 Vehicular Emissions Inventories. An R package to estimate vehicular emissions.
 It currently covers the following pollutants in speed functions:
 
-### European emission factors for all available vehicle categories:
+### European emission factors for all available vehicle categories exhaust:
 
 - **Criteria (g/km)**: "CO", "NOx", "HC", "PM", "CH4", "NMHC", "CO2", "SO2",
 "Pb", "FC" (Fuel Consumption),"NO", "NO2".
 - **PAH and POP**: "indeno(1,2,3-cd)pyrene", "benzo(k)fluoranthene",
-"benzo(b)fluoranthene", "benzo(ghi)perylene", "fluoranthene",
+ "benzo(b)fluoranthene", "benzo(ghi)perylene", "fluoranthene",
 "benzo(a)pyrene", "pyrene", "perylene",  "anthanthrene", "benzo(b)fluorene",
 "benzo(e)pyrene", "triphenylene", "benzo(j)fluoranthene",
-"dibenzo(a,j)anthacene", "dibenzo(a,l)pyrene", "THREE_6-dimethyl-phenanthrene",
-"benzo(a)anthracene", "acenaphthylene", "acenapthene", "fluorene",
+"dibenzo(a,j)anthacene", "dibenzo(a,l)pyrene", "3,6-dimethyl-phenanthrene",
+"benzo(a)anthracene", "acenaphthylene", "acenapthene",
 "chrysene", "phenanthrene", "napthalene",  "anthracene", "coronene",
-"dibenzo(ah)anthracene"
+"dibenzo(ah)anthracene".
 - **Dioxins and Furans (g/km)**: "PCDD", "PCDF", "PCB".
 - **Metals (g/km)**: "As", "Cd", "Cr", "Cu", "Hg", "Ni", "Pb", "Se", "Zn".
 - **NMHC (g/km)**:
 - _ALKANES_: "ethane", "propane", "butane", "isobutane", "pentane",
-"isopentane", "hexane", "heptane", "octane", "TWO_methylhexane", "nonane",
-"TWO_methylheptane", "THREE_methylhexane", "decane", "THREE_methylheptane",
-"alcanes_C10_C12", "alkanes_C13".
+"isopentane", "hexane", "heptane", "octane", "2-methylhexane", "nonane",
+"2-methylheptane", "3-methylhexane", "decane", "3-methylheptane",
+"alkanes_C10_C12", "alkanes_C13".
 - _CYCLOALKANES_: "cycloalcanes".
-- _ALKENES_: "ethylene", "propylene", "propadiene", "ONE_butene",
-"isobutene", "TWO_butene", "ONE_3_butadiene", "ONE_pentene", "TWO_pentene",
-"ONE_hexene", "dimethylhexene".
-- _ALKYNES_:"ONE_butine", "propine", "acetylene".
+- _ALKENES_: "ethylene", "propylene", "propadiene", "1-butene",
+"isobutene", "2-butene", "1,3-butadiene", "1-pentene", "2-pentene",
+"1-hexene", "dimethylhexene".
+- _ALKYNES_:"1-butyne", "propyne", "acetylene".
 - _ALDEHYDES_: "formaldehyde", "acetaldehyde", "acrolein", "benzaldehyde",
 "crotonaldehyde", "methacrolein", "butyraldehyde", "isobutanaldehyde",
 "propionaldehyde", "hexanal", "i_valeraldehyde", "valeraldehyde",
 "o_tolualdehyde", "m_tolualdehyde", "p_tolualdehyde".
-- KETONES: "acetone", "methylethlketone".
-- _AROMATICS_: "toluene", "ethylbenzene", "m_p_xylene", "o_xylene",
-"ONE_2_3_trimethylbenzene", "ONE_2_4_trimethylbenzene",
-"ONE_3_5_trimethylbenzene", "styrene", "benzene", "C9", "C10", "C13".
+- _KETONES_: "acetone", "methylethlketone".
+- _AROMATICS_: "toluene", "ethylbenzene",
+"m-xylene",  "p-xylene", "o-xylene",
+"1,2,3-trimethylbenzene", "1,2,4-trimethylbenzene",
+"1,3,5-trimethylbenzene", "styrene", "benzene", "C9", "C10", "C13".
 - **Active Surface (cm2/km)**
 - "AS_urban", "AS_rural", "AS_highway".
 - **Total Number of particles (N/km)**
 - "N_urban", "N_rural", "N_highway", "N_50nm_urban", "N_50_100nm_rural", "N_100_1000nm_highway".
+
+### European emission factors speciation for evapoative emissions:
+
+- **Criteria (g/km)**: "NMHC".
+- **NMHC (g/km)**:
+- _ALKANES_: "ethane", "propane", "n-butane", "i-pentane", "n-pentane",
+"2-methylheptane", "3-methylheptane", "n-hexane", "n-heptane"
+- _ALKENES_: "ethene", "propene", "1-butene", "trans-2-butene", "isobutene", 
+"cis-2-butene",  "1,3-butadiene", "trans-2-pentene", "cis-2-pentene", "isoprene"
+- _ALKYNES_:"propyne", "acetylene".
+- _AROMATICS_: "benzene", "toluene", "ethylbenzene", "m-xylene", "o-xylene",
+"1,2,3-trimethylbenzene" and "1,3,5-trimethylbenzene", 
 
 ### Brazilian emission factors for all available vehicle categories:
 
@@ -89,6 +98,11 @@ It currently covers the following pollutants in speed functions:
 "ONE_3butadiene_gstart", "formaldehyde_gstart","acetaldehyde_gstart",
 "benzene_gstart", "EVAP_gstart", "CO2_gstart", "N20_gstart", 
 "CH4_gstart"
+
+### Emission factors from Chinese emission guidelines
+
+- "CO", "NOx", "HC", "PM10", "PM2.5".
+- They depend on humidity, temperature, altitude and  other parameters.
 
 
 ### System requirements
@@ -161,6 +175,7 @@ future steps:
 
 - Enhance [inventory](https://atmoschem.github.io/vein/reference/inventory.html). The idea is to 
 configurate a whole emissions inventory for emission factors of CETESB, COPERT.
+- Improve plots.
 - Adds ef_china, to include chinese emission factors.
 - Adds or connect traffic from gtfs services.
 - Add HBEFA EF.
@@ -427,3 +442,20 @@ Contributions of all sorts are welcome, issues and pull requests are the preferr
 When contributing pull requests, please follow the [Google's R Style Guide](https://google.github.io/styleguide/Rguide.xml).
 This project is released with a [Contributor Code of Conduct](https://github.com/atmoschem/vein/blob/master/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
+### Note for non-english and anaconda users
+
+Sometimes you need to install R and all dependencies and a way for doing that is using anaconda. Well, as my system is in portuguese, after installing R using anaconda it changed the decimal character to ','. In order to change it back to english meaning decimal separator as '.', I added this variable  into the .bashrc
+
+```
+nano ~/.bashrc
+export Lang=C
+```
+
+### More
+
+More details on [StackOverflow](https://stackoverflow.com/questions/13575180/how-to-change-language-settings-in-r) 
+
+
+You can learn more about VEIN reading the documentation in [PDF](https://cran.r-project.org/web/packages/vein/vein.pdf), [online](https://atmoschem.github.io/vein/), reading the book [online](https://ibarraespinosa.github.io/VEINBOOK/), or buy it in  [Kindle](https://www.amazon.com/VEINBOOK-Estimating-vehicular-emissions-package-ebook-dp-B07L7XRFKC/dp/B07L7XRFKC/ref=mt_kindle?_encoding=UTF8&me=&qid=) or  [Paperback](https://www.amazon.com/gp/product/1791571158?pf_rd_p=1581d9f4-062f-453c-b69e-0f3e00ba2652&pf_rd_r=EMDPZM3G7BWCHAD9F4QP)
+
+![](https://i.imgur.com/RcfNmDm.jpg)

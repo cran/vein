@@ -3,8 +3,8 @@
 #' @description \code{\link{emis_grid}} allocates emissions proportionally to each grid
 #'  cell. The process is performed by intersection between geometries and the grid.
 #' It means that requires "sr" according with your location for the projection.
-#' It is assumed that spobj is a spatial*DataFrame or an "sf" with the pollutants
-#' in data. This function return an object class "sf".
+#' It is assumed that spobj is a Spatial*DataFrame or an "sf" with the pollutants
+#' in data. This function returns an object of class "sf".
 #'
 #' @param spobj A spatial dataframe of class "sp" or "sf". When class is "sp"
 #' it is transformed to "sf".
@@ -17,7 +17,7 @@
 #' @importFrom sp CRS
 #' @export
 #' @note When spobj is a 'Spatial' object (class of sp), they are converted
-#'  into 'sf'. Also, The aggregation of data ise done with data.table functions.
+#'  into 'sf'. Also, The aggregation of data is done with data.table functions.
 #' @examples {
 #' data(net)
 #' g <- make_grid(net, 1/102.47/2) #500m in degrees
@@ -50,11 +50,10 @@ netdata[, i] <- as.numeric(netdata[, i])
   if (type == "lines" ) {
     netdf <- sf::st_set_geometry(net, NULL)
     snetdf <- sum(netdf, na.rm = TRUE)
-
     cat(paste0("Sum of street emissions ", round(snetdf, 2), "\n"))
-
     ncolnet <- ncol(sf::st_set_geometry(net, NULL))
-    # Filtrando solo columnas numericas
+
+        # Filtrando solo columnas numericas
     net <- net[, grep(pattern = TRUE, x = sapply(net, is.numeric))]
     namesnet <- names(sf::st_set_geometry(net, NULL))
     net$LKM <- sf::st_length(sf::st_cast(net[sf::st_dimension(net) == 1,]))
@@ -82,13 +81,21 @@ netdata[, i] <- as.numeric(netdata[, i])
       return(gx)
     # }
   } else if ( type == "points" ){
+    netdf <- sf::st_set_geometry(net, NULL)
+    snetdf <- sum(netdf, na.rm = TRUE)
+    cat(paste0("Sum of point emissions ", round(snetdf, 2), "\n"))
+    ncolnet <- ncol(sf::st_set_geometry(net, NULL))
+
+    namesnet <- names(sf::st_set_geometry(net, NULL))
     xgg <- data.table::data.table(
-      sf::st_set_geometry(sf::st_intersection(net, g), NULL)
+      sf::st_set_geometry(suppressMessages(suppressWarnings(sf::st_intersection(net, g))), NULL)
       )
     xgg[is.na(xgg)] <- 0
     dfm <- xgg[, lapply(.SD, sum, na.rm=TRUE),
                by = "id",
                .SDcols = namesnet ]
+    cat(paste0("Sum of gridded emissions ",
+               round(sum(dfm, na.rm = T), 2), "\n"))
     names(dfm) <- c("id", namesnet)
     gx <- data.frame(id = g$id)
     gx <- merge(gx, dfm, by = "id", all.x = TRUE)

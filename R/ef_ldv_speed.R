@@ -18,7 +18,9 @@
 #' @param cc Character; size of engine in cc:  PC: "<=1400", ">1400", "1400_2000", ">2000",
 #' "<=800", "<=2000". Motorcycle:  ">=50" (for "2S"), "<=250", "250_750", ">=750".
 #' Moped: "<=50". LCV :  "<3.5" for gross weight.
-#' @param f Character; type of fuel: "G", "D", "LPG" or "FH" (Full Hybrid: starts by electric motor)
+#' @param f Character; type of fuel: "G", "D", "LPG" or "FH" (Gasoline Full Hybrid).
+#' Full hybrid vehicles cannot be charged from the grid and recharge; only its own engine
+#' may recharge tis batteries.
 #' @param eu Character or data.frame of characters; euro standard:
 #'  "PRE", "I", "II", "III", "III+DPF", "IV", "V", "VI" or "VIc".
 #' When the pollutan is active surface or number of particles, eu can also be "III+DISI"
@@ -74,7 +76,7 @@
 #' "isobutene", "2-butene", "1,3-butadiene", "1-pentene", "2-pentene",
 #' "1-hexene", "dimethylhexene".
 #'
-#' \emph{ALKYNES (g/km)}:"1-butine", "propine", "acetylene".
+#' \emph{ALKYNES (g/km)}:"1-butyne", "propyne", "acetylene".
 #'
 #' \emph{ALDEHYDES (g/km)}: "formaldehyde", "acetaldehyde", "acrolein", "benzaldehyde",
 #' "crotonaldehyde", "methacrolein", "butyraldehyde", "isobutanaldehyde",
@@ -83,7 +85,8 @@
 #'
 #' \emph{KETONES (g/km)}: "acetone", "methylethlketone".
 #'
-#' \emph{AROMATICS (g/km)}: "toluene", "ethylbenzene", "m,p-xylene", "o-xylene",
+#' \emph{AROMATICS (g/km)}: "toluene", "ethylbenzene",
+#'  "m-xylene",  "p-xylene", "o-xylene",
 #' "1,2,3-trimethylbenzene", "1,2,4-trimethylbenzene",
 #' "1,3,5-trimethylbenzene", "styrene", "benzene", "C9", "C10", "C13".
 #'
@@ -98,7 +101,6 @@
 #' @seealso \code{\link{fuel_corr}} \code{\link{emis}} \code{\link{ef_ldv_cold}}
 #' @export
 #' @examples {
-#' # Do not run
 #' # Passenger Cars PC
 #' # Emission factor function
 #' V <- 0:150
@@ -108,7 +110,8 @@
 #' plot(Speed(1:150), efs, xlab = "speed[km/h]", type = "b", pch = 16, col = "blue")
 #'
 #' # Quick view
-#' pol <- c("CO", "NOx", "HC", "NMHC", "CH4", "FC", "PM", "CO2", "SO2")
+#' pol <- c("CO", "NOx", "HC", "NMHC", "CH4", "FC", "PM", "CO2", "SO2",
+#' "1-butyne", "propyne")
 #' f <- sapply(1:length(pol), function(i){
 #' ef_ldv_speed("PC", "4S", "<=1400", "G", "PRE", pol[i], x = 10)(30)
 #' })
@@ -253,8 +256,7 @@ ef_ldv_speed <- function(v, t  = "4S", cc, f, eu, p, x, k = 1, speed,
                      x == "V", fcorr[6],
                      ifelse(
                        x == "VI", fcorr[7],
-                       fcorr[8])))))))
-  }
+                       fcorr[8])))))))}
 
 # Message for units
   if(!missing(speed)){
@@ -296,7 +298,7 @@ ef_ldv_speed <- function(v, t  = "4S", cc, f, eu, p, x, k = 1, speed,
         }
       }
       if(!missing(speed)){
-          f1 <- f1(speed)
+          f1 <- EmissionFactors(f1(speed))
           return(f1)
         } else {
         return(f1)

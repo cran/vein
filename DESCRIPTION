@@ -1,8 +1,8 @@
 Package: vein
 Type: Package
 Title: Vehicular Emissions Inventories
-Version: 0.7.0
-Date: 2019-03-26
+Version: 0.7.8
+Date: 2019-06-09
 Authors@R: c(
   person(given = "Sergio", family = "Ibarra-Espinosa",
          role = c("aut", "cre"),
@@ -24,16 +24,16 @@ License: MIT + file LICENSE
 URL: https://atmoschem.github.io/vein/
 BugReports: https://github.com/atmoschem/vein/issues/
 LazyData: no
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 Imports: sf, sp, data.table, graphics, stats, units, methods, eixport
 Suggests: knitr, rmarkdown, testthat, covr, lwgeom, cptcity
 RoxygenNote: 6.1.1
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2019-03-26 13:26:44 UTC; sergio
+Packaged: 2019-06-12 14:46:59 UTC; sergio
 Author: Sergio Ibarra-Espinosa [aut, cre]
     (<https://orcid.org/0000-0002-3162-1905>),
   Daniel Schuch [ctb] (<https://orcid.org/0000-0001-5977-4519>)
 Maintainer: Sergio Ibarra-Espinosa <sergio.ibarra@usp.br>
 Repository: CRAN
-Date/Publication: 2019-03-26 13:50:03 UTC
+Date/Publication: 2019-06-12 15:20:02 UTC

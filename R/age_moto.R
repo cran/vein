@@ -2,7 +2,7 @@
 #'
 #' @description \code{\link{age_moto}} returns amount of vehicles at each age
 #'
-#' @param x Numeric; numerical vector of vehicles with length equal to lines features of raod network
+#' @param x Numeric; numerical vector of vehicles with length equal to lines features of road network
 #' @param name Character; of vehicle assigned to columns of dataframe
 #' @param a Numeric; parameter of survival equation
 #' @param b Numeric; parameter of survival equation
@@ -40,7 +40,9 @@ age_moto <- function (x,
 
   if (missing(x) | is.null(x)) {
     stop (print("Missing vehicles"))
-  } else if (bystreet == T){
+  }
+  # bystreet = TRUE
+  if (bystreet == T){
     if(length(x) != length(a)){
       stop(print("Lengths of veh and age must be the same"))
     }
@@ -61,10 +63,9 @@ age_moto <- function (x,
     }
 
     df <- as.data.frame(cbind(as.data.frame(matrix(0,ncol=agemin-1,
-                                                   nrow=length(x))),
-                              df))
+                                                   nrow=length(x))), df))
 
-    names(df) <- paste(name,seq(1,agemax),sep="_")
+    names(df) <- paste(name, seq(1, agemax), sep="_")
 
 
     if(length(k) > 1){
@@ -122,11 +123,7 @@ age_moto <- function (x,
     } else {
       df <- df*k
     }
-    if(length(k) > 1){
-      df <- vein::matvect(df = df, x = k)
-    } else {
-      df <- df*k
-    }
+
 
 
     if(verbose){

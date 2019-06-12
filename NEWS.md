@@ -1,9 +1,58 @@
 NEWS
 ===========
 
-# vein 0.7.0  (Release date: 2019-03-25)
+# vein 0.7.8  (Release date: 2019-06-09)
 
-- Consolditation fo all minor release.
+- Adjustment in emis_chem
+- Adds long_to_wide
+- Improves documentation
+- Enhances split_emis
+
+## vein 0.7.7  (Release date: 2019-06-03)
+
+- Adjustment in emis_chem
+
+# vein 0.7.6  (Release date: 2019-05-08)
+
+- Fix erro in some aldehyes LCV
+- improves long_to_wide.
+- Adds to_latex.
+
+## vein 0.7.5  (Release date: 2019-05-08)
+
+- Add long_to_wide
+
+## vein 0.7.4  (Release date: 2019-05-08)
+
+- Improves ef_nitro and documentation. HOw it is easier.
+
+## vein 0.7.3  (Release date: 2019-05-08)
+
+- add speciation in evaporative emission factors.
+- improve emis_chem
+- Splits m,p-xylene in m-xylene and p-xylene fix #176
+- Deprecated emis_wrf in favou of eixport::to_as4wrf #fix #174
+
+## vein 0.7.2  (Release date: 2019-04-26)
+
+- adds data pollutants including CAS ID and molar mass.
+- replace data fe2015 from ef_cetesb updated and remove columns related to Motorcycles.
+- Adds emis_chem to aggregate emissions by chemical mechanisms  "SAPRC", "RACM", 
+"RADM2", "CBMZ", "MOZART", "SAPRC99", "CB05", "CB06CMAQ", "RACM2CMAQ", "SAPRC99CMAQ",
+"SAPRC07CMAQ" or "SAPRC07A" and more.
+- Add long_to_wide
+
+## vein 0.7.1  (Release date: 2019-04-13)
+
+- adds ef_china.
+- fix k in age_hdv.
+- ADd remove_units
+
+
+## vein 0.7.0  (Release date: 2019-03-25)
+
+- Consolidation fo all minor release.
+- Improves print methods for classes.
 
 ## vein 0.6.12 (Release date: 2019-03-25)
 

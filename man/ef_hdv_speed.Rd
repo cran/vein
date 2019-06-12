@@ -55,7 +55,7 @@ http://www.eea.europa.eu/themes/air/emep-eea-air-pollutant-emission-inventory-gu
 \strong{Pollutants (g/km)}: "CO", "NOx", "HC", "PM", "CH4", "NMHC", "CO2", "SO2",
 "Pb".
 
-\strong{Black CArbon and Organic Matter (g/km)}: "BC", "OM"
+\strong{Black Carbon and Organic Matter (g/km)}: "BC", "OM"
 
 \strong{PAH and POP (g/km)}: "indeno(1,2,3-cd)pyrene", "benzo(k)fluoranthene",
 "benzo(ghi)perylene", "fluoranthene",
@@ -85,7 +85,8 @@ http://www.eea.europa.eu/themes/air/emep-eea-air-pollutant-emission-inventory-gu
 
 \emph{KETONES (g/km)}: "acetone"
 
-\emph{AROMATICS (g/km)}: "toluene", "ethylbenzene", "m,p-xylene", "o-xylene",
+\emph{AROMATICS (g/km)}: "toluene", "ethylbenzene",
+ "m-xylene",  "p-xylene", "o-xylene",
 "1,2,3-trimethylbenzene", "1,2,4-trimethylbenzene",
 "1,3,5-trimethylbenzene", "styrene", "benzene", "C9".
 
