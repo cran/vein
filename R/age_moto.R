@@ -16,6 +16,18 @@
 #' regions or streets.
 #' @return dataframe of age distrubution of vehicles
 #' @importFrom sf st_sf st_as_sf
+#' @note
+#' The functions age* produce distribution of the circulating fleet by age of use.
+#' The order of using these functions is:
+#'
+#' 1. If you know the distribution of the vehicles by age of use , use:  \code{\link{my_age}}
+#' 2. If you know the sales of vehicles, or the registry of new vehicles,
+#' use \code{\link{age}} to apply a survival function.
+#' 3. If you know the theoretical shape of the circulating fleet and you can use
+#' \code{\link{age_ldv}}, \code{\link{age_hdv}} or \code{\link{age_moto}}. For instance,
+#' you dont know the sales or registry of vehicles, but somehow you know
+#' the shape of this curve.
+#' 4. You can use/merge/transform/adapt any of these functions.
 #' @export
 #' @examples {
 #' data(net)
@@ -35,6 +47,9 @@ age_moto <- function (x,
                       net,
                       verbose = FALSE,
                       namerows){
+  # check na
+  x[is.na(x)] <- 0
+
   #check agemax
   if(agemax < 1) stop("Agemax should be bigger than 1")
 
@@ -81,10 +96,9 @@ age_moto <- function (x,
                     round(sum(seq(1,agemax)*base::colSums(df, na.rm = T)/sum(df, na.rm = T)), 2),
                     sep=" "))
       message(paste("Number of",name, "is",
-                    round(sum(df, na.rm = T)/1000, 2),
-                    "* 10^3 veh",
-                    sep=" ")
-      )
+                    round(sum(df, na.rm = T), 3),
+                    " [veh]",
+                    sep=" "))
       cat("\n")
     }
 
@@ -141,6 +155,9 @@ age_moto <- function (x,
       if(length(namerows) != nrow(df)) stop("length of namerows must be the length of number of rows of veh")
       row.names(df) <- namerows
     }
+
+    # replace NA and NaN
+    df[is.na(df)] <- 0
 
     if(!missing(net)){
       netsf <- sf::st_as_sf(net)

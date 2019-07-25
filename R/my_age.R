@@ -10,18 +10,32 @@
 #' profile of age of use of vehicle. When 'y' is 'numeric' the vehicles
 #' has the same age distribution to all street. When 'y' is a data.frame,
 #' the distribution by age of use varies the streets.
+#' @param agemax Integer; age of oldest vehicles for that category
 #' @param name Character; of vehicle assigned to columns of dataframe.
 #' @param k Integer; multiplication factor. If its length is > 1, it must match the length of x
 #' @param pro_street Character; each category of profile for each street.
 #' The length of this character vector must be equal to the length of 'x'. The
-#' characters of this vector must be the same of the 'data.frame' 'y'. When
-#' pro_street is not used, 'y' must be a numeric vector.
+#' names of the data.frame 'y' must be have the same content of 'pro_street'
 #' @param net SpatialLinesDataFrame or Spatial Feature of "LINESTRING"
 #' @param verbose Logical; message with average age and total numer of vehicles.
 #' @param namerows Any vector to be change row.names. For instance, name of
 #' regions or streets.
 #' @return dataframe of age distrubution of vehicles.
 #' @importFrom sf st_sf st_as_sf
+#' @note
+#'
+#'
+#' The functions age* produce distribution of the circulating fleet by age of use.
+#' The order of using these functions is:
+#'
+#' 1. If you know the distribution of the vehicles by age of use , use:  \code{\link{my_age}}
+#' 2. If you know the sales of vehicles, or (the regis)*better) the registry of new vehicles,
+#' use \code{\link{age}} to apply a survival function.
+#' 3. If you know the theoretical shape of the circulating fleet and you can use
+#' \code{\link{age_ldv}}, \code{\link{age_hdv}} or \code{\link{age_moto}}. For instance,
+#' you dont know the sales or registry of vehicles, but somehow you know
+#' the shape of this curve.
+#' 4. You can use/merge/transform/adapt any of these functions.
 #' @export
 #' @examples {
 #' data(net)
@@ -41,12 +55,23 @@
 #' }
 my_age <- function (x,
                     y,
-                    name = "age",
+                    agemax,
+                    name = "vehicle",
                     k = 1,
                     pro_street,
                     net,
-                    verbose = TRUE,
+                    verbose = FALSE,
                     namerows){
+  if(!is.data.frame(y)){
+    y <- as.numeric(y)
+    y[is.na(y)] <- 0
+  } else {
+    for(i in 1:ncol(y)) y[, i] <- as.numeric( y[, i])
+    y[is.na(y)] <- 0
+
+  }
+  #
+  # start
   if (missing(x) | is.null(x)) {
     stop (print("Missing vehicles"))
   } else if (missing(y) | is.null(y)) {
@@ -56,73 +81,51 @@ my_age <- function (x,
       if(class(y) != "data.frame"){
         stop("'y' must be 'data.frame'")
       }
+      for(i in 1:ncol(y)) y[, i] <-  y[, i]/sum( y[, i])
+
       d <- as.data.frame(t(y / sum(y)))
       d$cat <- names(y)
       dfnet <- data.frame(cat = pro_street,
                           veh = x)
-      veh <- merge(x = dfnet, y = d, by = "cat", all = T)
-      veh <- veh[, names(d)]
-      veh$cat <- NULL
-      df <- veh * dfnet$veh
+      dl <- list()
+      for(i in 1:length(x)){
+        if(dfnet$cat[i] %in% d$cat){
+          dl[[i]] <- as.matrix(x[i]) %*%matrix(y[[dfnet$cat[i]]],
+                                               ncol = nrow(y),
+                                               nrow = 1)
+        }
+      }
+      df <- as.data.frame(do.call("rbind", dl))
       names(df) <- paste(name, seq(1, length(df)), sep="_")
     } else {
-      if(mode(y) != "numeric") stop("'y' must be 'numeric'")
+      if(mode(y) != "numeric") stop("When there is no 'pro_street', 'y' must be 'numeric'")
       d <- matrix(data = y/sum(y), nrow = 1, ncol=length(y))
       df <- as.data.frame(as.matrix(x) %*%d)
       names(df) <- paste(name, seq(1, length(df)), sep="_")
     }
+    # check k
+    if(length(k) > 1){
+      df <- matvect(df = df, x = k)
+    } else {
+      df <- df*k
+    }
+    # verbose
     if(verbose){
-      if(!missing(pro_street)){
-
-        if(length(k) > 1){
-          df <- vein::Vehicles(vein::matvect(df = df, x = k))
-        } else {
-          df <- df*k
-        }
-
-        secu <- seq(1, ncol(df))
-        colus <- colSums(df, na.rm = T)
-        sumdf <- sum(df, na.rm = T)
-        message(paste("Average age of", name, "is",
-                      round(sum(secu*colus/sumdf, na.rm = T), 2),
-                      sep=" "))
-
-        message(paste("Number of",name, "is",
-                      round(sum(df, na.rm = T)/1000, 3),
-                      "* 10^3 veh",
-                      sep=" ")
-        )
-        cat("\n")
-
-      } else {
-        if(length(k) > 1){
-          df <- vein::Vehicles(vein::matvect(df = df, x = k))
-        } else {
-          df <- df*k
-        }
-
-        secu <- seq(1, ncol(df))
-        colus <- colSums(df, na.rm = T)
-        sumdf <- sum(df, na.rm = T)
-        message(paste("Average age of", name, "is",
-                      round(sum(secu*colus/sumdf, na.rm = T), 2),
-                      sep=" "))
-
-        message(paste("Number of",name, "is",
-                      round(sum(df, na.rm = T)/1000, 3),
-                      "* 10^3 veh",
-                      sep=" ")
-        )
-        cat("\n")
-      }
+      secu <- seq(1, ncol(df))
+      colus <- colSums(df, na.rm = T)
+      sumdf <- sum(df, na.rm = T)
+      message(paste("Average age of", name, "is",
+                    round(sum(secu*colus/sumdf, na.rm = T), 2),
+                    sep=" "))
+      message(paste("Number of",name, "is",
+                    round(sum(df, na.rm = T), 3),
+                    " [veh]",
+                    sep=" "))
+      cat("\n")
     }
   }
-  if(length(k) > 1){
-    df <- vein::Vehicles(vein::matvect(df = df, x = k))
-  } else {
-    df <- vein::Vehicles(df*k)
-  }
-
+  # ending
+  df <- Vehicles(df)
   if(!missing(namerows)) {
     if(length(namerows) != nrow(df)) stop("length of namerows must be the length of number of rows of veh")
     row.names(df) <- namerows
@@ -131,5 +134,8 @@ my_age <- function (x,
     netsf <- sf::st_as_sf(net)
     df <- sf::st_sf(df, geometry = netsf$geometry)
   }
-    return(df)
+  if(!missing(agemax)) df <- df[, 1:agemax]
+  # replace NA and NaN
+  df[is.na(df)] <- 0
+  return(df)
 }

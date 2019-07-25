@@ -1,12 +1,37 @@
 NEWS
 ===========
 
-# vein 0.7.8  (Release date: 2019-06-09)
+# vein 0.7.12  (Release date: 2019-07-21)
+
+- Updated inventory for Windows
+- Fix projection of cetesb EF
+
+# vein 0.7.11  (Release date: 2019-07-15)
+
+- Fixed ugly bug in emis_grid!
+- Added test for emis_grid
+- Add streets profile in emis_to_streets
+
+
+# vein 0.7.10  (Release date: 2019-06-21)
+
+- Add projection forward and backward in ef_cetesb
+
+## vein 0.7.9  (Release date: 2019-06-14)
+
+- Found error on ef_china. Specifically on sulfur correction. fix #182
+- Adding more tests on ef_china.
+- Improve documentation of ef_china
+- Update in age. Now it returns number of survived fleet by year. Really cool!
+
+
+## vein 0.7.8  (Release date: 2019-06-09)
 
 - Adjustment in emis_chem
 - Adds long_to_wide
 - Improves documentation
 - Enhances split_emis
+- Upload to CRAN
 
 ## vein 0.7.7  (Release date: 2019-06-03)
 
