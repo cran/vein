@@ -6,7 +6,6 @@
 #' the name "Euro_HDV" indicating the Euro equivalence standard, assuming that there are
 #' available local emission factors for several consecutive years.
 #'
-#' @param df Deprecated
 #' @param dfcol Column of the dataframe with the local emission factors eg df$dfcol
 #' @param SDC Speed of the driving cycle
 #' @param v Category vehicle: "Coach", "Trucks" or "Ubus"
@@ -18,6 +17,7 @@
 #' @param gr Gradient or slope of road: -0.06, -0.04, -0.02, 0.00, 0.02. 0.04 or 0.06
 #' @param l Load of the vehicle: 0.0, 0.5 or 1.0
 #' @param p Pollutant: "CO", "FC", "NOx" or "HC"
+#' @param df deprecated
 #' @return A list of scaled emission factors g/km
 #' @keywords speed emission factors
 #' @note The length of the list should be equal to the name of the age categories of
@@ -27,7 +27,7 @@
 #' # Do not run
 #' data(fe2015)
 #' co1 <- fe2015[fe2015$Pollutant=="CO",]
-#' lef <- ef_hdv_scaled(co1, co1$LT, v = "Trucks", t = "RT",
+#' lef <- ef_hdv_scaled(dfcol = co1$LT, v = "Trucks", t = "RT",
 #' g = "<=7.5", eu = co1$Euro_HDV, gr = 0, l = 0.5, p = "CO")
 #' length(lef)
 #' plot(x = 0:150, y = lef[[36]](0:150), col = "red", type = "b", ylab = "[g/km]",
@@ -38,15 +38,16 @@
 #' main = "Variation of emissions with speed of newest vehicle")
 #' }
 ef_hdv_scaled <- function(df, dfcol ,SDC  = 34.12, v, t, g, eu, gr = 0, l = 0.5 ,p) {
-  if(!missing(df)){
-    message("argument 'df' will be deprecated")
-  }
-   lapply(1:length(dfcol), function(i)  {
+  if(length(dfcol) != length(eu)) stop("Length of dfcol must be the same as length of eu")
+  dfcol <- as.numeric(dfcol)
+  la <-  lapply(1:length(dfcol), function(i)  {
     funIN <- ef_hdv_speed(v = v, t = t, g = g, eu = as.character(eu[i]),
                           gr = gr, l = l, p = p, k=1, show.equation = FALSE)
     k <- dfcol[i]/ funIN(SDC)
-    funOUT <-  ef_hdv_speed(v = v, t = t, g = g,eu = as.character(eu[i]),
-                            gr = gr, l = l, p = p, k = k, show.equation = FALSE)
-    return(funOUT)
+    ef_hdv_speed(v = v, t = t, g = g,eu = as.character(eu[i]),
+                 gr = gr, l = l, p = p, k = k, show.equation = FALSE)
   })
+  class(la) <- c("EmissionFactorsList",class(la))
+return(la)
 }
+

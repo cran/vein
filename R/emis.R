@@ -93,6 +93,23 @@
 #' mil <- fkm$KM_PC_E25(1:4)
 #' ef <- ef_cetesb("COd", "PC_G")[1:4]
 #' emis(veh, lkm, ef)
+#' # group online
+#' bus1 <- age_hdv(30, agemax = 4)
+#' veh = bus1
+#' lkm = units::set_units(400, "km")
+#' speed = 40
+#' efco <- ef_cetesb("COd", "UB", agemax = 4)
+#' lef <- ef_hdv_scaled(dfcol = as.numeric(efco),
+#'                      v = "Ubus",
+#'                      t = "Std",
+#'                      g = ">15 & <=18",
+#'                      eu = rep("IV", 4),
+#'                      gr = 0,
+#'                      l = 0.5,
+#'                      p = "CO")
+#' for(i in 1:length(lef)) print(lef[[i]](10))
+#' emis(veh = bus1, lkm = lkm, speed = 40, ef = lef, verbose = T)
+#' emis(veh = bus1, lkm = lkm, ef = efco, verbose = T)
 #' }
 emis <- function (veh,
                   lkm,
@@ -123,7 +140,7 @@ emis <- function (veh,
     veh <- sf::st_set_geometry(veh, NULL)
   }
   if(!missing(hour) | !missing(day)){
-    warning("Arguments  hour and day will be deprecated, they will derived from profile")
+    warning("Arguments hour and day will be deprecated, they will derived from profile")
   }
 
   lkm <- as.numeric(lkm)
@@ -138,19 +155,26 @@ emis <- function (veh,
       veh[,i] <- as.numeric(veh[,i])
     }
     # top down
-    if(missing(profile)){
-   if(verbose)  message("top down approach")
+    if(missing(profile) & is.numeric(ef)){
+   if(verbose) message("If this is a top down approach, you may try emis_hot_td ")
+      if(nrow(veh) != length(lkm)) stop("number of rows of `veh` must be the same as the length of `lkm`` ")
       a <- lapply(1:ncol(veh), function(i){
-        veh[, i] * as.numeric(lkm)[i] * as.numeric(ef)[i]
+        veh[, i] * as.numeric(lkm) * as.numeric(ef)[i]
       })
-      a <- as.data.frame(matrix(unlist(a),
-                                ncol = ncol(veh),
-                                nrow = nrow(veh)))
-
-      for (i  in 1:ncol(a) ) {
-        a[, i] <- as.numeric(a[, i]) * units::as_units("g")
-      }
+      a <- Emissions(do.call("cbind", a))
       return(a)
+    } else if(missing(profile) & !missing(speed)){
+      if(verbose) message("Speed functions with `ef` EmissionFactorsList")
+      if(nrow(veh) != length(lkm)) stop("number of rows of `veh` must be the same as the length of `lkm`")
+      if(nrow(veh) != length(speed)) stop("number of rows of `veh` must be the same as the length of `speed`")
+      if(!is.list(ef)) stop("`ef` must be EmissionFactorsList, or a list of speed functions")
+      if(length(unlist(speed)) != nrow(veh)) stop("length of speed must be the same as number of rows of `veh`")
+      a <- lapply(1:ncol(veh), function(i){
+        veh[, i] * as.numeric(lkm) * ef[[i]](unlist(speed)) # L:146 transforms speed into data.frame
+      })
+      a <- Emissions(do.call("cbind", a))
+      return(a)
+
     }
 
     if(!missing(profile) & is.data.frame(profile)){
