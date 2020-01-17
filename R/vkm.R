@@ -14,7 +14,7 @@
 #' @param as_df Logical; when TRUE transform returning array in data.frame (streets x hour*days)
 #' @return emission estimation  of vkm
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' # Do not run
 #' pc <- lkm <- abs(rnorm(10,1,1))*100
 #' pro <- matrix(abs(rnorm(24*7,0.5,1)), ncol=7, nrow=24)
@@ -32,11 +32,7 @@ vkm <- function (veh,
                  day = ncol(profile),
                  array = TRUE,
                  as_df = TRUE) {
-  if(!missing(profile) & is.data.frame(profile)){
-    profile <- profile
-  } else if(!missing(profile) & is.matrix(profile)){
-    profile <- profile
-  } else if(!missing(profile) & is.vector(profile)){
+  if(!missing(profile) & is.vector(profile)){
     profile <- matrix(profile, ncol = 1)
   }
   veh <- as.numeric(veh)

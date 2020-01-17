@@ -4,7 +4,7 @@
 \alias{emis_dist}
 \title{Allocate emissions into spatial objects (street emis to grid)}
 \usage{
-emis_dist(gy, spobj, pro, osm, verbose = TRUE)
+emis_dist(gy, spobj, pro, osm, verbose = FALSE)
 }
 \arguments{
 \item{gy}{Numeric; a unique total (top-down)}
@@ -34,7 +34,7 @@ When spobj is a 'Spatial' object (class of sp), they are converted
  into 'sf'.
 }
 \examples{
-{
+\dontrun{
 data(net)
 data(pc_profile)
 po <- 1000

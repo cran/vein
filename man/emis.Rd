@@ -4,14 +4,15 @@
 \alias{emis}
 \title{Estimation of emissions}
 \usage{
-emis(veh, lkm, ef, speed = 34, agemax = ifelse(is.data.frame(veh),
-  ncol(veh), ncol(veh[[1]])), profile, hour = nrow(profile),
-  day = ncol(profile), array = T, verbose = FALSE)
+emis(veh, lkm, ef, speed, agemax = ifelse(is.data.frame(veh), ncol(veh),
+  ncol(veh[[1]])), profile, simplify = FALSE, fortran = FALSE,
+  hour = nrow(profile), day = ncol(profile), verbose = FALSE)
 }
 \arguments{
 \item{veh}{"Vehicles" data-frame or list of "Vehicles" data-frame. Each data-frame
 as number of columns matching the age distribution of that ype of vehicle.
-The number of rows is equal to the number of streets link}
+The number of rows is equal to the number of streets link. If this is a list,
+the length of the list is the vehicles for each hour.}
 
 \item{lkm}{Length of each link in km}
 
@@ -24,13 +25,18 @@ The number of rows is equal to the number of streets link}
 \item{profile}{Dataframe or Matrix with nrows equal to 24 and ncol 7 day of
 the week}
 
+\item{simplify}{Logical; to determine if EmissionsArray should les dimensions,
+being streets, vehicle categories and hours or default (streets, vehicle
+categories, hours and days). Default is FALSE to avoid break old code, but
+the recommendation is that new estimations use this parameter as TRUE}
+
+\item{fortran}{Logical; to try the fortran calculation when speed is not used.
+I will add fortran for EmissionFactorsList soon.}
+
 \item{hour}{Number of considered hours in estimation. Default value is number
 of rows of argument profile}
 
 \item{day}{Number of considered days in estimation}
-
-\item{array}{When FALSE produces a dataframe of the estimation. When TRUE expects a
-profile as a dataframe producing an array with dimensions (streets x columns x hours x days)}
 
 \item{verbose}{Logical; To show more information}
 }
@@ -60,62 +66,88 @@ PC_G <- c(33491,22340,24818,31808,46458,28574,24856,28972,37818,49050,87923,
           133833,138441,142682,171029,151048,115228,98664,126444,101027,
           84771,55864,36306,21079,20138,17439, 7854,2215,656,1262,476,512,
           1181, 4991, 3711, 5653, 7039, 5839, 4257,3824, 3068)
-veh <- data.frame(PC_G = PC_G)
 pc1 <- my_age(x = net$ldv, y = PC_G, name = "PC")
-# Estimation for morning rush hour and local emission factors
+
+# Estimation for morning rush hour and local emission factors and speed
 speed <- data.frame(S8 = net$ps)
-lef <- EmissionFactorsList(fe2015[fe2015$Pollutant=="CO", "PC_G"])
-E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed,
-             profile = 1)
-# Estimation for 168 hour and local factors
+lef <- EmissionFactorsList(ef_cetesb("CO", "PC_G", agemax = ncol(pc1)))
+system.time(E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed))
+system.time(E_CO_2 <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed, simplify = TRUE))
+identical(E_CO, E_CO_2)
+
+# Estimation for morning rush hour and local emission factors without speed
+lef <- ef_cetesb("CO", "PC_G", agemax = ncol(pc1))
+system.time(E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef))
+system.time(E_CO_2 <- emis(veh = pc1,lkm = net$lkm, ef = lef, fortran = TRUE))
+identical(E_CO, E_CO_2)
+
+# Estimation for 168 hour and local factors and speed
 pcw <- temp_fact(net$ldv+net$hdv, pc_profile)
 speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
-lef <- EmissionFactorsList(fe2015[fe2015$Pollutant=="CO", "PC_G"])
-E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed,
-             profile = profiles$PC_JUNE_2014)
-summary(E_CO)
-# Estimation for 168 hour and COPERT factors
-pcw <- temp_fact(net$ldv+net$hdv, pc_profile)
-speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
-euro <- as.character(fe2015[fe2015$Pollutant=="CO", "Euro_LDV"])
-lef <- lapply(1:length(euro), function(i) {
-ef_ldv_speed(v = "PC", t = "4S", cc = "<=1400", f = "G", p = "CO",
-             eu= euro[i], show.equation = FALSE)
-})
-E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed,
-             profile = profiles$PC_JUNE_2014)
-# Estimation for 168 hour and scaled factors
-pcw <- temp_fact(net$ldv+net$hdv, pc_profile)
-speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
-pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
-cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = pckma[1:11])
-cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = pckma[12:24])
-#vehicles newer than pre-euro
-co1 <- fe2015[fe2015$Pollutant=="CO", ] #24 obs!!!
-cod <- c(co1$PC_G[1:24]*c(cod1,cod2),co1$PC_G[25:nrow(co1)])
-lef <- ef_ldv_scaled(co1, cod, v = "PC", t = "4S", cc = "<=1400",
-                     f = "G",p = "CO", eu=co1$Euro_LDV)
-length(lef) != ncol(pc1)
-#emis change length of 'ef' to match ncol of 'veh'
-E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed,
-             profile = profiles$PC_JUNE_2014)
-class(E_CO)
+lef <- EmissionFactorsList(ef_cetesb("CO", "PC_G", agemax = ncol(pc1)))
+system.time(
+E_CO <- emis(veh = pc1,
+             lkm = net$lkm,
+             ef = lef,
+             speed = speed,
+             profile = profiles$PC_JUNE_2014))
+system.time(
+E_CO_2 <- emis(veh = pc1,
+             lkm = net$lkm,
+             ef = lef,
+             speed = speed,
+             profile = profiles$PC_JUNE_2014,
+             simplify = TRUE))
+
+# Estimation for 168 hour and local factors and without speed
+lef <- ef_cetesb("CO", "PC_G", agemax = ncol(pc1))
+system.time(
+E_CO <- emis(veh = pc1,
+             lkm = net$lkm,
+             ef = lef,
+             profile = profiles$PC_JUNE_2014)) ; sum(E_CO)
+system.time(
+E_CO_2 <- emis(veh = pc1,
+             lkm = net$lkm,
+             ef = lef,
+             profile = profiles$PC_JUNE_2014,
+             fortran = TRUE)) ; sum(E_CO)
+system.time(
+E_CO_3 <- emis(veh = pc1,
+             lkm = net$lkm,
+             ef = lef,
+             profile = profiles$PC_JUNE_2014,
+             simplify = TRUE)) ; sum(E_CO)
+system.time(
+E_CO_4 <- emis(veh = pc1,
+             lkm = net$lkm,
+             ef = lef,
+             profile = profiles$PC_JUNE_2014,
+             simplify = TRUE,
+             fortran = TRUE)) ; sum(E_CO)
+identical(round(E_CO, 2), round(E_CO_2, 2))
+identical(round(E_CO_3, 2), round(E_CO_4, 2))
+identical(round(E_CO_3[,,1], 2), round(E_CO_4[,,1], 2))
+dim(E_CO_3)
+dim(E_CO_4)
+# but
+a <- unlist(lapply(1:41, function(i){
+           unlist(lapply(1:168, function(j) {
+           identical(E_CO_3[, i, j], E_CO_4[, i, j])
+           }))}))
+unique(a)
+
+#Estimation with list of vehicles
 lpc <- list(pc1, pc1)
-E_COv2 <- emis(veh = lpc,lkm = net$lkm, ef = lef, speed = speed,
-               hour = 2, day = 1)
-# Entering wrong results
-pc1[ , ncol(pc1) + 1] <- pc1$PC_1
-dim(pc1)
-length(lef)
-E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed,
-             profile = profiles$PC_JUNE_2014)
-E_COv2 <- emis(veh = lpc,lkm = net$lkm, ef = lef, speed = speed,
-               hour = 2, day = 1)
+lef <- EmissionFactorsList(ef_cetesb("CO", "PC_G", agemax = ncol(pc1)))
+E_COv2 <- emis(veh = lpc,lkm = net$lkm, ef = lef, speed = speed)
+
 # top down
-veh <- age_ldv(x = net$ldv[1:2], name = "PC_E25_1400", agemax = 4)
+veh <- age_ldv(x = net$ldv[1:4], name = "PC_E25_1400", agemax = 4)
 mil <- fkm$KM_PC_E25(1:4)
 ef <- ef_cetesb("COd", "PC_G")[1:4]
-emis(veh, lkm, ef)
+emis(veh, units::set_units(mil, "km"), ef)
+
 # group online
 bus1 <- age_hdv(30, agemax = 4)
 veh = bus1
@@ -131,7 +163,7 @@ lef <- ef_hdv_scaled(dfcol = as.numeric(efco),
                      l = 0.5,
                      p = "CO")
 for(i in 1:length(lef)) print(lef[[i]](10))
-emis(veh = bus1, lkm = lkm, speed = 40, ef = lef, verbose = T)
-emis(veh = bus1, lkm = lkm, ef = efco, verbose = T)
+(a <- emis(veh = bus1, lkm = lkm, ef = efco, verbose = TRUE))
+(b <- emis(veh = bus1, lkm = lkm, ef = efco, verbose = TRUE, fortran = TRUE))
 }
 }

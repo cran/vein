@@ -34,14 +34,13 @@ Objects of class "Vehicles" or "units"
  If the object is "numeric" it is converted to class "units".
 }
 \examples{
-{
+\dontrun{
 lt <- rnorm(100, 300, 10)
 class(lt)
 vlt <- Vehicles(lt)
 class(vlt)
 plot(vlt)
 LT_B5 <- age_hdv(x = lt,name = "LT_B5")
-print(LT_B5)
 summary(LT_B5)
 plot(LT_B5)
 }

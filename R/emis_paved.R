@@ -21,7 +21,7 @@
 #' @export
 #' @references EPA, 2016. Emission factor documentation for AP-42. Section
 #' 13.2.1, Paved Roads. https://www3.epa.gov/ttn/chief/ap42/ch13/final/c13s0201.pdf
-#' @examples {
+#' @examples \dontrun{
 #' # Do not run
 #' veh <- array(pnorm(q=c(1:100), mean=500, sd = 100),
 #'              c(100,24,7))
@@ -51,10 +51,10 @@ emis_paved <- function(veh,
   k <- array(k, dim = dim(veh))
   emi <- veh * lkm * k * sL^0.91 * W^1.02
   emi[is.na(emi)] <- 0
-  if(length(dim(emi)) == 2){
-    names(emi) <- paste0("V",1:ncol(emi))
-    return(Emissions(emi))
-  } else {
+  # if(length(dim(emi)) == 2){
+  #   names(emi) <- paste0("V",1:ncol(emi))
+  #   return(Emissions(emi))
+  # } else {
     return(EmissionsArray(emi))
-  }
+  # }
 }

@@ -6,13 +6,11 @@
 #' @return "data.frame", "matrix" or numeric
 #' @keywords units
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' ef1 <- ef_cetesb(p = "CO", c("PC_G", "PC_FE"))
 #' class(ef1)
-#' ef1
 #' sapply(ef1, class)
 #' a <- remove_units(ef1)
-#' a
 #' }
 remove_units <- function(x){
   if ( is.matrix(x) ) {
@@ -20,7 +18,6 @@ remove_units <- function(x){
     for(i in 1:ncol(ef)){
       ef[,i] <- as.numeric(ef[,i])
     }
-    class(ef) <- "matrix"
   } else if ( is.data.frame(x) ) {
     ef <- x
     for(i in 1:ncol(ef)){
@@ -31,7 +28,6 @@ remove_units <- function(x){
     ef <- x
     #nada
   } else {
-    ef <- x
     ef <- as.numeric(x)
   }
   return(ef)

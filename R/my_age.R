@@ -37,7 +37,7 @@
 #' the shape of this curve.
 #' 4. You can use/merge/transform/adapt any of these functions.
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' data(net)
 #' dpc <- c(seq(1,20,3), 20:10)
 #' PC_E25_1400 <- my_age(x = net$ldv, y = dpc, name = "PC_E25_1400")
@@ -73,9 +73,7 @@ my_age <- function (x,
   #
   # start
   if (missing(x) | is.null(x)) {
-    stop (print("Missing vehicles"))
-  } else if (missing(y) | is.null(y)) {
-    stop (print("Missing distributed vehicles"))
+    stop("Missing vehicles")
   } else {
     if(!missing(pro_street)){
       if(class(y) != "data.frame"){

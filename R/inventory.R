@@ -17,6 +17,7 @@
 #' @param show.scripts Logical value for printing the created scripts.
 #' @param clear Logical value for removing recursively the directory and create
 #' another one.
+#' @param showWarnings Logical, showWarnings?
 #' @param rush.hour Logical, to create a template for morning rush hour.
 #' @return Structure of directories and scripts for automating compilation of
 #' vehicular emissions inventory. The structure can be used with other type of
@@ -60,78 +61,78 @@
 #' @importFrom utils file.edit
 #' @examples \dontrun{
 #' name = file.path(tempdir(), "YourCity")
-#' inventory(name = name, show.dir = TRUE, show.scripts = TRUE)
-#' source(paste0(name, "/main.R"))
+#' inventory(name = name)
 #' }
 #'
 inventory <- function(name,
                       vehcomp = c(PC = 1, LCV = 1, HGV = 1, BUS = 1, MC = 1),
-                      show.main = TRUE,
+                      show.main = FALSE,
                       scripts = TRUE,
-                      show.dir = TRUE,
+                      show.dir = FALSE,
                       show.scripts = FALSE,
                       clear = TRUE,
-                      rush.hour = FALSE){
+                      rush.hour = FALSE,
+                      showWarnings = FALSE){
   if(Sys.info()[['sysname']] == "Windows") {
     name <- gsub("\\\\", "/", name)
   }
   # directorys
   dovein <- function(){
-    dir.create(path = name)
-    dir.create(path = paste0(name, "/profiles"))
-    dir.create(path = paste0(name, "/ef"))
-    dir.create(path = paste0(name, "/emi"))
-    dir.create(path = paste0(name, "/post"))
-    dir.create(path = paste0(name, "/post/grids"))
-    dir.create(path = paste0(name, "/post/streets"))
-    dir.create(path = paste0(name, "/post/df"))
-    dir.create(path = paste0(name, "/est"))
-    dir.create(path = paste0(name, "/images"))
-    dir.create(path = paste0(name, "/network"))
-    dir.create(path = paste0(name, "/veh"))
+    dir.create(path = name, showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/profiles"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/ef"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/emi"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/post"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/post/grids"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/post/streets"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/post/df"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/est"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/images"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/network"), showWarnings = showWarnings)
+    dir.create(path = paste0(name, "/veh"), showWarnings = showWarnings)
 
     if(vehcomp["PC"] > 0){
       for(i in 1:vehcomp[1]){
         if(i < 10) {
-          dir.create(path = paste0(name, "/emi/PC_0", i))
+          dir.create(path = paste0(name, "/emi/PC_0", i), showWarnings = showWarnings)
         } else {
-          dir.create(path = paste0(name, "/emi/PC_", i))
+          dir.create(path = paste0(name, "/emi/PC_", i), showWarnings = showWarnings)
         }}
     } else {message("no PC")}
 
     if(vehcomp["LCV"] > 0){
       for(i in 1:vehcomp[2]){
         if(i < 10) {
-          dir.create(path = paste0(name, "/emi/LCV_0", i))
+          dir.create(path = paste0(name, "/emi/LCV_0", i), showWarnings = showWarnings)
         } else {
-          dir.create(path = paste0(name, "/emi/LCV_", i))
+          dir.create(path = paste0(name, "/emi/LCV_", i), showWarnings = showWarnings)
         }}
     } else {message("no LCV")}
 
     if(vehcomp["HGV"] > 0){
       for(i in 1:vehcomp[3]){
         if(i < 10) {
-          dir.create(path = paste0(name, "/emi/HGV_0", i))
+          dir.create(path = paste0(name, "/emi/HGV_0", i), showWarnings = showWarnings)
         } else {
-          dir.create(path = paste0(name, "/emi/HGV_", i))
+          dir.create(path = paste0(name, "/emi/HGV_", i), showWarnings = showWarnings)
         }}
     } else {message("no HGV")}
 
     if(vehcomp["BUS"] > 0){
       for(i in 1:vehcomp[4]){
         if(i < 10) {
-          dir.create(path = paste0(name, "/emi/BUS_0", i))
+          dir.create(path = paste0(name, "/emi/BUS_0", i), showWarnings = showWarnings)
         } else {
-          dir.create(path = paste0(name, "/emi/BUS_", i))
+          dir.create(path = paste0(name, "/emi/BUS_", i), showWarnings = showWarnings)
         }}
     } else {message("no BUS")}
 
     if(vehcomp["MC"] > 0){
       for(i in 1:vehcomp[5]){
         if(i < 10) {
-          dir.create(path = paste0(name, "/emi/MC_0", i))
+          dir.create(path = paste0(name, "/emi/MC_0", i), showWarnings = showWarnings)
         } else {
-          dir.create(path = paste0(name, "/emi/MC_", i))
+          dir.create(path = paste0(name, "/emi/MC_", i), showWarnings = showWarnings)
         }}
     } else {message("no MC")}
   }
@@ -194,7 +195,8 @@ inventory <- function(name,
       cat("message('This is just an example!\n You need to update this to your project!')\n")
       cat("x <- efe[efe$Pollutant == pol, 'PC_G']\n")
       cat("lefe <- EmissionFactorsList(x)\n")
-      cat("array_x <- emis(veh = veh, lkm = lkm, ef = lefe, profile = pc)\n")
+      cat("array_x <- emis(veh = veh, lkm = lkm, ef = lefe, profile = pc,
+          speed = Speed(34))\n")
       cat("x_DF <- emis_post(arra = array_x, veh = vname, size = vsize,\n")
       cat("                  fuel = vfuel, pollutant = pol, by = 'veh')\n")
       cat("x_STREETS <- emis_post(arra = array_x, pollutant = pol,\n")
@@ -210,9 +212,13 @@ inventory <- function(name,
       sink()
     }
     dirs <- list.dirs(path = name, full.names = TRUE, recursive = TRUE)
-    message(paste0("files at ", dirs[1]))
+
+    message(paste0("Project directory at ", dirs[1]))
+    # message(paste0("main file ", name, "/main.R"))
     sink(paste0(name, "/main.R"))
-    cat(paste0("setwd('", dirs[1], "')\n"))
+    cat(paste0("prev <- getwd()\n"))
+    cat("#Changing working directory\n")
+    cat(paste0("print(setwd('", dirs[1], "'))\n"))
     cat("library(vein)\n")
     cat("sessionInfo()\n\n")
     cat("# 0 Delete previous emissions? ####\n")
@@ -254,6 +260,8 @@ inventory <- function(name,
     cat("# 4) Post-estimation #### \n")
     cat("g <- make_grid(net, 1000)\n")
     cat("source('post.R')\n")
+    cat("#Changing to original working directory\n")
+    cat("print(setwd(prev))\n")
     sink()
 
     sink(paste0(name, "/traffic.R"))

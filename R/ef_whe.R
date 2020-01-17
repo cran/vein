@@ -16,7 +16,7 @@
 #' @return An emission factor by annual mileage.
 #' @keywords emission factors high emitters
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' # Do not run
 #' # Let's say high emitter is 5 times the normal ef.
 #' co_efhe <- ef_cetesb(p = "COd", "PC_G") * 5
@@ -36,7 +36,7 @@ ef_whe <- function(efhe,
                   ef){
   if(missing(efhe)) stop("No high emitter emission factor 'he'")
   if(missing(phe)) stop("No percentage of high emitter vehicles 'phe'")
-  if(missing(ef)) stop("No emission factors with normal deterioratio 'ef'")
+  if(missing(ef)) stop("No emission factors with normal deterioration 'ef'")
   eff <- as.numeric(efhe) * as.numeric(phe) + as.numeric(ef) * (1 - phe)
 return(EmissionFactors(eff))
 }

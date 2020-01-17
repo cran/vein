@@ -1,7 +1,32 @@
 NEWS
 ===========
 
-# vein 0.8.0  (Release date: 2019-09-05)
+# vein 0.8.4  (Release date: 2019-12-22)
+
+- just add more tests
+- adds Fortran function to make emis faster
+
+# vein 0.8.4  (Release date: 2019-12-02)
+
+- improves emis, now faster
+
+## vein 0.8.3  (Release date: 2019-11-14)
+
+- grid_emis now it is like a proper opposite of emis_grid, becuase it reads spatial 
+grid and transform it Lines, considering all the emissionsColumns) 
+- adds st_explode, to split lines by each vertex (CANCELLED - MUST IMPROVE)
+
+## vein 0.8.2  (Release date: 2019-11-06)
+
+- emis now accepts ef as units or EmissionFactorsList. When it is units,
+speed is not needed and if present shows a warning
+
+## vein 0.8.1  (Release date: 2019-10-04)
+
+- show.main = FALSE in inventory
+- remove warning in make_grid when checking class for bbox
+
+## vein 0.8.0  (Release date: 2019-09-05)
 
 - Update vein_notes
 

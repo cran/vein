@@ -4,11 +4,13 @@
 #' and convert grams to mol. This function reads all hydrocarbos and respective
 #' criteria polluants specified in \code{\link{ef_ldv_speed}} and \code{\link{ef_hdv_speed}}.
 #'
-#' @param dfe data.frame with column `emissions` in grams and `pollutant` in long format.
+#' @param dfe data.frame with column `emissions` in grams and `pollutant` in long format. It is supposed
+#' that each line is the pollution of some region. Then the `coldby` argument is for include the
+#' name of the region.
 #' @param mechanism Character, "RADM2_SORG", "CBMZ_MOSAIC", "CPTEC", "GOCART_CPTEC", "MOZEM",
 #' "MOZCEM", "CAMMAM", "MOZMEM", "MOZC_T1_EM", "CB05_OPT1" or "CB05_OPT2"
 #' @param colby Character indicating column name for aggregating extra column.
-#' For instance, region or province
+#' For instance, region or province.
 #' @param long Logical. Do you want data in long format?
 #' @return data.frame with lumped groups by chemical mechanism. It transform
 #' emissions in grams to mol.
@@ -28,7 +30,8 @@
 #' units for WRF-Chem are ug/m^2/s while for CMAQ and CAMx are g/s. So,
 #' leaving the units just in g, allow to make further change while
 #' providing flexibility for several models.
-#' @examples {
+#' TODO: Enter with wide data.frame, with each line as a each street, each column for pollutant
+#' @examples \dontrun{
 #' # CO
 #' df <- data.frame(emission = Emissions(1:10))
 #' df$pollutant = "CO"
@@ -104,16 +107,31 @@ emis_chem <- function(dfe, mechanism, colby, long = FALSE) {
   if(long){
     return(ss)
   } else {
-    ss <- long_to_wide(df = ss,
-                       column_with_new_names = "group",
-                       column_with_data = "emission")
-    for(i in 1:ncol(ss)){
-      if(names(ss)[i] %in% gases) {
-        ss[, i] <-  units::as_units(ss[, i], "mol")
-      } else {
-        ss[, i] <-  units::as_units(ss[, i], "g")
-      }
+    if(missing(colby)){
+      ss <- suppressWarnings(long_to_wide(df = ss,
+                                          column_with_new_names = "group",
+                                          column_with_data = "emission"))
+    } else {
+      ss <- suppressWarnings(long_to_wide(df = ss,
+                                          column_with_new_names = "group",
+                                          column_with_data = "emission",
+                                          column_fixed = colby))
+      sscolby <- ss[, colby]
+      ss[, colby] <- NULL
     }
-    return(ss)
   }
+  # putting units
+  for(i in 1:(ncol(ss))){
+    if(names(ss)[i] %in% gases) {
+      ss[, names(ss)[i]] <-  units::as_units(ss[, names(ss)[i]], "mol")
+    } else {
+      ss[, names(ss)[i]] <-  units::as_units(ss[, names(ss)[i]], "g")
+    }
+  }
+  if(!missing(colby)) {
+    ss[, colby] <- sscolby
+   ss <-  ss[!is.na(ss[colby]), ]
+  }
+
+  return(ss)
 }

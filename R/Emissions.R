@@ -26,9 +26,8 @@
 #' veh <- data.frame(PC_G = PC_G)
 #' pc1 <- my_age(x = net$ldv, y = PC_G, name = "PC")
 #' pcw <- temp_fact(net$ldv+net$hdv, pc_profile)
-#' speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1,
-#' isList = T)
-#' pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
+#' speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
+#' pckm <- units::set_units(fkm[[1]](1:24), "km"); pckma <- cumsum(pckm)
 #' cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = pckma[1:11])
 #' cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = pckma[12:24])
 #' #vehicles newer than pre-euro
@@ -37,14 +36,10 @@
 #' lef <- ef_ldv_scaled(co1, cod, v = "PC",  cc = "<=1400",
 #'                      f = "G", p = "CO", eu=co1$Euro_LDV)
 #' E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed, agemax = 41,
-#'              profile = pc_profile, hour = 24, day = 7, array = T)
+#'              profile = pc_profile)
 #' dim(E_CO) # streets x vehicle categories x hours x days
-#' class(E_CO[ , , 1, 1])
-#' df <- Emissions(E_CO[ , , 1, 1]) # Firt hour x First day
-#' class(df)
-#' summary(df)
-#' head(df)
-#' plot(df)
+#' class(E_CO)
+#' plot(E_CO)
 #' }
 #' @export
 Emissions <- function(x, ...) {
@@ -73,19 +68,16 @@ Emissions <- function(x, ...) {
 #' @method print Emissions
 #' @export
 print.Emissions <- function(x, ...) {
-  if(nrow(x) < 10 & ncol(x) < 10){
-    NextMethod("print", x, right = TRUE)
-  } else if (nrow(x) > 10 & ncol(x) < 10){
-    print.data.frame(x[1:5, ], right = TRUE)
-    cat(paste0("... and more ", nrow(x) - 5, " rows\n"))
-  } else if(nrow(x) < 10 & ncol(x) > 10){
-    print.data.frame(x[, 1:5], right = TRUE)
-    cat(paste0("... and more ", ncol(x) - 5, " columns\n"))
+  nr <- ifelse(nrow(x) <= 5, nrow(x), 5)
+  if(ncol(x) == 1) {
+    ndf <- names(x)
+    df <- data.frame(ndf = x[1:nr, ])
+    names(df) <- ndf
+    print.data.frame(df)
   } else {
-    print.data.frame(x[1:5, 1:5], right = TRUE)
-    cat(paste0("... and more ", nrow(x) - 5, " rows\n"))
-    cat(paste0("... and more ", ncol(x) - 5, " columns\n"))
+    print.data.frame(x[1:nr, ])
   }
+  if(nrow(x) > 5)     cat(paste0("... and ", nrow(x) - 5, " more rows\n"))
 }
 
 
@@ -94,16 +86,16 @@ print.Emissions <- function(x, ...) {
 #' @export
 summary.Emissions <- function(object, ...) {
   e <- object
-    avemi <- sum(seq(1,ncol(e))*colSums(e)/sum(e))
-    cat("Total emissions by column in study area = \n")
-    print(summary(colSums(e)))
-    cat("\nAverage = ", round(avemi,2))
-    cat(" \n\n")
-    cat("Emissions by street in study area = \n")
-    print(summary(rowSums(e)))
-    cat(" \n\n")
-    cat("Emissions by column and street in study area = \n")
-    print(summary(unlist(e)))
+  avemi <- sum(seq(1,ncol(e))*colSums(e)/sum(e))
+  cat("Total emissions by column in study area = \n")
+  print(summary(colSums(e)))
+  cat("\nAverage = ", round(avemi,2))
+  cat(" \n\n")
+  cat("Emissions by street in study area = \n")
+  print(summary(rowSums(e)))
+  cat(" \n\n")
+  cat("Emissions by column and street in study area = \n")
+  print(summary(unlist(e)))
 }
 
 
@@ -112,9 +104,9 @@ summary.Emissions <- function(object, ...) {
 #' @export
 plot.Emissions <- function(x,  ...) {
   e <- x
-    avage <- sum(seq(1,ncol(e)) * colSums(e)/sum(e))
-    Emission <- Emissions(colSums(e))
-    graphics::plot(Emission, type="l", ...)
-    graphics::abline(v = avage, col="red")
-    cat("\nAverage = ",round(avage,2))
+  avage <- sum(seq(1,ncol(e)) * colSums(e)/sum(e))
+  Emission <- Emissions(colSums(e))
+  graphics::plot(Emission, type="l", ...)
+  graphics::abline(v = avage, col="red")
+  cat("\nAverage = ",round(avage,2))
 }

@@ -70,7 +70,7 @@
 
 #' @seealso \code{\link{ef_ldv_speed}} \code{\link{emis_hot_td}}
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' # when standard is 'character'
 #' # Checking
 #' df_st <- rev(c(as.character(as.roman(5:1)), "PRE"))
@@ -433,8 +433,6 @@ ef_china <- function(v = "PV",
             } else if(p == "NOx"){
               df$EF <- ifelse(ta[j] < 10, df$EF*1.15,
                               ifelse(ta[j] > 25, df$EF*1.31, df$EF))
-            } else {
-              df$EF <- df$EF
             }
           }}
 

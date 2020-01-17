@@ -27,31 +27,7 @@ NULL
 #' # DEPRECATED
 #' }
 Evaporative <- function(x, ...) {
-  .Deprecated("EmissionsList")
-  "EmissionsList"
+  .Deprecated("Evaporative")
+  "Evaporative"
 
-}
-
-#' @rdname vein-deprecated
-#' @method print Evaporative
-#' @export
-print.Evaporative <- function(x, ...) {
-  # cat("Result for Evaporative\n")
-  print(x,  ...)
-}
-
-#' @rdname vein-deprecated
-#' @method summary Evaporative
-#' @export
-summary.Evaporative <- function(object, ...) {
-  cat("Evaporative emissions in study area = \n")
-  print(summary(unclass(object)))
-}
-
-#' @rdname vein-deprecated
-#' @method plot Evaporative
-#' @export
-plot.Evaporative <- function(x,  ...) {
-  ev <- x
-  NextMethod("plot", ev, ...)
 }

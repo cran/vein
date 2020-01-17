@@ -1,0 +1,10 @@
+C_OBJS = init.o
+FT_OBJS = e2d.o e3d.o e4d.o etd1.o etd2.o etd3.o etd4.o etd5.o etd6.o etd7.o etd3cold.o etd4cold.o etd5cold.o etd6cold.o
+
+all:
+	@$(MAKE) $(SHLIB)
+	@rm -f  *.o
+
+$(SHLIB): $(FT_OBJS) $(C_OBJS)
+
+init.o:  e2d.o e3d.o e4d.o etd1.o etd2.o etd3.o etd4.o etd5.o etd6.o etd7.o etd3cold.o etd4cold.o etd5cold.o etd6cold.o

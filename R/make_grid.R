@@ -18,7 +18,7 @@
 #' @importFrom sf st_as_sf st_sf st_crs st_bbox st_sfc st_as_sfc
 #' @importFrom eixport wrf_grid
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' data(net)
 #' grid <- make_grid(net, width = 0.5/102.47) #500 mts
 #' plot(grid, axes = TRUE) #class sf
@@ -34,7 +34,7 @@ make_grid <- function(spobj, width, height = width,  polygon, crs = 4326, ...){
   }
 
 if(class(spobj)[1] != "character"){
-  if(class(spobj) == "bbox") {
+  if(class(spobj)[1] == "bbox") {
     spobj <- sf::st_as_sfc(spobj)
     spobj <- sf::st_sf(geometry = spobj)
 

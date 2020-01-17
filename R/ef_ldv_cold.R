@@ -29,7 +29,7 @@
 #' @keywords cold emission factors
 #' @seealso \code{\link{fuel_corr}}
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' ef1 <- ef_ldv_cold(ta = 15, cc = "<=1400", f ="G", eu = "PRE", p = "CO",
 #' show.equation = TRUE)
 #' ef1(10)
@@ -234,11 +234,11 @@ ef_ldv_cold <- function(v = "LDV",
       return(dff)
 
     } else if(is.data.frame(ta)){
-      if(nrow(ta) != nrow(eu)) {
-        cat("Number of rows of 'eu': ", nrow(eu), "\n")
-        cat("Number of rows of 'ta': ", nrow(ta), "\n")
-        stop("Number of rows of 'eu' and 'ta' must be the same")
-      }
+      # if(nrow(ta) != nrow(eu)) {
+      #   cat("Number of rows of 'eu': ", nrow(eu), "\n")
+      #   cat("Number of rows of 'ta': ", nrow(ta), "\n")
+      #   stop("Number of rows of 'eu' and 'ta' must be the same")
+      # }
       dff <- do.call("rbind", lapply(1:ncol(ta), function(k){
         do.call("rbind", lapply(1:nrow(ta), function(j){
           dff <- do.call("cbind", lapply(1:ncol(eu), function(i){

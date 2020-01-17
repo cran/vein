@@ -12,7 +12,7 @@
 #' @rdname EmissionFactors
 #' @aliases EmissionFactors print.EmissionFactors summary.EmissionFactors
 #' plot.EmissionFactors
-#' @examples {
+#' @examples \dontrun{
 #' data(fe2015)
 #' names(fe2015)
 #' class(fe2015)
@@ -39,6 +39,7 @@ EmissionFactors <- function(x, ...) {
     }
     class(ef) <- c("EmissionFactors",class(ef))
   } else if ( class(x) == "units" ) {
+    ef <- x
     warning("Check units are g/km")
   } else if( class(x) == "numeric" | class(x) == "integer" ) {
     ef <- x*units::as_units("g km-1")
@@ -50,19 +51,16 @@ EmissionFactors <- function(x, ...) {
 #' @method print EmissionFactors
 #' @export
 print.EmissionFactors <- function(x, ...) {
-  if(nrow(x) < 10 & ncol(x) < 10){
-    NextMethod("print", x, right = TRUE)
-  } else if (nrow(x) > 10 & ncol(x) < 10){
-    print.data.frame(x[1:5, ], right = TRUE)
-    cat(paste0("... and more ", nrow(x) - 5, " rows\n"))
-  } else if(nrow(x) < 10 & ncol(x) > 10){
-    print.data.frame(x[, 1:5], right = TRUE)
-    cat(paste0("... and more ", ncol(x) - 5, " columns\n"))
+  nr <- ifelse(nrow(x) <= 5, nrow(x), 5)
+  if(ncol(x) == 1) {
+    ndf <- names(x)
+    df <- data.frame(ndf = x[1:nr, ])
+    names(df) <- ndf
+    print.data.frame(df)
   } else {
-    print.data.frame(x[1:5, 1:5], right = TRUE)
-    cat(paste0("... and more ", nrow(x) - 5, " rows\n"))
-    cat(paste0("... and more ", ncol(x) - 5, " columns\n"))
+    print.data.frame(x[1:nr, ])
   }
+  if(nrow(x) > 5)     cat(paste0("... and ", nrow(x) - 5, " more rows\n"))
 }
 
 
@@ -80,20 +78,20 @@ summary.EmissionFactors <- function(object, ...) {
 #' @export
 plot.EmissionFactors <- function(x,  ...) {
   ef <- x
-  if (mode(ef)=="numeric" || ncol(ef) > 12) {
-    graphics::plot(ef, ...)
-  } else if (ncol(ef) >= 2 & ncol(ef) <= 3) {
+  if (ncol(ef) >= 1 & ncol(ef) <= 3) {
     graphics::par(mfrow=c(1, ncol(ef)), tcl = -0.5)
   } else if (ncol(ef) == 4) {
     graphics::par(mfrow=c(2, 2), tcl = -0.5)
-  } else if (ncol(ef) >= 5 && ncol(ef) >= 6 ) {
+  } else if (ncol(ef) >= 5 & ncol(ef) <= 6 ) {
     graphics::par(mfrow=c(2, 3), tcl = -0.5)
-  } else if (ncol(ef) >= 7 && ncol(ef) >= 9 ) {
+  } else if (ncol(ef) >= 7 & ncol(ef) <= 9 ) {
     graphics::par(mfrow=c(3, 3), tcl = -0.5)
-  } else if (ncol(ef) >= 10 && ncol(ef) >= 12 ) {
-    graphics::par(mfrow=c(3, 4), tcl = -0.5)
+  } else {
+    message("Plotting first 9 plots")
+    graphics::par(mfrow=c(3, 3), tcl = -0.5)
   }
-  for (i in 1:ncol(ef)) {
+  nc <- ifelse(ncol(ef) <= 9, ncol(ef), 9)
+  for (i in 1:nc) {
     graphics::plot(ef[,i], type = "l", ...)
   }
   graphics::par(mfrow=c(1,1))

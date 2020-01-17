@@ -56,7 +56,7 @@
 #' pc1 <- my_age(x = net$ldv, y = PC_G, name = "PC")
 #' pcw <- temp_fact(net$ldv+net$hdv, pc_profile)
 #' speed <- netspeed(pcw, net$ps, net$ffs, net$capacity, net$lkm, alpha = 1)
-#' pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
+#' pckm <- units::set_units(fkm[[1]](1:24),"km"); pckma <- cumsum(pckm)
 #' cod1 <- emis_det(po = "CO", cc = 1000, eu = "III", km = pckma[1:11])
 #' cod2 <- emis_det(po = "CO", cc = 1000, eu = "I", km = pckma[12:24])
 #' #vehicles newer than pre-euro
@@ -126,13 +126,13 @@ emis_post <- function(arra, veh, size, fuel, pollutant, by = "veh", net) {
         }))
       }))
       df <- cbind(deparse(substitute(arra)),as.data.frame(x))
-      names(df) <- c(as.character(df[1,1]), pollutant)
       hour <- rep(seq(0: (dim(arra)[3]-1) ),
                   times = dim(arra)[4],
                   each=dim(arra)[1])
       df$hour <- hour
+      names(df) <- c("street", "g", "hour")
       df[,1] <- seq(1,dim(arra)[1])
-      df[,2] <- df[,2] * units::as_units("g h-1")
+      df[,2] <- Emissions(df[,2])
       return(df)
     } else if (by %in% c("streets_wide", "streets")) {
       x <- unlist(lapply(1:dim(arra)[4], function(j) {# dia
@@ -175,15 +175,17 @@ emis_post <- function(arra, veh, size, fuel, pollutant, by = "veh", net) {
       df$hour <- hour
       df$g <- Emissions(df$g)
       return(df)
-    } else if (by == "streets_narrow") {
-      df <- as.vector(apply(X = arra, MARGIN = c(2,3), FUN = sum, na.rm = TRUE))
-      warning("TODO: Improve")
+    } else if (by %in% c("streets_narrow")) {
+      df <- as.vector(apply(X = arra, MARGIN = c(1,3), FUN = sum, na.rm = TRUE))
+      df <- data.frame(street = length(df) / dim(arra)[3],
+                       g = Emissions(df),
+                       hour = rep(1:dim(arra)[3], each = dim(arra)[1]))
       return(df)
-    } else if (by == "streets_wide") {
-      df <- Emissions(apply(X = arra, MARGIN = c(1,3), FUN = sum, na.rm = TRUE))
+    } else if (by %in% c("streets_wide", "streets")) {
+      df <- apply(X = arra, MARGIN = c(1,3), FUN = sum, na.rm = TRUE)
       names(df) <- paste0("h",1:length(df))
 
-      df <- as.data.frame(m)
+      df <- as.data.frame(df)
 
         if(!missing(net)){
         netsf <- sf::st_as_sf(net)

@@ -19,11 +19,11 @@ to_latex(df, file, caption = "My table", label = "tab:df")
 a text file with extension .tex.
 }
 \description{
-\\code{\\link{to_latex}} reads a data.frme an dgenerates a .tex
+\code{\link{to_latex}} reads a data.frme an dgenerates a .tex
 table, aiming to replicate the method of tablegenerator.com
 }
 \examples{
-{
+\dontrun{
 df <- data.frame(pollutant = rep(c("CO", "propadiene", "NO2"), 10),
                  emission = vein::Emissions(1:30),
                  region = rep(letters[1:2], 15))
@@ -36,5 +36,5 @@ file = paste0(tempfile(), ".tex"))
 }
 }
 \seealso{
-\\code{\\link{vein_notes}}  \\code{\\link{long_to_wide}}
+\code{\link{vein_notes}}  \code{\link{long_to_wide}}
 }

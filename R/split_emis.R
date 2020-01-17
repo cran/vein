@@ -11,7 +11,7 @@
 #' @param verbose Logical, to show more information.
 #' @importFrom sf st_sf st_as_sf st_length  st_intersection st_set_geometry
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' data(net)
 #' g <- make_grid(net, 1/102.47/2) #500m in degrees
 #' names(net)
@@ -40,7 +40,7 @@ split_emis <- function(net, distance, add_column, verbose = TRUE){
   ncolnet <- names(sf::st_set_geometry(net, NULL))
   net$LKM <- sf::st_length(net)
   if(verbose) cat("Intersecting\n")
-  gnet <- st_intersection(net, g)
+  gnet <- suppressMessages(suppressWarnings(st_intersection(net, g)))
 
   # check add_column and store it
   if(!missing(add_column)){
@@ -66,6 +66,7 @@ split_emis <- function(net, distance, add_column, verbose = TRUE){
       gnet[[add_column[i]]] <- nc[[i]]
     }
   }
+
   gnet$id <- 1:nrow(gnet)
   gnet <- sf::st_sf(gnet, geometry = geo)
   return(gnet)

@@ -42,31 +42,31 @@
 #' Environment Agency, Copenhagen, 2009
 #' @importFrom data.table rbindlist
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' # Do not run
-#' ef_evap(ef = "eshotc", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
+#' a <- ef_evap(ef = "eshotc", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
 #' pollutant = "cis-2-pentene")
-#' ef_evap(ef = "ed", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
+#' a <- ef_evap(ef = "ed", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
 #' show = TRUE)
-#' ef_evap(ef = c("erhotc", "erhotc"), v = "PC", cc = "<=1400",
+#' a <- ef_evap(ef = c("erhotc", "erhotc"), v = "PC", cc = "<=1400",
 #' dt = "0_15", ca = "no",
 #' show = TRUE)
-#' ef_evap(ef = c("erhotc", "erhotc"), v = "PC", cc = "<=1400",
+#' a <- ef_evap(ef = c("erhotc", "erhotc"), v = "PC", cc = "<=1400",
 #'  dt = "0_15", ca = "no",
 #' show = FALSE)
-#' ef_evap(ef = "eshotc", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
+#' a <- ef_evap(ef = "eshotc", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
 #' show = TRUE)
 #' ef_evap(ef = "erhotc", v = "PC", cc = "<=1400", dt = "0_15", ca = "no",
 #' show = TRUE)
 #' temps <- 10:20
-#' ef_evap(ef = "erhotc", v = "PC", cc = "<=1400", dt = temps, ca = "no",
+#' a <- ef_evap(ef = "erhotc", v = "PC", cc = "<=1400", dt = temps, ca = "no",
 #' show = TRUE)
 #' dt <- matrix(rep(1:24,5), ncol = 12) # 12 months
 #' dt <- celsius(dt)
-#' ef_evap(ef ="erhotc", v = "PC", cc = "<=1400",
+#' a <- ef_evap(ef ="erhotc", v = "PC", cc = "<=1400",
 #' dt = dt, ca = "no")
 #' lkm <- units::set_units(10, km)
-#' ef_evap(ef ="erhotc", v = "PC", cc = "<=1400", ltrip = lkm,
+#' a <- ef_evap(ef ="erhotc", v = "PC", cc = "<=1400", ltrip = lkm,
 #' dt = dt, ca = "no")
 #' }
 ef_evap <- function (ef, v, cc, dt, ca, pollutant = "NMHC",
@@ -128,9 +128,9 @@ ef_evap <- function (ef, v, cc, dt, ca, pollutant = "NMHC",
 
 
   if(!is.data.frame(dt)){
-    if(class(dt) == "factor"){
-      stop("Please, enter numeric or character")
-    }
+    # if(class(dt) == "factor"){
+    #   stop("Please, enter numeric or character")
+    # }
     if(is.numeric(dt)){
       dt = ifelse(dt < a, ta,
                   ifelse(dt >=a & dt < b, tb,

@@ -22,14 +22,10 @@
 #'   20:00-22:00 \tab average between ffs and ps\cr
 #'   22:00-00:00 \tab ffs\cr
 #' }
-#' @param distance Deprecated. Character specifying the units for distance.
-#' Default is "km"
-#' @param time Deprecated. Character specifying the units for time Default is "h".
-#' @param isList Deprecated
 #' @return dataframe speeds with units or sf.
 #' @importFrom sf st_sf st_as_sf
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' data(net)
 #' data(pc_profile)
 #' pc_week <- temp_fact(net$ldv+net$hdv, pc_profile)
@@ -45,19 +41,10 @@
 #' plot(dfsf) #plot of the average speed at each hour, +- sd
 #' }
 netspeed <- function (q = 1, ps, ffs, cap, lkm, alpha = 0.15, beta = 4,
-                      net, scheme = FALSE,
-                      distance = "km", time="h", isList){
-  if(!missing(isList)){
-    .Deprecated(msg = "'isList' argument is deprecated")
-  } else if(!missing(distance)){
-    .Deprecated(msg = "'distance' argument is deprecated")
-  } else if(!missing(time)){
-    .Deprecated(msg = "'time' argument is deprecated")
-  }
-
+                      net, scheme = FALSE){
   if (scheme == FALSE & missing(q)){
     stop("No vehicles on 'q'")
-  } else if (scheme == FALSE & !missing(q)){
+  } else if (scheme == FALSE){
     qq <- as.data.frame(q)
     for (i  in 1:ncol(qq) ) {
       qq[,i] <- as.numeric(qq[,i])
@@ -70,7 +57,7 @@ netspeed <- function (q = 1, ps, ffs, cap, lkm, alpha = 0.15, beta = 4,
       lkm/(lkm/ffs*(1 + alpha*(qq[,i]/cap)^beta))
     }))))
     names(dfv) <- unlist(lapply(1:ncol(q), function(i) paste0("S",i)))
-    df_scheme <- Speed(dfv, distance = distance, time = time)
+    df_scheme <- Speed(dfv)
     if(!missing(net)){
       netsf <- sf::st_as_sf(net)
       df_schemesf <- sf::st_sf(df_scheme, geometry = netsf$geometry)
@@ -87,7 +74,7 @@ netspeed <- function (q = 1, ps, ffs, cap, lkm, alpha = 0.15, beta = 4,
                  replicate(3, ffs))
     names(dfv) <- c(rep("FSS",5), "AS", rep("PS", 3), rep("AS", 7),
                     rep("PS", 3), rep("AS", 2),rep("FSS",3))
-    df_speed <- Speed(as.data.frame(dfv), distance = distance, time = time)
+    df_speed <- Speed(as.data.frame(dfv))
 
   if(!missing(net)){
     netsf <- sf::st_as_sf(net)

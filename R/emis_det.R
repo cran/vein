@@ -22,7 +22,7 @@
 #' for "V", "VI" and "VIc". However, as these technologies are relative
 #' new,  accumulated milage is low and hence, deteerioration factors small.
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' data(fkm)
 #' pckm <- fkm[[1]](1:24); pckma <- cumsum(pckm)
 #' km <- units::set_units(pckma[1:11], km)
@@ -186,7 +186,7 @@ emis_det <- function(po, cc, eu, speed = Speed(18.9), km, verbose = FALSE, show.
       return(mc)
 
     } else {
-      print("aqui")
+      # print("aqui")
       f1 <- function(V, km){
         a <- df$a; b <- df$b; c <- df$c; d <- df$d;
         e <- df$e; f <- df$f; g <- df$g; h <- df$h

@@ -1,14 +1,13 @@
 #' Construction function for Celsius temperature
 #'
-#' @description \code{celsius} jsut convert add unit celsius to different
-#' R objects
+#' @description \code{celsius} just  add unit celsius to different R objects
 #'
 #' @return Objects of class "data.frame" or "units"
 #'
 #' @param x Object with class "data.frame", "matrix",  "numeric" or "integer"
 #' @importFrom units as_units
 #'
-#' @examples {
+#' @examples \dontrun{
 #' a <- celsius(rnorm(100)*10)
 #' plot(a)
 #' b <- celsius(matrix(rnorm(100)*10, ncol = 10))

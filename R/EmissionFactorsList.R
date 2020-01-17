@@ -13,7 +13,7 @@
 #' @rdname EmissionFactorsList
 #' @aliases EmissionFactorsList print.EmissionFactorsList
 #' summary.EmissionFactorsList plot.EmissionFactorsList
-#' @examples {
+#' @examples \dontrun{
 #' data(fe2015)
 #' names(fe2015)
 #' class(fe2015)
@@ -49,7 +49,7 @@ EmissionFactorsList <- function(x, ...) {
 #' @export
 print.EmissionFactorsList <- function(x, ..., default = FALSE) {
   if ( default ) {
-    print.listof(x)
+    print.default(x)
   } else if ( is.function( x[[1]] ) ){
     cat("This EmissionFactorsList has ", length(x),
         " functions")
@@ -68,7 +68,6 @@ summary.EmissionFactorsList <- function(object, ...) {
   if ( is.function( ef[[1]] ) ){
     cat("This EmissionFactorsList has", length(ef),
         "functions")
-    summary(ef[[1]])
   } else if ( is.list(ef) && is.list(ef[[1]]) ) {
     cat("This EmissionFactorsList has ", length(ef), "lists\n")
     cat("First has",length(ef[[1]]), "functions\n")
@@ -84,7 +83,8 @@ plot.EmissionFactorsList <- function(x, ...) {
   if ( is.function( ef[[1]] ) ){
     cat("This EmissionFactorsList has", length(ef),
         "functions")
-    graphics::plot(unlist(lapply(1:length(ef), function(i) ef[[i]](34) )))
+    graphics::plot(unlist(lapply(1:length(ef), function(i) ef[[i]](34) )),
+                   ylab = "Emission factors at 34 [km/h]")
   } else  {
     cat("Try other methods")
   }

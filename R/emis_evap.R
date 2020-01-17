@@ -40,7 +40,7 @@
 #' but the number of columns of veh is 10, the 10 first emission factors are used.
 #'
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' (a <- Vehicles(1:10))
 #' (lkm <- units::as_units(1:10, "km"))
 #' (ef <- EmissionFactors(1:10))
@@ -93,6 +93,7 @@ emis_evap <- function(veh,
 
   # ed
   if(!missing(ed)){
+    ed <- remove_units(ed)
     if(is.data.frame(veh)){
 
       if(!is.data.frame(ed)) stop("as veh is a data.frame ed needs to be a data.frame")
@@ -210,7 +211,8 @@ emis_evap <- function(veh,
         }
 
       } else {
-        e <- veh*x*(carb*(p*hotc+(1-p)*warmc)+(1-carb)*hotfi)
+        e <- veh*as.numeric(x)*(carb*(p*hotc+(1-p)*warmc)+(1-carb)*hotfi)
+        e <- Emissions(e)
       }
     } else if (carb < 0){
       stop("carb is a positive fraction or 0")

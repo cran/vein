@@ -10,9 +10,8 @@
 #' This funcion, as other in this package, adapts to the class of the input data.
 #' providing flexibility to the user.
 #'
-#' @param veh "Vehicles" data-frame or spatial feature, wwhere columns are the
+#' @param veh "Vehicles" data-frame or spatial feature, where columns are the
 #'  age distribution of that vehicle. and rows each simple feature or region.
-#' The number of rows is equal to the number of streets link
 #' @param lkm Numeric; mileage by the age of use of each vehicle.
 #' @param ef Numeric or data.frame; emission factors. When it is a data.frame
 #' number of rows can be for each region, or also, each region repeated
@@ -24,48 +23,159 @@
 #' monthly profile.
 #' @param params List of parameters; Add columns with information to returning data.frame
 #' @param verbose Logical; To show more information
+#' @param fortran Logical; to try the fortran calculation.
 #' @return Emissions data.frame
 #' @seealso \code{\link{ef_ldv_speed}} \code{\link{ef_china}}
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' # Do not run
 #' euros <- c("V", "V", "IV", "III", "II", "I", "PRE", "PRE")
 #' efh <- ef_ldv_speed(v = "PC", t = "4S", cc = "<=1400", f = "G",
 #'           eu = euros, p = "CO", speed = Speed(34))
-#' lkm <- units::as_units(18:11, "km")*1000
-#' veh_month <- c(rep(8, 1), rep(10, 5), 9, rep(10, 5))
+#' lkm <- units::as_units(c(20:13), "km")*1000
 #' veh <- age_ldv(1:10, agemax = 8)
+#' system.time(
 #' a <- emis_hot_td(veh = veh,
 #'                 lkm = lkm,
 #'                 ef = EmissionFactors(as.numeric(efh[, 1:8])),
-#'                 verbose = TRUE)
-#' head(a)
-#' plot(aggregate(a$emissions, by = list(a$age), sum)$x,type ="b")
+#'                 verbose = TRUE))
+#' system.time(
+#' a2 <- emis_hot_td(veh = veh,
+#'                   lkm = lkm,
+#'                   ef = EmissionFactors(as.numeric(efh[, 1:8])),
+#'                   verbose = TRUE,
+#'                   fortran = TRUE)) #emistd7f.f95
+#' identical(a, a2)
+#'
+#' # adding columns
 #' emis_hot_td(veh = veh,
 #'             lkm = lkm,
 #'             ef = EmissionFactors(as.numeric(efh[, 1:8])),
 #'             verbose = TRUE,
 #'             params = list(paste0("data_", 1:10), "moredata"))
+#'
+#' # monthly profile (numeric) with numeric ef
+#' veh_month <- c(rep(8, 1), rep(10, 5), 9, rep(10, 5))
+#' system.time(
 #' aa <- emis_hot_td(veh = veh,
 #'                   lkm = lkm,
 #'                   ef = EmissionFactors(as.numeric(efh[, 1:8])),
 #'                   pro_month = veh_month,
-#'                   verbose = TRUE)
-#' head(aa)
-#' aa <- emis_hot_td(veh = veh,
+#'                   verbose = TRUE))
+#' system.time(
+#' aa2 <- emis_hot_td(veh = veh,
 #'                   lkm = lkm,
 #'                   ef = EmissionFactors(as.numeric(efh[, 1:8])),
 #'                   pro_month = veh_month,
-#'                   verbose = FALSE,
-#'                   params = list(paste0("data_", 1:10), "moredata"))
-#' print(aa)
+#'                   verbose = TRUE,
+#'                   fortran = TRUE)) #emistd5f.f95
+#' aa$emissions <- round(aa$emissions, 8)
+#' aa2$emissions <- round(aa2$emissions, 8)
+#' identical(aa, aa2)
+#'
+#' # monthly profile (numeric) with data.frame ef
+#' veh_month <- c(rep(8, 1), rep(10, 5), 9, rep(10, 5))
+#' def <- matrix(EmissionFactors(as.numeric(efh[, 1:8])),
+#' nrow = nrow(veh), ncol = ncol(veh), byrow = TRUE)
+#' def <- EmissionFactors(def)
+#' system.time(
+#' aa <- emis_hot_td(veh = veh,
+#'                   lkm = lkm,
+#'                   ef = def,
+#'                   pro_month = veh_month,
+#'                   verbose = TRUE))
+#' system.time(
+#' aa2 <- emis_hot_td(veh = veh,
+#'                   lkm = lkm,
+#'                   ef = def,
+#'                   pro_month = veh_month,
+#'                   verbose = TRUE,
+#'                   fortran = TRUE)) #emistd1f.f95
+#' aa$emissions <- round(aa$emissions, 8)
+#' aa2$emissions <- round(aa2$emissions, 8)
+#' identical(aa, aa2)
+#'
+#' # monthly profile (data.frame)
+#' dfm <- matrix(c(rep(8, 1), rep(10, 5), 9, rep(10, 5)), nrow = 10, ncol = 12,
+#' byrow = TRUE)
+#' system.time(
+#' aa <- emis_hot_td(veh = veh,
+#'                   lkm = lkm,
+#'                   ef = EmissionFactors(as.numeric(efh[, 1:8])),
+#'                   pro_month = dfm,
+#'                   verbose = TRUE))
+#' system.time(
+#' aa2 <- emis_hot_td(veh = veh,
+#'                   lkm = lkm,
+#'                   ef = EmissionFactors(as.numeric(efh[, 1:8])),
+#'                   pro_month = dfm,
+#'                   verbose = TRUE,
+#'                   fortran = TRUE)) # emistd6f.f95
+#' aa$emissions <- round(aa$emissions, 2)
+#' aa2$emissions <- round(aa2$emissions, 2)
+#' identical(aa, aa2)
+#'
+#' # Suppose that we have a EmissionsFactor data.frame with number of rows for each month
+#' # number of rows are 10 regions
+#' # number of columns are 12 months
+#' tem <- runif(n = 6*10, min = -10, max = 35)
+#' temp <- c(rev(tem[order(tem)]), tem[order(tem)])
+#' plot(temp)
+#' dftemp <- celsius(matrix(temp, ncol = 12))
+#' dfef <- ef_evap(ef = c(rep("eshotfi", 8)),
+#'               v = "PC",
+#'               cc = "<=1400",
+#'               dt = dftemp,
+#'               show = F,
+#'               ca = "small",
+#'               ltrip = units::set_units(10, km),
+#'               pollutant = "NMHC")
+#' dim(dfef) # 120 rows and 9 columns, 8 ef (g/km) and 1 for month
+#' system.time(
+#' aa <- emis_hot_td(veh = veh,
+#'                   lkm = lkm,
+#'                   ef = dfef,
+#'                   pro_month = veh_month,
+#'                   verbose = TRUE))
+#' system.time(
+#' aa2 <- emis_hot_td(veh = veh,
+#'                    lkm = lkm,
+#'                    ef = dfef,
+#'                    pro_month = veh_month,
+#'                    verbose = TRUE,
+#'                    fortran = TRUE)) #emistd3f.f95
+#' aa$emissions <- round(aa$emissions, 2)
+#' aa2$emissions <- round(aa2$emissions, 2)
+#' identical(aa, aa2)
+#' plot(aggregate(aa$emissions, by = list(aa$month), sum)$x)
+#'
+#' # Suppose that we have a EmissionsFactor data.frame with number of rows for each month
+#' # monthly profile (data.frame)
+#' system.time(
+#' aa <- emis_hot_td(veh = veh,
+#'                   lkm = lkm,
+#'                   ef = dfef,
+#'                   pro_month = dfm,
+#'                   verbose = TRUE))
+#' system.time(
+#' aa2 <- emis_hot_td(veh = veh,
+#'                    lkm = lkm,
+#'                    ef = dfef,
+#'                    pro_month = dfm,
+#'                    verbose = TRUE,
+#'                    fortran = TRUE)) #emistd4f.f95
+#' aa$emissions <- round(aa$emissions, 8)
+#' aa2$emissions <- round(aa2$emissions, 8)
+#' identical(aa, aa2)
+#' plot(aggregate(aa$emissions, by = list(aa$month), sum)$x)
 #' }
 emis_hot_td <- function (veh,
-                          lkm,
-                          ef,
-                          pro_month,
-                          params,
-                          verbose = FALSE) {
+                         lkm,
+                         ef,
+                         pro_month,
+                         params,
+                         verbose = FALSE,
+                         fortran = FALSE) {
   # Check units
   if(class(lkm) != "units"){
     stop("lkm neeeds to has class 'units' in 'km'. Please, check package '?units::set_units'")
@@ -76,6 +186,7 @@ emis_hot_td <- function (veh,
   if(units(lkm)$numerator == "km" ) {
     lkm <- as.numeric(lkm)
   }
+  if(length(lkm) != ncol(veh)) stop("Length of 'lkm' must be the as the number of columns of 'veh'")
 
   # Checking ef
   if(is.matrix(ef) | is.data.frame(ef)){
@@ -93,6 +204,7 @@ emis_hot_td <- function (veh,
     }
     # When row = 1, transform to vector.
     if(nrow(ef) == 1){
+      if(verbose) message("Transforming 1 row data.frame into numeric")
       ef <- as.numeric(ef)
     }
 
@@ -133,82 +245,215 @@ emis_hot_td <- function (veh,
 
   # Checking pro_month
   if(!missing(pro_month)){
+
     if(verbose) message("Estimation with monthly profile")
+
     if(length(pro_month) != 12) stop("Length of pro_month must be 12")
+
     mes <- ifelse(nchar(1:12)<2, paste0(0, 1:12), 1:12)
+
     if(is.data.frame(ef)){
+
       if(verbose) message("Assuming you have emission factors for each simple feature and then for each month")
 
       #when pro_month varies in each simple feature
       if(is.data.frame(pro_month) & nrow(ef) == nrow(veh)){
+
         if(verbose) message("'pro_month' is data.frame and number of rows of 'ef' and 'veh' are equal")
+
         if(nrow(ef) != nrow(veh)) stop("Number of rows of 'veh' and 'ef' must be equal")
-        e <- do.call("rbind",lapply(1:12, function(k){
-          dfi <- unlist(lapply(1:ncol(veh), function(i){
-            lkm[i]*veh[, i] * pro_month[,k] *ef[,i]
+
+        if(fortran){
+          nrowv <- as.integer(nrow(veh))
+          ncolv <- as.integer(ncol(veh))
+          pmonth <- as.integer(ncol(pro_month))
+          lkm <- as.numeric(lkm)
+          ef <- as.matrix(ef[, 1:ncol(veh)])
+          month <- as.matrix(pro_month)
+
+          if(verbose) message("Calling emistd2f.f95")
+
+          a <-   .Fortran("emistd2f",
+                          nrowv = nrowv,
+                          ncolv = ncolv,
+                          pmonth = pmonth,
+                          veh = as.matrix(veh),
+                          lkm = lkm,
+                          ef = ef,
+                          month = month,
+                          emis = numeric(nrowv*ncolv*pmonth))$emis
+
+          e <- data.frame(emissions = a)
+          e <- Emissions(e)
+          e$rows <- rep(row.names(veh), each = ncolv*pmonth) # i
+          e$age <- rep(seq(1, ncolv), nrowv*pmonth)          # j
+          e$month <- rep(seq(1, pmonth), ncolv*nrowv)        # k
+
+        } else {
+          e <- do.call("rbind",lapply(1:12, function(k){
+            dfi <- unlist(lapply(1:ncol(veh), function(j){
+              lkm[j] * veh[, j] * pro_month[, k] *ef[, j]
+            }))
+            dfi <- as.data.frame(dfi)
+            names(dfi) <- "emissions"
+            dfi <- Emissions(dfi)
+            dfi$rows <- row.names(veh)
+            dfi$age <- rep(1:ncol(veh), each = nrow(veh))
+            dfi$month <- (1:length(pro_month))[k]
+            dfi
           }))
-          dfi <- as.data.frame(dfi)
-          names(dfi) <- "emissions"
-          dfi <- Emissions(dfi)
-          dfi$rows <- row.names(veh)
-          dfi$age <- rep(1:ncol(veh), each = nrow(veh))
-          dfi$month <- (1:length(pro_month))[k]
-          dfi
-        }))
+        }
 
       } else if(is.numeric(pro_month) & nrow(ef) == nrow(veh)){
+
         if(verbose) message("'pro_month' is numeric and number of rows of 'ef' and 'veh' are equal")
+
         if(nrow(ef) != nrow(veh)) stop("Number of rows of 'veh' and 'ef' must be equal")
-        e <- do.call("rbind",lapply(1:12, function(k){
-          dfi <- unlist(lapply(1:ncol(veh), function(i){
-            lkm[i]*veh[, i] * pro_month[k] *ef[,i]
+
+        if(fortran) {
+          nrowv <- as.integer(nrow(veh))
+          ncolv <- as.integer(ncol(veh))
+          pmonth <- as.integer(length(pro_month))
+          lkm <- as.numeric(lkm)
+          ef <- as.matrix(ef[, 1:ncol(veh)])
+          month <- as.numeric(pro_month)
+
+          if(verbose) message("Calling emistd1f.f95")
+
+          a <-   .Fortran("emistd1f",
+                          nrowv = nrowv,
+                          ncolv = ncolv,
+                          pmonth = pmonth,
+                          veh = as.matrix(veh),
+                          lkm = lkm,
+                          ef = ef,
+                          month = month,
+                          emis = numeric(nrowv*ncolv*pmonth))$emis
+
+          e <- data.frame(emissions = a)
+          e <- Emissions(e)
+          e$rows <- rep(row.names(veh), ncolv*pmonth)            # i
+          e$age <- rep(rep(seq(1, ncolv), each = nrowv), pmonth) # j
+          e$month <- rep(seq(1, pmonth), each = ncolv*nrowv)            # k
+
+        } else {
+          e <- do.call("rbind",lapply(1:12, function(k){
+            dfi <- unlist(lapply(1:ncol(veh), function(j){
+              lkm[j] * veh[, j] * pro_month[k] *ef[, j]
+            }))
+            dfi <- as.data.frame(dfi)
+            names(dfi) <- "emissions"
+            dfi <- Emissions(dfi)
+            dfi$rows <- row.names(veh)
+            dfi$age <- rep(1:ncol(veh), each = nrow(veh))
+            dfi$month <- (1:length(pro_month))[k]
+            dfi
           }))
-          dfi <- as.data.frame(dfi)
-          names(dfi) <- "emissions"
-          dfi <- Emissions(dfi)
-          dfi$rows <- row.names(veh)
-          dfi$age <- rep(1:ncol(veh), each = nrow(veh))
-          dfi$month <- (1:length(pro_month))[k]
-          dfi
-        }))
+        }
 
       } else if(is.data.frame(pro_month) & nrow(ef) == 12*nrow(veh)){
+
         if(verbose) message("'pro_month' is data.frame and number of rows of 'ef' is 12*number of rows 'veh'")
-        ef$month <- rep(1:12, each = nrow(veh))
-        ef <- split(ef, ef$month)
 
-        e <- do.call("rbind",lapply(1:12, function(k){
-          dfi <- unlist(lapply(1:ncol(veh), function(i){
-            lkm[i]*veh[, i] * pro_month[,k] *ef[[k]][,i]
+        if(fortran){
+          nrowv <- as.integer(nrow(veh))
+          ncolv <- as.integer(ncol(veh))
+          pmonth <- as.integer(ncol(pro_month))
+          lkm <- as.numeric(lkm)
+          ef$month <- rep(1:12, each = nrow(veh))
+          ef2 <- split(ef[, 1:ncol(veh)], ef$month)
+          ef2 <- as.numeric(unlist(lapply(ef2, unlist)))
+          month <- as.matrix(pro_month)
+
+          if(verbose) message("Calling emistd4f.f95")
+
+          a <-   .Fortran("emistd4f",
+                          nrowv = nrowv,
+                          ncolv = ncolv,
+                          pmonth = pmonth,
+                          veh = as.matrix(veh),
+                          lkm = lkm,
+                          ef = ef2,
+                          month = month,
+                          emis = numeric(nrowv*ncolv*pmonth))$emis
+
+          e <- data.frame(emissions = a)
+          e <- Emissions(e)
+          e$rows <- rep(row.names(veh), ncolv*pmonth)              # i
+          e$age <- rep(rep(seq(1, ncolv), each = nrowv), pmonth) # j
+          e$month <- rep(seq(1, pmonth), each = ncolv*nrowv)      # k
+
+        } else {
+          ef$month <- rep(1:12, each = nrow(veh))
+          ef <- split(ef, ef$month)
+
+          e <- do.call("rbind",lapply(1:12, function(k){
+            dfi <- unlist(lapply(1:ncol(veh), function(j){
+              lkm[j] * veh[, j] * pro_month[, k] *ef[[k]][, j]
+            }))
+            dfi <- as.data.frame(dfi)
+            names(dfi) <- "emissions"
+            dfi <- Emissions(dfi)
+            dfi$rows <- row.names(veh)
+            dfi$age <- rep(1:ncol(veh), each = nrow(veh))
+            dfi$month <- (1:length(pro_month))[k]
+            dfi
           }))
-          dfi <- as.data.frame(dfi)
-          names(dfi) <- "emissions"
-          dfi <- Emissions(dfi)
-          dfi$rows <- row.names(veh)
-          dfi$age <- rep(1:ncol(veh), each = nrow(veh))
-          dfi$month <- (1:length(pro_month))[k]
-          dfi
-        }))
+
+        }
+
       } else if(is.numeric(pro_month) & nrow(ef) == 12*nrow(veh)){
-        if(verbose) message("'pro_month' is numeric and number of rows of 'ef' is 12*number of rows 'veh'")
-        ef$month <- rep(1:12, each = nrow(veh))
-        ef <- split(ef, ef$month)
 
-        e <- do.call("rbind",lapply(1:12, function(k){
-          dfi <- unlist(lapply(1:ncol(veh), function(i){
-            lkm[i]*veh[, i] * pro_month[k] *ef[[k]][,i]
+        if(verbose) message("'pro_month' is numeric and number of rows of 'ef' is 12*number of rows 'veh'")
+
+        if(fortran){
+          nrowv <- as.integer(nrow(veh))
+          ncolv <- as.integer(ncol(veh))
+          pmonth <- as.integer(length(pro_month))
+          ef$month <- rep(1:12, each = nrow(veh))
+          ef2 <- split(ef[, 1:ncol(veh)], ef$month)
+          ef2 <- as.numeric(unlist(lapply(ef2, unlist)))
+         lkm <- as.numeric(lkm)
+          month <- as.numeric(pro_month)
+
+          if(verbose) message("Calling emistd3f.f95")
+
+          a <-   .Fortran("emistd3f",
+                          nrowv = nrowv,
+                          ncolv = ncolv,
+                          pmonth = pmonth,
+                          veh = as.matrix(veh),
+                          lkm = lkm,
+                          ef = ef2,
+                          month = month,
+                          emis = numeric(nrowv*ncolv*pmonth))$emis
+          e <- data.frame(emissions = a)
+          e <- Emissions(e)
+          e$rows <- rep(row.names(veh),  ncolv*pmonth)           # i
+          e$age <- rep(rep(seq(1, ncolv), each = nrowv), pmonth) # j
+          e$month <- rep(seq(1, pmonth), each = ncolv*nrowv)     # k
+
+        } else {
+          ef$month <- rep(1:12, each = nrow(veh))
+          ef <- split(ef, ef$month)
+
+          e <- do.call("rbind",lapply(1:12, function(k){
+            dfi <- unlist(lapply(1:ncol(veh), function(j){
+              lkm[j] * veh[, j] * pro_month[k] *ef[[k]][, j]
+            }))
+            dfi <- as.data.frame(dfi)
+            names(dfi) <- "emissions"
+            dfi <- Emissions(dfi)
+            dfi$rows <- row.names(veh)
+            dfi$age <- rep(1:ncol(veh), each = nrow(veh))
+            dfi$month <- (1:length(pro_month))[k]
+            dfi
           }))
-          dfi <- as.data.frame(dfi)
-          names(dfi) <- "emissions"
-          dfi <- Emissions(dfi)
-          dfi$rows <- row.names(veh)
-          dfi$age <- rep(1:ncol(veh), each = nrow(veh))
-          dfi$month <- (1:length(pro_month))[k]
-          dfi
-        }))
-      } else if(nrow(ef) !=  nrow(veh) & nrow(ef) != 12)(
-        stop("The number of rows can be equal to number of rows of veh, or number of rows of veh times 12")
-      )
+        }
+      }
+      # else if(nrow(ef) !=  nrow(veh) & nrow(ef) != 12)(
+      # stop("The number of rows can be equal to number of rows of veh, or number of rows of veh times 12")
+      # )
 
       if(!missing(params)){
         if(!is.list(params)) stop("'params' must be a list")
@@ -222,41 +467,110 @@ emis_hot_td <- function (veh,
       }
 
       if(verbose) cat("Sum of emissions:", sum(e$emissions), "\n")
+
     } else if(!is.data.frame(ef)){
+
       if(verbose) message("Assuming you have the same emission factors in each simple feature")
 
-      # when pro_month vary each month
-      if(is.data.frame(pro_month)){
+      # when pro_month vary each row
+      if(is.data.frame(pro_month) | is.matrix(pro_month)){
+
         if(verbose) message("'pro_month' is data.frame and 'ef' is numeric")
+
         if(length(ef) != ncol(veh)) stop("Number of columns of 'veh' and length of 'ef' must be equal")
-        e <- do.call("rbind",lapply(1:12, function(k){
-          dfi <- unlist(lapply(1:ncol(veh), function(i){
-            lkm[i]*veh[, i] * pro_month[, k] *ef[i]
+
+        if(length(lkm) != ncol(veh)) stop("Length of 'lkm' and number of columns 'veh' must be equal")
+
+        if(fortran){
+          nrowv <- as.integer(nrow(veh))
+          ncolv <- as.integer(ncol(veh))
+          pmonth <- as.integer(ncol(pro_month))
+          lkm <- as.numeric(lkm)
+          ef <- as.numeric(ef)
+          month <- as.matrix(pro_month)
+
+          if(verbose) message("Calling emistd6f.f95")
+
+          a <-   .Fortran("emistd6f",
+                          nrowv = nrowv,
+                          ncolv = ncolv,
+                          pmonth = pmonth,
+                          veh = as.matrix(veh),
+                          lkm = lkm,
+                          ef = ef,
+                          month = month,
+                          emis = numeric(nrowv*ncolv*pmonth))$emis
+
+          e <- data.frame(emissions = a)
+          e <- Emissions(e)
+          e$rows <- rep(row.names(veh), ncolv*pmonth)   # i
+          e$age <- rep(rep(seq(1, ncolv), each = nrowv), pmonth)      # j
+          e$month <- rep(seq(1, pmonth), each = ncolv*nrowv)          # k
+
+        } else {
+          e <- do.call("rbind",lapply(1:12, function(k){
+            dfi <- unlist(lapply(1:ncol(veh), function(j){
+              lkm[j] * veh[, j] * pro_month[, k] *ef[j]
+            }))
+            dfi <- as.data.frame(dfi)
+            names(dfi) <- "emissions"
+            dfi <- Emissions(dfi)
+            dfi$rows <- row.names(veh)
+            dfi$age <- rep(1:ncol(veh), each = nrow(veh))
+            dfi$month <- (1:length(pro_month))[k]
+            dfi
           }))
-          dfi <- as.data.frame(dfi)
-          names(dfi) <- "emissions"
-          dfi <- Emissions(dfi)
-          dfi$rows <- row.names(veh)
-          dfi$age <- rep(1:ncol(veh), each = nrow(veh))
-          dfi$month <- (1:length(pro_month))[k]
-          dfi
-        }))
+
+        }
 
       } else if(is.numeric(pro_month)){
+
         if(verbose) message("'pro_month' is numeric and 'ef' is numeric")
+
         if(length(ef) != ncol(veh)) stop("Number of columns of 'veh' and length of 'ef' must be equal")
-        e <- do.call("rbind",lapply(1:12, function(k){
-          dfi <- unlist(lapply(1:ncol(veh), function(i){
-            lkm[i]*veh[, i] * pro_month[k] *ef[i]
+
+        if(fortran){
+          nrowv <- as.integer(nrow(veh))
+          ncolv <- as.integer(ncol(veh))
+          pmonth <- as.integer(length(pro_month))
+          lkm <- as.numeric(lkm)
+          month <- as.numeric(pro_month)
+          ef <- as.numeric(ef)
+
+          if(verbose) message("Calling emistd5f.f95")
+
+          a <-   .Fortran("emistd5f",
+                          nrowv = nrowv,
+                          ncolv = ncolv,
+                          pmonth = pmonth,
+                          veh = as.matrix(veh),
+                          lkm = lkm,
+                          ef = ef,
+                          month = month,
+                          emis = numeric(nrowv*ncolv*pmonth))$emis
+
+          e <- data.frame(emissions = a)
+          e <- Emissions(e)
+          e$rows <- rep(row.names(veh), ncolv*pmonth)
+          e$age <- rep(seq(1, ncolv), each = nrowv)
+          e$month <- rep(seq(1, pmonth), each = ncolv*nrowv)
+
+
+        } else {
+          e <- do.call("rbind",lapply(1:12, function(k){
+            dfi <- unlist(lapply(1:ncol(veh), function(j){
+              lkm[j] * veh[, j] * pro_month[k] *ef[j]
+            }))
+            dfi <- as.data.frame(dfi)
+            names(dfi) <- "emissions"
+            dfi <- Emissions(dfi)
+            dfi$rows <- row.names(veh)
+            dfi$age <- rep(1:ncol(veh), each = nrow(veh))
+            dfi$month <- (1:length(pro_month))[k]
+            dfi
           }))
-          dfi <- as.data.frame(dfi)
-          names(dfi) <- "emissions"
-          dfi <- Emissions(dfi)
-          dfi$rows <- row.names(veh)
-          dfi$age <- rep(1:ncol(veh), each = nrow(veh))
-          dfi$month <- (1:length(pro_month))[k]
-          dfi
-        }))
+
+        }
 
       }
       if(!missing(params)){
@@ -278,22 +592,50 @@ emis_hot_td <- function (veh,
     if(verbose) message("Estimation without monthly profile")
 
     if(!is.data.frame(ef)) {
-      if(verbose) message("'ef' is numeric")
-#      if(length(ef) != ncol(veh)) stop("Number of columns of 'veh' and length of 'ef' must be equal")
-# Last check not necessary, Assuming ef goes from 1 column to ncol(veh)
-      e <-  unlist(lapply(1:ncol(veh), function(i){
-        lkm[i]*veh[, i] *ef[i]
-      }))
-      e <- as.data.frame(e)
-      names(e) <- "emissions"
-      e <- Emissions(e)
-      e$rows <- row.names(e)
-      e$age <- rep(1:ncol(veh), each = nrow(veh))
+
+      if(verbose) message("'ef' is a numeric vector with units")
+
+      if(fortran){
+        lkm <- as.numeric(lkm)
+        ef <- as.numeric(ef)
+        nrowv = as.integer(nrow(veh))
+        ncolv = as.integer(ncol(veh))
+
+        if(verbose) message("Calling emistd7f.f95")
+
+        a <-   .Fortran("emistd7f",
+                        nrowv = nrowv,
+                        ncolv = ncolv,
+                        veh = as.matrix(veh),
+                        lkm = lkm,
+                        ef = ef,
+                        emis = numeric(nrowv*ncolv))$emis
+        # fortran
+        # do concurrent(i= 1:nrowv, j = 1:ncolv)
+        # emis(i, j) = veh(i,j) * lkm(i) * ef(j)
+        # end do
+        e <- as.data.frame(a)
+        names(e) <- "emissions"
+        e <- Emissions(e)
+        e$rows <- row.names(e)
+        e$age <- rep(1:ncol(veh), each = nrow(veh))
+
+      } else {
+        e <-  unlist(lapply(1:ncol(veh), function(j){
+          lkm[j] * veh[, j] * ef[j]
+        }))
+        e <- as.data.frame(e)
+        names(e) <- "emissions"
+        e <- Emissions(e)
+        e$rows <- row.names(e)
+        e$age <- rep(1:ncol(veh), each = nrow(veh))
+
+      }
     } else {
       if(verbose) message("'ef' is data.frame")
       if(nrow(ef) != nrow(veh)) stop("Number of rows of 'ef' and 'veh' must be equal")
-      e <-  unlist(lapply(1:ncol(veh), function(i){
-        lkm[i]*veh[, i] *ef[, i]
+      e <-  unlist(lapply(1:ncol(veh), function(j){
+        lkm[j] * veh[, j] *ef[, j]
       }))
       e <- as.data.frame(e)
       names(e) <- "emissions"
@@ -320,3 +662,4 @@ emis_hot_td <- function (veh,
 
   return(e)
 }
+

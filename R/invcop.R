@@ -33,6 +33,7 @@ invcop <- function (in_name = getwd(),
 
   #reemplaza in)_name con out_name
   dirs2 <- gsub(pattern = in_name, replacement = out_name, x = dirs)
+ # if(test) return(dirs2)
 
   # crea out_name
   for(i in 1:length(dirs2)){

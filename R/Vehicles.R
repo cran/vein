@@ -15,14 +15,13 @@
 #'
 #' @rdname Vehicles
 #' @aliases Vehicles print.Vehicles summary.Vehicles plot.Vehicles
-#' @examples {
+#' @examples \dontrun{
 #' lt <- rnorm(100, 300, 10)
 #' class(lt)
 #' vlt <- Vehicles(lt)
 #' class(vlt)
 #' plot(vlt)
 #' LT_B5 <- age_hdv(x = lt,name = "LT_B5")
-#' print(LT_B5)
 #' summary(LT_B5)
 #' plot(LT_B5)
 #' }
@@ -34,7 +33,7 @@ Vehicles <- function(x, ...) {
     for(i in 1:ncol(veh)){
       veh[,i] <- veh[,i]*units::as_units("veh")
     }
-    class(veh) <- c("Vehicles",class(x))
+    class(veh) <- c("Vehicles",class(veh))
   } else if ( is.data.frame(x) ) {
     veh <- x
     for(i in 1:ncol(veh)){
@@ -54,26 +53,23 @@ Vehicles <- function(x, ...) {
 #' @method print Vehicles
 #' @export
 print.Vehicles <- function(x, ...) {
-  if(nrow(x) < 10 & ncol(x) < 10){
-    NextMethod("print", x, right = TRUE)
-  } else if (nrow(x) > 10 & ncol(x) < 10){
-    print.data.frame(x[1:5, ], right = TRUE)
-    cat(paste0("... and more ", nrow(x) - 5, " rows\n"))
-  } else if(nrow(x) < 10 & ncol(x) > 10){
-    print.data.frame(x[, 1:5], right = TRUE)
-    cat(paste0("... and more ", ncol(x) - 5, " columns\n"))
+  nr <- ifelse(nrow(x) <= 5, nrow(x), 5)
+  if(ncol(x) == 1) {
+    ndf <- names(x)
+    df <- data.frame(ndf = x[1:nr, ])
+    names(df) <- ndf
+    print.data.frame(df)
   } else {
-    print.data.frame(x[1:5, 1:5], right = TRUE)
-    cat(paste0("... and more ", nrow(x) - 5, " rows\n"))
-    cat(paste0("... and more ", ncol(x) - 5, " columns\n"))
+    print.data.frame(x[1:nr, ])
   }
+  if(nrow(x) > 5)     cat(paste0("... and ", nrow(x) - 5, " more rows\n"))
 }
-
 
 #' @rdname Vehicles
 #' @method summary Vehicles
 #' @export
 summary.Vehicles <- function(object, ...) {
+  units::install_symbolic_unit("veh", warn = F)
   veh <- object
   avage <- sum(seq(1,ncol(veh))*colSums(veh)/sum(veh))
   cat("\nVehicles by columns in study area = \n")
@@ -90,6 +86,7 @@ summary.Vehicles <- function(object, ...) {
 #' @method plot Vehicles
 #' @export
 plot.Vehicles <- function(x,  ..., message = TRUE) {
+  units::install_symbolic_unit("veh", warn = F)
   veh <- x
   if ( inherits(veh, "data.frame") ) {
     avage <- sum(seq(1,ncol(veh)) * colSums(veh)/sum(veh))

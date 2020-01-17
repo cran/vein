@@ -31,7 +31,7 @@
 #' @export
 #' @note It consists in a Gompertz equation with default parameters from
 #' 1 national emissions inventory for green housegases in Brazil, MCT 2006
-#' @examples {
+#' @examples \dontrun{
 #' data(net)
 #' PC_E25_1400 <- age_ldv(x = net$ldv, name = "PC_E25_1400")
 #' plot(PC_E25_1400)
@@ -54,13 +54,10 @@ age_ldv <- function (x,
   #check agemax
   if(agemax < 1) stop("Agemax should be bigger than 1")
 
-  if (missing(x) | is.null(x)) {
-    stop (print("Missing vehicles"))
-  }
   #bystreet = TRUE
   if (bystreet == T){
     if(length(x) != length(a)){
-      stop((print("Lengths of veh and age must be the same")))
+      stop("Lengths of veh and age must be the same")
     }
     d <- suca <- list()
     for (i in seq_along(x)) {

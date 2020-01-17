@@ -17,9 +17,12 @@
 #' @examples \dontrun{
 #' # Do not run
 #' }
-emis_source <- function(path = "est", pattern = ".R",
-                        ignore = "~", first, ask = TRUE,
-                        recursive = TRUE, full.names = TRUE){
+emis_source <- function(path = "est",
+                        pattern = ".R",
+                        ignore = "~",
+                        first, ask = TRUE,
+                        recursive = TRUE,
+                        full.names = TRUE){
   inputs <- list.files(path = path, pattern = pattern,
                        recursive = recursive, full.names =  full.names)
   inputs <- inputs[!grepl(pattern = ignore, x = inputs)]
@@ -32,7 +35,6 @@ emis_source <- function(path = "est", pattern = ".R",
       if(choice == 1){
         for(i in 1:length(inputsa)){
           source(inputsa[i])
-          # print(inputsa[i])
         }
       } else {
         stop("Change inputs")
@@ -40,7 +42,6 @@ emis_source <- function(path = "est", pattern = ".R",
     } else {
       for(i in 1:length(inputsa)){
         source(inputsa[i])
-        # print(inputsa[i])
       }
     }
   } else {
@@ -50,7 +51,6 @@ emis_source <- function(path = "est", pattern = ".R",
       if(choice == 1){
         for(i in 1:length(inputs)){
           source(inputs[i])
-          # print(inputs[i])
         }
       } else {
         stop("Change inputs")
@@ -58,7 +58,6 @@ emis_source <- function(path = "est", pattern = ".R",
     } else {
       for(i in 1:length(inputs)){
         source(inputs[i])
-        # print(inputs[i])
       }
     }
 

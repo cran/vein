@@ -29,7 +29,7 @@
 #' the shape of this curve.
 #' 4. You can use/merge/transform/adapt any of these functions.
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' data(net)
 #' LT_B5 <- age_hdv(x = net$hdv,name = "LT_B5")
 #' plot(LT_B5)
@@ -53,13 +53,11 @@ age_hdv <- function (x,
   # check agemax
   if(agemax < 1) stop("Agemax should be bigger than 1")
 
-  if (missing(x) | is.null(x)) {
-    stop (print("Missing vehicles"))
-  }
+
   # bystreet = TRUE
   if (bystreet == TRUE){
     if(length(x) != length(a)){
-      stop((print("Lengths of veh and age must be the same")))
+      stop("Lengths of veh and age must be the same")
     }
     d <- suca <- list()
     for (i in seq_along(x)) {
