@@ -7,9 +7,7 @@
 make_grid(spobj, width, height = width, polygon, crs = 4326, ...)
 }
 \arguments{
-\item{spobj}{A spatial object of class sp or sf or a Character. When it is
-a character, it is assumed that it is a path to wrfinput file to create
-a grid class 'sf' based on this file. This is done by running eixport::wrf_grid.}
+\item{spobj}{A spatial object of class sp or sf.}
 
 \item{width}{Width of grid cell. It is recommended to use projected values.}
 
@@ -36,10 +34,6 @@ reference is taken from the spatial object.
 data(net)
 grid <- make_grid(net, width = 0.5/102.47) #500 mts
 plot(grid, axes = TRUE) #class sf
-wrf <- paste(system.file("extdata", package = "eixport"),
-"/wrfinput_d02", sep="")
-gwrf  <- make_grid(wrf)
-plot(gwrf, axes = TRUE)
 
 }
 }

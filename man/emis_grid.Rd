@@ -2,9 +2,9 @@
 % Please edit documentation in R/emis_grid.R
 \name{emis_grid}
 \alias{emis_grid}
-\title{Allocate emissions into a grid}
+\title{Allocate emissions into a grid returning point emissions or flux}
 \usage{
-emis_grid(spobj = net, g, sr, type = "lines", FN = "sum")
+emis_grid(spobj = net, g, sr, type = "lines", FN = "sum", flux = TRUE, k = 1)
 }
 \arguments{
 \item{spobj}{A spatial dataframe of class "sp" or "sf". When class is "sp"
@@ -18,6 +18,12 @@ not projected. Please, see http://spatialreference.org/.}
 \item{type}{type of geometry: "lines", "points" or "polygons".}
 
 \item{FN}{Character indicating the function. Default is "sum"}
+
+\item{flux}{Logical, if TRUE, it return flux (mass / area / time (implicit))
+in a polygon grid, if false,  mass / time (implicit) as points, in a similar fashion
+as EDGAR provide data.}
+
+\item{k}{Numeric to multiply emissions}
 }
 \description{
 \code{\link{emis_grid}} allocates emissions proportionally to each grid
@@ -25,10 +31,20 @@ not projected. Please, see http://spatialreference.org/.}
 It means that requires "sr" according with your location for the projection.
 It is assumed that spobj is a Spatial*DataFrame or an "sf" with the pollutants
 in data. This function returns an object of class "sf".
+
+It is
 }
 \note{
-When spobj is a 'Spatial' object (class of sp), they are converted
- into 'sf'. Also, The aggregation of data is done with data.table functions.
+\strong{1) If flux = TRUE (default), emissions are flux = mass / area / time (implicit), as polygons.}
+\strong{If flux = FALSE, emissions are mass / time (implicit), as points.}
+\strong{Time untis are not displayed because each use can have different time units}
+\strong{for instance, year, month, hour second, etc.}
+
+\strong{2) Therefore, it is good practice to have time units in 'spobj'. }
+\strong{This implies that spobj MUST include units!. }
+
+\strong{3) In order to check the sum of the emissions, you must calculate the grid-area}
+\strong{in km^2 and multiply by each column of the resulting emissions grid, and then sum.}
 }
 \examples{
 \dontrun{
@@ -37,27 +53,13 @@ g <- make_grid(net, 1/102.47/2) #500m in degrees
 names(net)
 netsf <- sf::st_as_sf(net)
 netg <- emis_grid(spobj = netsf[, c("ldv", "hdv")], g = g, sr= 31983)
-round(sum(netg$ldv)) == round(as.numeric(sum(net$ldv)))
-round(sum(netg$hdv)) == round(as.numeric(sum(net$hdv)))
 plot(netg["ldv"], axes = TRUE)
 plot(netg["hdv"], axes = TRUE)
 netg <- emis_grid(spobj = netsf[, c("ldv", "hdv")], g = g, sr= 31983, FN = "mean")
 plot(netg["ldv"], axes = TRUE)
 plot(netg["hdv"], axes = TRUE)
-\dontrun{
-library(sf)
-library(data.table)
-library(raster)
-library(stars)
-g <- readRDS("/media/sergio/ext5/gd03.rds")
-net <- fread("/media/sergio/ext5/edgar_ecb05_opt1/2012/extracted/ALD.csvy")
-net$layer <- net$layer*1e12
-net <- rasterFromXYZ(net)
-net <- crop(net, as_Spatial(g))
-net <- st_as_stars(net)
-net <- st_as_sf(net, crs = 4326)
-st_crs(net) <- 4326
-netg <- emis_grid(net, g, type = "polygons")
-}
+netg <- emis_grid(spobj = netsf[, c("ldv", "hdv")], g = g, sr= 31983, flux = FALSE)
+plot(netg["ldv"], axes = TRUE, pch = 16,
+pal = cptcity::cpt(colorRampPalette= TRUE, rev = TRUE), cex = 3)
 }
 }

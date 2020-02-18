@@ -1,30 +1,45 @@
 ---
-title: "VEIN model"
-author: "Sergio Ibarra-Espinosa"
-date: "19 de Octubre de 2016"
-output: html_document
+output: github_document
 ---
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- date: "19 de Octubre de 2016" -->
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/"
+)
+```
+
+# VEIN <img src="man/figures/logo.png" align="right" alt="" width="220" />
+
+
+* build:
 [![Travis-CI Build Status](https://travis-ci.org/atmoschem/vein.svg?branch=master)](https://travis-ci.org/atmoschem/vein)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ibarraespinosa/vein?branch=master&svg=true)](https://ci.appveyor.com/project/ibarraespinosa/vein)
-[![](http://cranlogs.r-pkg.org/badges/vein)](http://cran.rstudio.com/web/packages/vein/index.html)
-[![DOI](https://zenodo.org/badge/88201850.svg)](https://zenodo.org/badge/latestdoi/88201850)
 [![Coverage Status](https://img.shields.io/codecov/c/github/atmoschem/vein/master.svg)](https://codecov.io/github/atmoschem/vein?branch=master)
+* cran:
+[![](http://cranlogs.r-pkg.org/badges/vein)](http://cran.rstudio.com/web/packages/vein/index.html)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vein)](http://cran.r-project.org/web/packages/vein) 
 [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/vein?color=orange)](http://cran.r-project.org/package=vein)
 [![Package Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+![CRAN/METACRAN](https://img.shields.io/cran/l/vein?style=plastic)
+* doi:
+[![DOI](https://zenodo.org/badge/88201850.svg)](https://zenodo.org/badge/latestdoi/88201850)
+* github:
 [![Github Stars](https://img.shields.io/github/stars/atmoschem/vein.svg?style=social&label=Github)](https://github.com/atmoschem/vein)
-
-
-# **V**ehicular **E**missions **IN**ventory **(VEIN)** model. ![](https://camo.githubusercontent.com/e40e5564993bae6edb29498decf1ef9663359edb/68747470733a2f2f692e696d6775722e636f6d2f647038737079702e706e67)
-
-![](https://github.com/atmoschem/vein/raw/master/all_comp.gif)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/atmoschem/vein)
+![GitHub issues](https://img.shields.io/github/issues/atmoschem/vein)
+<!-- ![Liberapay giving](https://img.shields.io/liberapay/gives/sergio.ibarra) -->
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/ibarraespinosa/vein)
+<!-- ![](https://github.com/atmoschem/vein/raw/master/all_comp.gif) -->
 
 
 ## What is VEIN?
 
-Vehicular Emissions Inventories. An R package to estimate vehicular emissions.
+**V**ehicular **E**missions **IN**ventories (VEIN). An R package to estimate vehicular emissions.
 It currently covers the following pollutants in speed functions:
 
 ### European emission factors for all available vehicle categories exhaust:
@@ -100,7 +115,7 @@ It currently covers the following pollutants in speed functions:
 "benzene_gstart", "EVAP_gstart", "CO2_gstart", "N20_gstart", 
 "CH4_gstart"
 
-### Emission factors from Chinese emission guidelines
+### Emission factors from Chinese emission guidelines 你好中国朋友
 
 - "CO", "NOx", "HC", "PM10", "PM2.5".
 - They depend on humidity, temperature, altitude and  other parameters.
@@ -112,37 +127,25 @@ vein imports functions from spatial packages listed below. In order to
 install these packages, firstly the user must install the requirements
 mentioned [here](https://www.github.com/r-spatial/sf).
 
-### Packages needed
+### Installation
 
-After installing system dependencies, you will need these packages:
+VEIN can be installed via CRAN or github
+```r
+install.packages("vein")
+```
 
-- [sf](https://github.com/r-spatial/sf)
-- [sp](https://github.com/edzer/sp/) 
-- [lwgeom](https://github.com/r-spatial/lwgeom/) 
-- [units](https://github.com/edzer/units/) 
-- [eixport](https://github.com/atmoschem/eixport/) 
+```r
+library(remotes) 
+install_github("atmoschem/vein")
+```
+
 
 In order to run the demo, this package is also needed:
 
 - [ggplot2](https://github.com/tidyverse/ggplot2)
 
-
-### Installation
-
-VEIN can be installed via CRAN or github
-
 ```r
-library(devtools) 
-install_github("atmoschem/vein")
-library(vein)
-demo(VEIN)
-```
-
-or
-
-```r
-install.packages("vein")
-library(vein)
+library(vein) 
 demo(VEIN)
 ```
 
@@ -150,9 +153,8 @@ demo(VEIN)
 ## What is new?
 
 - Added Fortran function to speedup calculations (currently, without speed)
-
+- Improved [ef_cetesb](https://atmoschem.github.io/vein/reference/ef_cetesb.html).
 future steps:
-
 - Enhance [inventory](https://atmoschem.github.io/vein/reference/inventory.html). The idea is to 
 configurate a whole emissions inventory for emission factors of CETESB, COPERT.
 - Improve plots.
@@ -178,45 +180,7 @@ run each line to understand VEIN. **Remember, if you have doubts with any functi
 just type '?' with the name of the function. For intance: `?inventory`.**
 
 Using [inventory](https://atmoschem.github.io/vein/reference/inventory.html)
-
-```r
-library(vein)
-inventory(name = file.path(tempdir(), "YourCity"), 
-          vehcomp = c(PC = 1, LCV = 1, HGV = 1, BUS = 1, MC = 1),
-          show.dir = T, 
-          show.scripts = T)
-```
-
-```
-files at /tmp/RtmpEorTs8/YourCity
-Directories:
- [1] "/tmp/RtmpEorTs8/YourCity"              
- [2] "/tmp/RtmpEorTs8/YourCity/ef"           
- [3] "/tmp/RtmpEorTs8/YourCity/emi"          
- [4] "/tmp/RtmpEorTs8/YourCity/emi/BUS_01"  
- [5] "/tmp/RtmpEorTs8/YourCity/emi/HGV_01"   
- [6] "/tmp/RtmpEorTs8/YourCity/emi/LCV_01"  
- [7] "/tmp/RtmpEorTs8/YourCity/emi/MC_01"    
- [8] "/tmp/RtmpEorTs8/YourCity/emi/PC_01"   
- [9] "/tmp/RtmpEorTs8/YourCity/est"          
- [10] "/tmp/RtmpEorTs8/YourCity/images"       
- [11] "/tmp/RtmpEorTs8/YourCity/network"      
- [12] "/tmp/RtmpEorTs8/YourCity/post"        
- [13] "/tmp/RtmpEorTs8/YourCity/post/df"      
- [14] "/tmp/RtmpEorTs8/YourCity/post/grids"   
- [15] "/tmp/RtmpEorTs8/YourCity/post/streets" 
- [16] "/tmp/RtmpEorTs8/YourCity/profiles"    
- [17] "/tmp/RtmpEorTs8/YourCity/veh"         
-Scripts:
- [1] "est/BUS_01_input.R" 
- [2] "est/HGV_01_input.R" 
- [3] "est/LCV_01_input.R" 
- [4] "est/MC_01_input.R"  
- [5] "est/PC_01_input.R"  
- [6] "main.R"             
- [7] "post.R"            
- [8] "traffic.R" 
-```
+**Inventory will experience some changes, please be patient and check https://github.com/atmoschem/vein/projects/3**
 Please, read the examples in the documentation of each function and run the demo. 
 
 ### 1) Examples with traffic data:
@@ -272,7 +236,7 @@ sp::spplot(as(dfspeednet, "Spatial"),
        c("S1", "S9"), scales = list(Draw = T),
        col.regions = rev(cptcity::cpt()))
 ```
-
+![](https://i.imgur.com/qJUdMea.png)
 ### 2) Emission Factors
 
 - [ef_ldv_speed](https://atmoschem.github.io/vein/reference/ef_ldv_speed.html)
@@ -303,7 +267,6 @@ ef_ldv_speed(v = "PC", t = "4S", cc = "<=1400", f = "G",
           eu = euro[i], p = "CO", show.equation = FALSE) })
 E_CO <- emis(veh = PC_E25_1400, lkm = net$lkm, ef = lef, speed = dfspeed,
              profile = pc_profile)
-#plot(E_CO, xlab = "Hours", ylab = "[g/h]")
 ```
 
 ### 4) Post Emissions
@@ -318,18 +281,13 @@ it returns an spatial net with the hourly emissions.
 ```r
 E_CO_DF <- emis_post(arra = E_CO,  veh = "PC", size = "<1400", fuel = "G",
 pollutant = "CO", by = "veh")
-E_CO_STREETS <- emis_post(arra = E_CO, pollutant = "CO", by = "streets_wide")
+E_CO_STREETS <- emis_post(arra = E_CO, pollutant = "CO", by = "streets")
 ```
 
 #### Grids
 
 - [make_grid](https://atmoschem.github.io/vein/reference/make_grid.html).
 
-
-You can use this function in two ways
-
-when spobj is "character", it is a path to wrfinput file and
-then runs eixport::wrf_grid to create a grid based on a wrf_input file.
 
 1) Create a grid using `make_grid`.The spobj is the spatial net. The size of
 the grid has the size of the net. You have to specify the grid spacing.
@@ -340,16 +298,14 @@ the size of the wrf_input. You don't have to specify the grid spacing.
 data(net)
 E_CO_STREETSnet <- emis_post(arra = E_CO, pollutant = "CO", by = "streets_wide",
                              net = net)
-g <- make_grid(net, 1/102.47/2) #500m in degrees
-plot(g)
+g <- make_grid(net, 1/102.47)
 E_CO_g <- emis_grid(spobj = E_CO_STREETSnet, g = g, sr= 31983)
-#sp::spplot(as(E_CO_g, "Spatial"),
-#       c("V1", "V9"), scales = list(Draw = T),
-#       col.regions = rev(cptcity::cpt()))
+na <- paste0("V", 1:168)
+for(i in 1:168) E_CO_g[[na[i]]] <- E_CO_g[[na[i]]] * units::set_units(1, "1/h")
+plot(E_CO_g["V9"], axes = T, pal = cptcity::cpt(colorRampPalette = T, rev = T))
 ```
-![](https://atmoschem.github.io/vein/reference/make_grid-1.png)
+![](https://i.imgur.com/Ydsvt8x.png)
 
-**At this step, you can feed you grid with emissions from other sources!**
 
 ### Creating a WRFChem Input file using [eixport](https://atmoschem.github.io/eixport/):
 
@@ -361,21 +317,29 @@ E_CO_g <- emis_grid(spobj = E_CO_STREETSnet, g = g, sr= 31983)
 into the wrf chem input file using [eixport::wrf_put](https://atmoschem.github.io/eixport/reference/wrf_put.html).
 
 ```r
-eixport::wrf_create(wrfinput_dir = "PathToWrfInput", wrfchemi_dir = "OutputPathWrfChemInput")
-gwrf <- eixport::wrf_grd("PathToWrfInput")
+library(eixport)
+dir.create(file.path(tempdir(), "EMISS"))
+wrf_create(wrfinput_dir         = system.file("extdata", package = "eixport"),
+           wrfchemi_dir         = file.path(tempdir(), "EMISS"),
+           domains              = 2,
+           frames_per_auxinput5 = 1, #hours
+           auxinput5_interval_m = 60,
+           verbose              = TRUE)
+path_to_wrfi <- paste0(system.file("extdata", package = "eixport"), "/wrfinput_d02")
+path_to_wrfc <- list.files(file.path(tempdir(), "EMISS"), full.names = TRUE)[1]
+gwrf <- eixport::wrf_grid(path_to_wrfi)
 E_CO_gwrf <- emis_grid(spobj = E_CO_STREETSnet, g = gwrf)
-gr <- GriddedEmissionsArray(E_CO_gwrf, rows = 19, cols = 23, times = 168, T)
-eixport::wrf_put(file = "Path/To/WRFChemInputFile, name = "E_CO", POL = gr)
+gr <- GriddedEmissionsArray(E_CO_gwrf, rows = 51, cols = 63, times = 1)
+eixport::wrf_put(file = path_to_wrfc, name = "E_CO", POL = gr)
 ```
 
 ### Creating a WRFChem Input file using AS4WRF
 
 1. Create a grid using [make_grid](https://atmoschem.github.io/vein/reference/make_grid.html) and your net.
 2. Run [emis_grid](https://atmoschem.github.io/vein/reference/emis_grid.html) to grid your emissions.
-3. Run [emis_wrf](https://atmoschem.github.io/vein/reference/emis_wrf.html) to create a 
+3. Run [eixport::to_as4wrf](https://atmoschem.github.io/eixport/reference/to_as4wrf.html) to create a 
 data.frame the specifications for AS4WRF.ncl.
-4. Export the output of [emis_wrf](https://atmoschem.github.io/vein/reference/emis_wrf.html) to a text file
-without header. Recall that AS4WRF requires all the lumped species.
+4. Export data.frame to a text.file. Recall that AS4WRF requires all the lumped species.
 5. Contact the developer of AS4WRF Angel Vara alvv1986@gmail.com to get a copy and run AS4WRF.ncl.
 
 Thanks and enjoy VEIN!
@@ -405,15 +369,13 @@ doi = {10.5194/gmd-11-2209-2018}
 
 ## Communications, doubts etc
 
-- Drop me an email sergio.ibarra@usp.br
-- You can ask on [Eart Science Stackoverflow](https://earthscience.stackexchange.com/),.
-- Check the project on [ResearchGate](https://www.researchgate.net/project/VEIN-An-R-package-for-vehicular-emissions-inventories).
+- Drop me an email sergio.ibarra@usp.br or zergioibarra@hotmail.com (你好中国朋友 - Hello Chinese friends!)
 - Check the group on GoogleGroups [Group](https://groups.google.com/d/forum/veinmodel).
+- Check the project on [ResearchGate](https://www.researchgate.net/project/VEIN-An-R-package-for-vehicular-emissions-inventories).
 
 ##  Issues
 
 If you encounter any issues while using VEIN, please submit your issues to: https://github.com/atmoschem/vein/issues/
-
 If you have any suggestions just let me know to sergio.ibarra@usp.br.
 
 
@@ -432,9 +394,6 @@ Sometimes you need to install R and all dependencies and a way for doing that is
 nano ~/.bashrc
 export Lang=C
 ```
-
-### More
-
 More details on [StackOverflow](https://stackoverflow.com/questions/13575180/how-to-change-language-settings-in-r) 
 
 

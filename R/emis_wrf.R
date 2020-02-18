@@ -1,4 +1,4 @@
-#' Generates emissions dataframe to generate WRF-Chem inputs
+#' Generates emissions dataframe to generate WRF-Chem inputs (DEPRECATED)
 #'
 #' \code{emis_wrf} returns a dataframes with columns lat, long, id, pollutants, local time
 #' and GMT time. This dataframe has the proper format to be used with WRF
@@ -14,14 +14,21 @@
 #' @param tz Time zone as required in for function \code{\link{as.POSIXct}}
 #' @param crs Coordinate reference system, e.g: "+init=epsg:4326". Used to
 #' transform the coordinates of the output
-#' @param utc ignored.
 #' @param islist logical value to indicate if sdf is a list or not
+#' @name vein-deprecated
 #' @seealso \code{\link{vein-deprecated}}
 #' @keywords internal
+NULL
+
+#' @rdname vein-deprecated
+#'
 #' @export
 #' @examples \dontrun{
-#' # Do not run
+#' # do not run
+#' # Use library(eixport)
+#' # eixport::to_as4wrf()
 #' }
 emis_wrf <- function(sdf, nr = 1, dmyhm, tz, crs = 4326, islist){
-  eixport::to_as4wrf(sdf = sdf, nr = nr, dmyhm = dmyhm, tz = tz, crs = crs, islist = islist)
+  .Deprecated("emis_wrf")
+  "emis_wrf"
 }

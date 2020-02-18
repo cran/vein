@@ -3,9 +3,7 @@
 #' @description \code{make_grid} creates a sf grid of polygons. The spatial
 #' reference is taken from the spatial object.
 #'
-#' @param spobj A spatial object of class sp or sf or a Character. When it is
-#' a character, it is assumed that it is a path to wrfinput file to create
-#' a grid class 'sf' based on this file. This is done by running eixport::wrf_grid.
+#' @param spobj A spatial object of class sp or sf.
 #' @param width Width of grid cell. It is recommended to use projected values.
 #' @param height Height of grid cell.
 #' @param polygon  Deprecated! \code{\link{make_grid}} returns only sf grid of
@@ -16,16 +14,11 @@
 #' The default value is 4326
 #' @return A grid of polygons class 'sf'
 #' @importFrom sf st_as_sf st_sf st_crs st_bbox st_sfc st_as_sfc
-#' @importFrom eixport wrf_grid
 #' @export
 #' @examples \dontrun{
 #' data(net)
 #' grid <- make_grid(net, width = 0.5/102.47) #500 mts
 #' plot(grid, axes = TRUE) #class sf
-#' wrf <- paste(system.file("extdata", package = "eixport"),
-#' "/wrfinput_d02", sep="")
-#' gwrf  <- make_grid(wrf)
-#' plot(gwrf, axes = TRUE)
 #'
 #' }
 make_grid <- function(spobj, width, height = width,  polygon, crs = 4326, ...){
@@ -73,11 +66,7 @@ g <- makinggrid(x = net, cellsize = c(width, height))
     }
   return(gg)
 } else {
-  message("path to wrfinput")
-  gg <- eixport::wrf_grid(spobj,
-                          type = "wrfinput",
-                          matrix = F,
-                          epsg = crs)
-  return(gg)
+  cat("If you are reading wrfinput_d0x, try:\n
+  g <- eixport::wrf_grid(spobj,type = 'wrfinput_d0x')\n")
 }
 }

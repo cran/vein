@@ -4,9 +4,18 @@
 \alias{emis_merge}
 \title{Merge several emissions files returning data-frames or 'sf' of lines}
 \usage{
-emis_merge(pol = "CO", what = "STREETS.rds", streets = T, net,
-  path = "emi", crs, under = "after", ignore = FALSE,
-  as_list = FALSE)
+emis_merge(
+  pol = "CO",
+  what = "STREETS.rds",
+  streets = T,
+  net,
+  FN = "sum",
+  ignore,
+  path = "emi",
+  crs,
+  under = "after",
+  as_list = FALSE
+)
 }
 \arguments{
 \item{pol}{Character. Pollutant.}
@@ -24,6 +33,10 @@ rbind them.}
 It is expected #' that the number of rows is equal to the number of rows of
 street emissions. If #' not, the function will stop.}
 
+\item{FN}{Character indicating the function. Default is "sum"}
+
+\item{ignore}{Character; Which pollutants or other charavter would you like to remove?}
+
 \item{path}{Character. Path where emissions are located}
 
 \item{crs}{coordinate reference system in numeric format from
@@ -31,8 +44,6 @@ http://spatialreference.org/ to transform/project spatial data using sf::st_tran
 
 \item{under}{"Character"; "after" when you stored your pollutant x as 'X_'
 "before" when '_X' and "none" for merging directly the files.}
-
-\item{ignore}{"Logical"; Would you liek your selection?}
 
 \item{as_list}{"Logical"; for returning the results as list or not.}
 }

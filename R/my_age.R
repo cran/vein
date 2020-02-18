@@ -62,6 +62,13 @@ my_age <- function (x,
                     net,
                     verbose = FALSE,
                     namerows){
+
+  # length k
+  if(length(k)  > 1 & length(k) < length(x)){
+    stop("length of 'k' must be 1 ore equal to length of 'x'")
+  }
+
+# check y
   if(!is.data.frame(y)){
     y <- as.numeric(y)
     y[is.na(y)] <- 0
@@ -102,11 +109,8 @@ my_age <- function (x,
       names(df) <- paste(name, seq(1, length(df)), sep="_")
     }
     # check k
-    if(length(k) > 1){
-      df <- matvect(df = df, x = k)
-    } else {
       df <- df*k
-    }
+
     # verbose
     if(verbose){
       secu <- seq(1, ncol(df))

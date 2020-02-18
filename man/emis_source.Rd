@@ -4,8 +4,16 @@
 \alias{emis_source}
 \title{A function to source vein scripts}
 \usage{
-emis_source(path = "est", pattern = ".R", ignore = "~", first,
-  ask = TRUE, recursive = TRUE, full.names = TRUE)
+emis_source(
+  path = "est",
+  pattern = ".R",
+  ignore = "~",
+  first,
+  ask = TRUE,
+  recursive = TRUE,
+  full.names = TRUE,
+  echo = FALSE
+)
 }
 \arguments{
 \item{path}{Character; path to source scripts. Default is "est".}
@@ -24,6 +32,8 @@ stop inputs}
 \item{recursive}{Logical; recursive or not. Default is "TRUE"}
 
 \item{full.names}{Logical; full.names or not. Default is "TRUE".}
+
+\item{echo}{Source with echo?}
 }
 \description{
 \code{\link{emis_source}} source vein scripts
