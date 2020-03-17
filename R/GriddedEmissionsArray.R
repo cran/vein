@@ -12,7 +12,8 @@
 #' @param rows Number of rows
 #' @param cols Number of columns
 #' @param times Number of times
-#' @param rotate Logical to rotate TRUE or not FALSE the array
+#' @param rotate Character, rotate array to "left" or "right"
+#' @param flip Logical, To flip vertically the array or not
 #' @rdname GriddedEmissionsArray
 #' @aliases GriddedEmissionsArray print.GriddedEmissionsArray
 #' summary.GriddedEmissionsArray plot.GriddedEmissionsArray
@@ -43,17 +44,19 @@
 #' E_CO <- emis(veh = pc1,lkm = net$lkm, ef = lef, speed = speed, agemax = 41,
 #'               profile = pc_profile, simplify = TRUE)
 #' class(E_CO)
-#' E_CO_STREETS <- emis_post(arra = E_CO, pollutant = "CO", by = "streets", net = net)
+#' E_CO_STREETS <- emis_post(arra = E_CO, pollutant = "CO", by = "streets",
+#'                           net = net, k = units::set_units(1, "1/h"))
 #' g <- make_grid(net, 1/102.47/2, 1/102.47/2) #500m in degrees
 #' E_CO_g <- emis_grid(spobj = E_CO_STREETS, g = g, sr= 31983)
-#' gr <- GriddedEmissionsArray(E_CO_g, rows = 19, cols = 23, times = 168, T)
+#' plot(E_CO_g["V9"])
+#' gr <- GriddedEmissionsArray(E_CO_g, rows = 19, cols = 23, times = 168, flip = FALSE)
 #' plot(gr)
 #' # For some cptcity color gradients:
-#' plot(gr, col = cptcity::cpt(1))
+#' plot(gr, col = cptcity::lucky())
 #' }
 #' @export
 GriddedEmissionsArray <- function(x, ..., cols, rows, times = ncol(x),
-                                  rotate = FALSE) {
+                                  rotate, flip = TRUE) {
   x$id <- NULL
   if(inherits(x, "Spatial")){
   df <- sf::st_as_sf(x)
@@ -63,20 +66,52 @@ GriddedEmissionsArray <- function(x, ..., cols, rows, times = ncol(x),
   } else {
     df <- x
   }
+  if(times > ncol(df)) stop("`times` cannot be higher than number of columns of `x` without x$id")
   for (i in 1:ncol(df)) {
     df[, i] <- as.numeric(df[, i])
   }
-  if (rotate) {
-    e <- simplify2array(lapply(1:ncol(df), function(i){
-      t(apply(matrix(data = df[, i],
-                     nrow = rows,
-                     ncol = cols,
-                     byrow = T),
-              2,
-              rev))
-    }))
+  # array
+  # https://stackoverflow.com/a/42882677/2418532
+  #first reverse, then transpose, it's the same as rotate 90 degrees
+  rotate_clockwise         <- function(x) { t(     apply(x, 2, rev))}
+  #first transpose, then reverse, it's the same as rotate -90 degrees:
+  rotate_counter_clockwise <- function(x) { apply(     t(x),2, rev)}
+
+  if (!missing(rotate)) {
+    if(rotate == "left") {
+      l <- lapply(1:times, function(i) {
+        m <- t(matrix(df[, i],
+                      ncol = cols,
+                      nrow = rows,
+                      byrow = TRUE))
+        rotate_counter_clockwise(m)
+      })
+    } else {
+      l <- lapply(1:times, function(i) {
+        m <- t(matrix(df[, i],
+                      ncol = cols,
+                      nrow = rows,
+                      byrow = TRUE))
+        rotate_clockwise(m)
+      })
+    }
+
+    if(flip) l <- lapply(seq_along(l), function(i) {l[[i]][, rows:1]})
+
+    e <- simplify2array(l)
+
   } else {
-    e <- array(unlist(df), c(cols, rows, times))
+    l <- lapply(1:times, function(i) {
+      m <- t(matrix(df[, i],
+               ncol = cols,
+               nrow = rows,
+               byrow = TRUE))
+
+    })
+
+    if(flip) l <- lapply(seq_along(l), function(i) {l[[i]][, rows:1]})
+
+    e <- simplify2array(l)
   }
 
   class(e) <- c("GriddedEmissionsArray",class(e))

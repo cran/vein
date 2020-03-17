@@ -9,6 +9,7 @@ ef_cetesb(
   veh,
   year = 2017,
   agemax = 40,
+  sppm,
   full = FALSE,
   project = "constant",
   verbose = FALSE
@@ -18,10 +19,10 @@ ef_cetesb(
 \item{p}{Character;
 
 Pollutants: "CO", "HC", "NMHC", "CH4", "NOx", "CO2","RCHO", "ETOH",
-"PM", "N2O", "KML", "FC", "NO2d", "NOd", "gD/KWH", "gCO2/KWH", "RCHO",
+"PM", "N2O", "KML", "FC", "NO2", "NO", "gD/KWH", "gCO2/KWH", "RCHO",
 "CO_0km", "HC_0km", "NMHC_0km", "NOx_0km", "NO2_0km" ,"NO_0km",
-"RCHO_0km" and "ETOH_0km",
-(g/km).  Evaporative emissions at average temperature ranges:
+"RCHO_0km" and "ETOH_0km", "FS" (fuel sales) (g/km).
+Evaporative emissions at average temperature ranges:
 "D_20_35", "S_20_35", "R_20_35", "D_10_25", "S_10_25", "R_10_25", "D_0_15",
 "S_0_15" and "R_0_15" where D means diurnal (g/day), S hot/warm soak (g/trip)
 and R hot/warm running losses (g/trip).}
@@ -40,6 +41,8 @@ and R hot/warm running losses (g/trip).}
 If project is 'constant' values above 2017 and below 1980 will be repeated}
 
 \item{agemax}{Integer; age of oldest vehicles for that category}
+
+\item{sppm}{Numeric, sulfur (sulphur) in ppm in fuel.}
 
 \item{full}{Logical; To return a data.frame instead or a vector adding
 Age, Year, Brazilian emissions standards and its euro equivalents.}
@@ -109,6 +112,27 @@ they are internally changed to the new convention:
 "SLT", "LT", "MT", "SHT","HT", "UB", "SUB", "COACH", "ARTIC", "M_G_150",
 "M_G_150_500", "M_G_500", "M_FG_150", "M_FG_150_500", "M_FG_500",
 "M_FE_150", "M_FE_150_500","M_FE_500",
+
+If pollutant is "SO2", it needs sppm. It is designed when veh has length 1, if it has length 2 or more,
+it will show a warning
+
+\strong{Emission factor for vehicles older than the reported by CETESB were filled as the moving average of 2:}
+
+\itemize{
+\item Range EF from PC and LCV otto: 2018 - 1982. EF for 1981 and older as movign average.
+\item Range LCV diesel : 2018 - 2006. EF for 2005 and older as movign average.
+\item Range Trucks and Buse: 2018 - 1998. EF for 1997 and older as movign average.
+\item Range MC Gasoline: 2018 - 2003.  EF for 2002 and older as movign average.
+\item Range MC Flex 150-500cc and >500cc: 2018 - 2012.  EF for 2011 and older as movign average.
+}
+
+Currently, 2020, there are not any sistem for recovery of fuel vapors in Brazil. Hence,
+the FS takes into account the vapour that comes from the fuel tank inside the car and
+released into the atmosphere when injecting new fuel. There are discussions about
+incrementing implementing stage I and II and/or ORVR thesedays. The ef FS is calculated
+by transforming g FC/km into  (L/KM)*g/L with g/L 1.14 fgor gasoline and 0.37
+for ethanol (CETESB, 2016). The density considered is 0.75425 for gasoline and
+0.809 for ethanol (t/m^3)
 }
 \examples{
 \dontrun{
@@ -120,6 +144,8 @@ ef_cetesb(p = "CO", veh = "PC_G", year = 1970, agemax = 40)
 ef_cetesb(p = "CO", veh = "PC_G", year = 2030, agemax = 40)
 ef_cetesb(p = "CO", veh = "TRUCKS_L_D", year = 2018)
 ef_cetesb(p = "CO", veh = "SLT", year = 2018) #  olds names
+ef_cetesb(p = "SO2", veh = "PC_G", year = 2030, agemax = 40, sppm = 300)
+ef_cetesb(p = "SO2", veh = "PC_FE", year = 2030, agemax = 40, sppm = 300)
 }
 }
 \references{

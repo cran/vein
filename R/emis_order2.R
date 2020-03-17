@@ -34,7 +34,8 @@
 #' @param net SpatialLinesDataFrame or Spatial Feature of "LINESTRING".
 #' @param verbose Logical, to show more information, default is TRUE.
 #' @importFrom sf st_as_sf st_geometry st_set_geometry st_sf st_crs
-#' @aliases weekly emis_order
+#' @note The function emis_order2 will be kept for back compatibility until version
+#' 1.0.0, where will be superseded by emis_oder, the same function.
 #' @return sf or data.frame
 #' @seealso  \code{\link{GriddedEmissionsArray}}
 #' @export
@@ -75,7 +76,7 @@
 #'                    desired_length = 241)
 #' }
 #'
-emis_order <- function(x, # 24 hours or one week
+emis_order2 <- function(x, # 24 hours or one week
                         lt_emissions,
                         start_utc_time,
                         desired_length,

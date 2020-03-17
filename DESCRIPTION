@@ -1,18 +1,13 @@
 Package: vein
 Type: Package
 Title: Vehicular Emissions Inventories
-Version: 0.8.7
+Version: 0.8.8
 Date: 2020-02-17
 Authors@R: c( 
   person(given = "Sergio", family = "Ibarra-Espinosa",
          role = c("aut", "cre"),
          email = "sergio.ibarra@usp.br",
-         comment = c(ORCID = "0000-0002-3162-1905")),
-  person(given = "Daniel",
-         family = "Schuch",
-         role = c("ctb"),
-         email = "schuch@usp.br",
-         comment = c(ORCID = "0000-0001-5977-4519"))) 
+         comment = c(ORCID = "0000-0002-3162-1905"))) 
 Description: Elaboration of vehicular emissions inventories,
     consisting in four stages, pre-processing activity data, preparing 
     emissions factors, estimating the emissions and post-processing of emissions 
@@ -30,10 +25,9 @@ Suggests: knitr, rmarkdown, testthat, covr, lwgeom, cptcity
 RoxygenNote: 7.0.2
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2020-02-17 23:02:55 UTC; sergio
+Packaged: 2020-03-17 22:43:34 UTC; sergio
 Author: Sergio Ibarra-Espinosa [aut, cre]
-    (<https://orcid.org/0000-0002-3162-1905>),
-  Daniel Schuch [ctb] (<https://orcid.org/0000-0001-5977-4519>)
+    (<https://orcid.org/0000-0002-3162-1905>)
 Maintainer: Sergio Ibarra-Espinosa <sergio.ibarra@usp.br>
 Repository: CRAN
-Date/Publication: 2020-02-18 07:00:02 UTC
+Date/Publication: 2020-03-17 23:00:02 UTC

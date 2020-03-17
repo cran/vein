@@ -15,7 +15,8 @@ age_ldv(
   bystreet = F,
   net,
   verbose = FALSE,
-  namerows
+  namerows,
+  time
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ age_ldv(
 
 \item{namerows}{Any vector to be change row.names. For instance, name of
 regions or streets.}
+
+\item{time}{Character to be the time units as denominator, eg "1/h"}
 }
 \value{
 dataframe of age distrubution of vehicles
@@ -73,3 +76,10 @@ PC_E25_1400 <- age_ldv(x = net$ldv, name = "PC_E25_1400", net = net)
 plot(PC_E25_1400)
 }
 }
+\seealso{
+Other age: 
+\code{\link{age_hdv}()},
+\code{\link{age_moto}()},
+\code{\link{age}()}
+}
+\concept{age}

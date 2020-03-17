@@ -1,5 +1,7 @@
 #' Returns amount of vehicles at each age
 #'
+#' @family age
+#'
 #' @description \code{\link{age_moto}} returns amount of vehicles at each age
 #'
 #' @param x Numeric; numerical vector of vehicles with length equal to lines features of road network
@@ -14,6 +16,7 @@
 #' @param verbose Logical;  message with average age and total numer of vehicles
 #' @param namerows Any vector to be change row.names. For instance, name of
 #' regions or streets.
+#' @param time Character to be the time units as denominator, eg "1/h"
 #' @return dataframe of age distrubution of vehicles
 #' @importFrom sf st_sf st_as_sf
 #' @note
@@ -46,7 +49,8 @@ age_moto <- function (x,
                       bystreet = FALSE,
                       net,
                       verbose = FALSE,
-                      namerows){
+                      namerows,
+                      time){
   # check na
   x[is.na(x)] <- 0
 
@@ -58,7 +62,7 @@ age_moto <- function (x,
   #check agemax
   if(agemax < 1) stop("Agemax should be bigger than 1")
 
-   # bystreet = TRUE
+  # bystreet = TRUE
   if (bystreet == T){
     if(length(x) != length(a)){
       stop("Lengths of veh and a must be the same")
@@ -85,7 +89,7 @@ age_moto <- function (x,
     names(df) <- paste(name, seq(1, agemax), sep="_")
 
 
-      df <- df*k
+    df <- df*k
 
 
     if(verbose){
@@ -109,11 +113,18 @@ age_moto <- function (x,
 
     if(!missing(net)){
       netsf <- sf::st_as_sf(net)
-      dfsf <- sf::st_sf(df, geometry = netsf$geometry)
+      if(!missing(time)){
+        dfsf <- sf::st_sf(Vehicles(df*k, time = time), geometry = netsf$geometry)
+      } else {
+        dfsf <- sf::st_sf(Vehicles(df*k), geometry = netsf$geometry)
+      }
       return(dfsf)
     } else {
-
-      return(Vehicles(df))
+      if(!missing(time)){
+        return(Vehicles(df*k, time = time))
+      } else {
+        return(Vehicles(df*k))
+      }
     }
 
   } else {
@@ -153,13 +164,21 @@ age_moto <- function (x,
     # replace NA and NaN
     df[is.na(df)] <- 0
 
+
     if(!missing(net)){
       netsf <- sf::st_as_sf(net)
-      dfsf <- sf::st_sf(Vehicles(df), geometry = netsf$geometry)
+      if(!missing(time)){
+        dfsf <- sf::st_sf(Vehicles(df, time = time), geometry = netsf$geometry)
+      } else {
+        dfsf <- sf::st_sf(Vehicles(df), geometry = netsf$geometry)
+      }
       return(dfsf)
     } else {
-      return(Vehicles(df))
+      if(!missing(time)){
+        return(Vehicles(df, time = time))
+      } else {
+        return(Vehicles(df))
+      }
     }
-
   }
 }
