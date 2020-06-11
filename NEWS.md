@@ -1,13 +1,21 @@
 NEWS
 ===========
 
--  when LCV and eu is V, ef_ldv_speed return wrong values, as shown on EEA 
+## vein 0.8.9  (Release date: 2020-06-11)
+
+- Revise mileage functions. Especifically, fix KM_LDC_FLEX so that 
+it do not increase mileage over time. (2020-05-08)
+- Moved to https://gitlab.com/ibarraespinosa/vein. (2020-05-08)
+- Add add_lkm to add units km into R objects.(2020-05-24)
+- Enhance emis_post to read Emissions and EmissionsArray classes (2020-05-24)
+- Assume evaporative emission factors from PC into MC ef_cetesb
+
+## vein 0.8.8  (Release date: 2020-03-11)
+
+- when LCV and eu is V, ef_ldv_speed return wrong values, as shown on EEA 
 guidelines 2016. When `v` is 'LCV' and `eu` is 'V', replaces `v` by 'PC' 
 and `cc` by >'2000' see issue #204". I will update for version 2019,
 maybe in a newer function, o updating the existing ones.
-
-# vein 0.8.8  (Release date: 2020-03-11)
-
 - Adds get_project to easily estimate emissions using a template
 - New emis_order with aliases to weekly. Thanks Daniel.
 
