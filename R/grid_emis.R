@@ -27,7 +27,7 @@
 #' "h3"... `char`` can be "h"
 #'
 #' @param verbose Logical; to show more info.
-#' @importFrom sf st_sf st_as_sf st_transform st_set_geometry st_length  st_intersection
+#' @importFrom sf st_sf st_as_sf st_transform st_set_geometry st_length  st_intersection st_geometry
 #' @importFrom data.table as.data.table ':='
 #' @export
 #' @note \strong{Your gridded emissions might have flux units (mass / area / time(implicit))}
@@ -90,19 +90,19 @@ grid_emis <- function(spobj, g,  top_down = FALSE,
   xg <- suppressMessages(suppressWarnings(sf::st_intersection(net, g)))
 
   if(sf::st_crs(g) != sf::st_crs(net)){
-    if(verbose) message("Changing CRS of 'spobj' to match 'g'")
+    if(verbose) message("Changing CRS of 'spobj' to match 'g'") #nocov
     net <- sf::st_transform(net, st_crs(g))
   }
   for(i in 1:length(netdata)){
     netdata[, i] <- as.numeric(netdata[, i])
   }
-  net <- sf::st_sf(netdata, geometry = net$geometry)
+  net <- sf::st_sf(netdata, geometry = sf::st_geometry(net))
 
   if(!missing(sr)){
     if(class(sr)[1] == "character"){
       sr <- as.numeric(substr(sr, 12, nchar(sr)))
     }
-    if(verbose) message("Transforming spatial objects to 'sr' ")
+    if(verbose) message("Transforming spatial objects to 'sr' ") #nocov
     net <- sf::st_transform(net, sr)
     g <- sf::st_transform(g, sr)
   }
@@ -140,11 +140,11 @@ grid_emis <- function(spobj, g,  top_down = FALSE,
       df <- st_set_geometry(lxxy, NULL)
       fx <- as.numeric(sumg/sum(df, na.rm = TRUE))
       df <- df*fx
-      if(verbose) {
+      if(verbose) { #nocov
         cat(paste0("Sum of gridded emissions ",
                    round(sumg, 2), "\n"))
       }
-      if(verbose) {
+      if(verbose) { #nocov
         cat(paste0("Sum of street emissions ",
                    round(sum(df), 2), "\n"))
       }
@@ -168,7 +168,7 @@ grid_emis <- function(spobj, g,  top_down = FALSE,
         cat(paste0("Sum of gridded emissions ",
                    round(sum(df), 2), "\n"))
       }
-      if(verbose) {
+      if(verbose) { #nocov
         cat(paste0("Sum of street emissions ",
                    round(sum(df), 2), "\n"))
       }

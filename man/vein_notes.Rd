@@ -2,7 +2,7 @@
 % Please edit documentation in R/vein_notes.R
 \name{vein_notes}
 \alias{vein_notes}
-\title{vein_notes for writting technical notes about the inventory}
+\title{Notes with sysinfo}
 \usage{
 vein_notes(
   notes,
@@ -58,7 +58,6 @@ writting technical notes about this emissions inventory
 #do not run
 a <- "delete"
 f <- vein_notes("notes", file = a)
-file.edit(f)
-file.remove("delete")
+file.remove(f)
 }
 }

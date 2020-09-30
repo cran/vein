@@ -1,7 +1,7 @@
 context("emis_hot_td")
 
 data(net)
-netsf <- sf::st_as_sf(net)
+netsf <- sf::st_as_sf(net)[1:10, ]
 euros <- c("V", "V", "IV", "III", "II", "I", "PRE", "PRE")
 efh <- ef_ldv_speed(v = "PC", t = "4S", cc = "<=1400", f = "G",
                     eu = euros, p = "CO", speed = Speed(34))
@@ -16,13 +16,20 @@ a <- emis_hot_td(veh = veh,
                  lkm = lkm,
                  ef = EmissionFactors(as.numeric(efh[, 1:8])),
                  verbose = TRUE)
-a <- emis_hot_td(veh = veh,
+system.time(a <- emis_hot_td(veh = veh,
                  lkm = lkm,
                  ef = EmissionFactors(as.numeric(efh[, 1:8])),
                  verbose = TRUE,
                  fortran = TRUE)
-
-
+)
+system.time(
+a <- emis_hot_td(veh = veh,
+                 lkm = lkm,
+                 ef = EmissionFactors(as.numeric(efh[, 1:8])),
+                 verbose = TRUE,
+                 fortran = TRUE,
+                 nt = check_nt()/2)
+)
 # caso simple ####
 test_that("emis_hot_td works", {
   expect_equal(round(emis_hot_td(veh = veh,
@@ -246,5 +253,161 @@ test_that("emis_hot_td works", {
 
 
 
+veh_month <- as.data.frame(matrix(veh_month, ncol = 12) )
 
+
+# Caso ef es data.frame y perfil mensual tambien ####
+efm <- matrix(1, nrow = 1, ncol = ncol(veh))
+efs <- EmissionFactors(matrix(1, nrow = 12, ncol = ncol(veh)))
+efs2 <- EmissionFactors(matrix(1, nrow = nrow(veh), ncol = ncol(veh)))
+
+test_that("emis_hot_td works", {
+  expect_error(emis_hot_td(veh = veh,
+                           lkm = lkm,
+                           ef = efm,
+                           pro_month = veh_month,
+                           verbose = TRUE),
+               ".?")
+
+  expect_equal(round(emis_hot_td(veh = veh,
+                           lkm = lkm,
+                           ef = EmissionFactors(efm),
+                           pro_month = veh_month,
+                           verbose = TRUE)$emissions[1]),
+               Emissions(111))
+
+  expect_error(round(emis_hot_td(veh = veh[1, ],
+                                 lkm = lkm,
+                                 ef = EmissionFactors(rbind(efm, efm)),
+                                 pro_month = veh_month,
+                                 verbose = TRUE)$emissions[1]),
+               ".?")
+
+  expect_error(round(emis_hot_td(veh = veh[1, ],
+                                 lkm = lkm,
+                                 ef = EmissionFactors(cbind(efm, efm)),
+                                 pro_month = veh_month,
+                                 verbose = TRUE)$emissions[1]),
+               ".?")
+
+  expect_error(round(emis_hot_td(veh = veh[1, ],
+                                 lkm = c(lkm,lkm),
+                                 ef = EmissionFactors(efm),
+                                 pro_month = veh_month,
+                                 verbose = TRUE)$emissions[1]),
+               ".?")
+
+  expect_error(round(emis_hot_td(veh = veh[1, ],
+                                 lkm = c(lkm,lkm),
+                                 ef = EmissionFactors(efm),
+                                 pro_month = rbind(veh_month, veh_month),
+                                 verbose = TRUE)$emissions[1]),
+               ".?")
+
+  expect_error(emis_hot_td(veh = veh,
+                           lkm = lkm,
+                           pro_month = veh_month,
+                           ef = efs,
+                           fortran = T,
+                           verbose = TRUE),
+               ".?")
+
+  expect_equal(round(emis_hot_td(veh = veh,
+                                 lkm = lkm,
+                                 ef = efs2,
+                                 pro_month = matrix(as.numeric(veh_month),
+                                                    nrow = nrow(veh),
+                                                    ncol = 12,
+                                                    byrow = TRUE),
+                                 verbose = TRUE)$emissions[1]),
+               Emissions(111))
+
+  expect_equal(round(emis_hot_td(veh = veh,
+                                 lkm = lkm,
+                                 ef = efs2,
+                                 pro_month = matrix(as.numeric(veh_month),
+                                                    nrow = nrow(veh),
+                                                    ncol = 12,
+                                                    byrow = TRUE),
+                                 fortran = T,
+                                 verbose = TRUE)$emissions[1]),
+               Emissions(111))
+  expect_equal(round(emis_hot_td(veh = veh,
+                                 lkm = lkm,
+                                 ef = efs2,
+                                 pro_month = matrix(as.numeric(veh_month),
+                                                    nrow = nrow(veh),
+                                                    ncol = 12,
+                                                    byrow = TRUE),
+                                 fortran = T,
+                                 verbose = TRUE,
+                                 nt = 1)$emissions[1]),
+               Emissions(111))
+
+  expect_error(round(emis_hot_td(veh = veh,
+                                 lkm = lkm,
+                                 ef = efs2,
+                                 pro_month = matrix(as.numeric(veh_month),
+                                                    nrow = nrow(veh),
+                                                    ncol = 12,
+                                                    byrow = TRUE),
+                                 fortran = T,
+                                 verbose = TRUE,
+                                 nt = 1000)$emissions[1]),
+               ".?")
+
+
+    expect_equal(round(emis_hot_td(veh = veh,
+                                 lkm = lkm,
+                                 ef = efs2,
+                                 pro_month = as.numeric(veh_month),
+                                 fortran = T,
+                                 verbose = TRUE,
+                                 nt = 1)$emissions[1]),
+               Emissions(111))
+
+    expect_equal(round(emis_hot_td(veh = veh,
+                                   lkm = lkm,
+                                   ef = efs2,
+                                   pro_month = as.numeric(veh_month),
+                                   fortran = T,
+                                   verbose = TRUE,
+                                   nt = 1)$emissions[1]),
+                 Emissions(111))
+
+    expect_equal(round(emis_hot_td(veh = veh[1, ],
+                                 lkm = lkm,
+                                 ef = efs2[1, ],
+                                 pro_month = veh_month,
+                                 fortran = T,
+                                 verbose = TRUE)$emissions[1]),
+               Emissions(111))
+
+    expect_equal(round(emis_hot_td(veh = veh[1, ],
+                                   lkm = lkm,
+                                   ef = efs2[1, ],
+                                   pro_month = veh_month,
+                                   fortran = T,
+                                   verbose = TRUE,
+                                   nt = 1)$emissions[1]),
+                 Emissions(111))
+
+    expect_error(round(emis_hot_td(veh = veh[1, ],
+                                   lkm = lkm,
+                                   ef = efs2,
+                                   pro_month = veh_month,
+                                   verbose = TRUE)$emissions[1]),
+                 ".?")
+
+        expect_message(round(emis_hot_td(veh = veh,
+                                 lkm = lkm,
+                                 ef = efs2,
+                                 pro_month = matrix(as.numeric(veh_month),
+                                                    nrow = nrow(veh),
+                                                    ncol = 12,
+                                                    byrow = TRUE),
+                                 fortran = T,
+                                 verbose = TRUE)$emissions[1]),
+               ".?")
+})
 

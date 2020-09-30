@@ -9,19 +9,24 @@ ef_cetesb(
   veh,
   year = 2017,
   agemax = 40,
+  scale = "default",
   sppm,
   full = FALSE,
   project = "constant",
-  verbose = FALSE
+  verbose = FALSE,
+  csv
 )
 }
 \arguments{
 \item{p}{Character;
 
-Pollutants: "CO", "HC", "NMHC", "CH4", "NOx", "CO2","RCHO", "ETOH",
-"PM", "N2O", "KML", "FC", "NO2", "NO", "gD/KWH", "gCO2/KWH", "RCHO",
+Pollutants: "CO", "HC", "NMHC", "CH4", "NOx", "CO2",
+"RCHO" (aldehydes + formaldehyde), "ETOH",
+"PM", "N2O", "KML", "FC", "NO2", "NO",
+"gD/KWH", "gCO2/KWH", "RCHO_0km" (aldehydes + formaldehyde),
 "CO_0km", "HC_0km", "NMHC_0km", "NOx_0km", "NO2_0km" ,"NO_0km",
-"RCHO_0km" and "ETOH_0km", "FS" (fuel sales) (g/km).
+"RCHO_0km" and "ETOH_0km", "FS" (fuel sales) (g/km). If scale = "tunnel" is
+used, there is also "ALD" for aldehydes and "HCHO" for  formaldehydes
 Evaporative emissions at average temperature ranges:
 "D_20_35", "S_20_35", "R_20_35", "D_10_25", "S_10_25", "R_10_25", "D_0_15",
 "S_0_15" and "R_0_15" where D means diurnal (g/day), S hot/warm soak (g/trip)
@@ -42,15 +47,21 @@ If project is 'constant' values above 2017 and below 1980 will be repeated}
 
 \item{agemax}{Integer; age of oldest vehicles for that category}
 
+\item{scale}{Character; values "default" or "tunnel". If "tunnel", emission
+factors are scaled to represent EF measurements in tunnels in Sao Paulo}
+
 \item{sppm}{Numeric, sulfur (sulphur) in ppm in fuel.}
 
 \item{full}{Logical; To return a data.frame instead or a vector adding
 Age, Year, Brazilian emissions standards and its euro equivalents.}
 
-\item{project}{haracter showing the method for projecting emission factors in
+\item{project}{Character showing the method for projecting emission factors in
 future. Currently the only value is "constant"}
 
 \item{verbose}{Logical; To show more information}
+
+\item{csv}{String with the path to download the ef in a .csv file. For instance,
+ef.csv}
 }
 \value{
 A vector of Emission Factor or a data.frame
@@ -140,19 +151,33 @@ same ratio from passenger cars.
 
 Li, Lan, et al. "Exhaust and evaporative emissions from motorcycles fueled
 with ethanol gasoline blends." Science of the Total Environment 502 (2015): 627-631.
+
+If scale is used with tunnel, the references are:
+\itemize{
+\item Pérez-Martinez, P. J., Miranda, R. M., Nogueira, T., Guardani, M. L.,
+Fornaro, A., Ynoue, R., and Andrade, M. F. (2014). Emission
+factors of air pollutants from vehicles measured inside road tunnels in
+Sao Paulo: case study comparison. International Journal of
+Environmental Science and Technology, 11(8), 2155-2168.
+\item Nogueira, T., de Souza, K. F., Fornaro, A., de Fatima Andrade, M., and
+ de Carvalho, L. R. F. (2015). On-road emissions of carbonyls
+ from vehicles powered by biofuel blends in traffic tunnels in the
+ Metropolitan Area of Sao Paulo, Brazil. Atmospheric Environment, 108, 88-97.
+}
 }
 \examples{
 \dontrun{
 a <- ef_cetesb("CO", "PC_G")
 a <- ef_cetesb("R_10_25", "PC_G")
 a <- ef_cetesb("CO", c("PC_G", "PC_FE"))
-ef_cetesb(p = "CO", veh = "PC_G", year = 2018, agemax = 40)
 ef_cetesb(p = "CO", veh = "PC_G", year = 1970, agemax = 40)
 ef_cetesb(p = "CO", veh = "PC_G", year = 2030, agemax = 40)
 ef_cetesb(p = "CO", veh = "TRUCKS_L_D", year = 2018)
 ef_cetesb(p = "CO", veh = "SLT", year = 2018) #  olds names
 ef_cetesb(p = "SO2", veh = "PC_G", year = 2030, agemax = 40, sppm = 300)
 ef_cetesb(p = "SO2", veh = "PC_FE", year = 2030, agemax = 40, sppm = 300)
+a <- ef_cetesb(p = "NMHC", veh = c("PC_G", "PC_FG", "PC_FE", "PC_E"), year = 2018, agemax = 20)
+colplot(a, main = "NMHC EF", ylab = "[g/km]", xlab = "Years of use")
 }
 }
 \references{

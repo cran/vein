@@ -36,15 +36,10 @@ knitr::opts_chunk$set(
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/ibarraespinosa/vein)
 <!-- ![](https://github.com/atmoschem/vein/raw/master/all_comp.gif) -->
 
-# The GitHub repository is a mirror from https://gitlab.com/ibarraespinosa/vein
 
-- The most updated version is here https://gitlab.com/ibarraespinosa/vein
-- The GitHub https://github.com/atmoschem/veinis updated as soon as possible, usually between 03:00:00 and 10:00:00 **UTC**
+# **V**ehicular **E**missions **IN**ventories (VEIN)
 
-## What is VEIN?
-
-**V**ehicular **E**missions **IN**ventories (VEIN). An R package to estimate vehicular emissions.
-It currently covers the following pollutants in speed functions:
+Cover the following pollutants:
 
 ### European emission factors for all available vehicle categories exhaust:
 
@@ -100,14 +95,15 @@ It currently covers the following pollutants in speed functions:
 
 - "COd", "HCd", "NMHCd", "CH4", "NOxd", "CO2"
 "PM", "N2O", "KML", "FC", "NO2d", "NOd", "gCO2/KWH", "RCHOd",
-"CO", "HC", "NMHC", "NOx", "NO2" ,"NO", "RCHO"
+"CO", "HC", "NMHC", "NOx", "NO2" ,"NO", "RCHO" and scaled factors based on tunnel measurements
+see [ef_cetesb](https://atmoschem.github.io/vein/reference/ef_cetesb.html).
 
 ### Brazilian speciation based on IAG/USP (Fátima's group) studies:
 
 - "e_eth", "e_hc3", "e_hc5", "e_hc8", "e_ol2", "e_olt", "e_oli", "e_iso",
 "e_tol", "e_xyl", "e_c2h5oh", "e_ald", "e_hcho", "e_ch3oh", "e_ket",
 "E_SO4i", "E_SO4j", "E_NO3i", "E_NO3j", "E_MP2.5i", "E_MP2.5j", "E_ORGi",
-"E_ORGj", "E_ECi", "E_ECj"
+"E_ORGj", "E_ECi", "E_ECj" with option to scaled based on tunnel measurements.
 
 ### Base emission factors from International Emission Model (IVE)  for all available vehicle categories:
 
@@ -123,6 +119,28 @@ It currently covers the following pollutants in speed functions:
 
 - "CO", "NOx", "HC", "PM10", "PM2.5".
 - They depend on humidity, temperature, altitude and  other parameters.
+
+## What is new?
+
+- OpenMP in all Fortran subroutines.
+
+##
+
+- get_project with top-down approaches
+- get_project with Europe and Chinese EF
+- Add EF from EMFAC and MOVES
+- Update ef_ldv* and ef_hdv* to EEA2019
+- Include speed functions with Fortran and OpenMP
+- Include several chemical mechanism
+- Add EF from HBEFA?
+- See issues [GitHub](https://github.com/atmoschem/vein/issues) and [GitLab](https://gitlab.com/ibarraespinosa/vein/-/issues)
+
+
+# New in VEIN?
+
+![](https://i.imgur.com/bsA6iDU.png)
+
+No worries! Just install [R](https://www.google.com/search?q=install+R&oq=install+R&aqs=chrome..69i57j35i39l2j0l3j69i60l2.1308j0j7&sourceid=chrome&ie=UTF-8), [Rstudio](https://www.google.com/search?sxsrf=ALeKk00EtkaL-W834eJbAfWxSgAtHlzAuw%3A1600952042358&ei=6pZsX7G5FaS65OUP9NuOqAk&q=install+Rstudio&oq=install+Rstudio&gs_lcp=CgZwc3ktYWIQAzIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywE6BAgAEEdQiaIBWJSoAWCPqgFoAHABeAGAAaMCiAGuB5IBBTAuNS4xmAEAoAEBqgEHZ3dzLXdpesgBCMABAQ&sclient=psy-ab&ved=0ahUKEwix1qWO64HsAhUkHbkGHfStA5UQ4dUDCA0&uact=5) and then
 
 
 ### System requirements
@@ -140,13 +158,54 @@ install.packages("vein")
 
 ```r
 library(remotes) 
-install_gitlab("ibarraespinosa/vein")
+remotes::install_gitlab("ibarraespinosa/vein")
 ```
 
+## Approaches
 
-In order to run the demo, this package is also needed:
+### 1. get a project (easier)
 
-- [ggplot2](https://github.com/tidyverse/ggplot2)
+- Load vein
+- read the documentation of the function  [get_project](https://atmoschem.github.io/vein/reference/get_project.html) 
+- choose a name, for instance, “awesome_city”
+- and use it
+
+
+```r
+library(vein)
+?get_project
+get_project(directory = "awesome_city")
+
+```
+
+The structure of the new directory "awesome_city" is:
+
+
+```r
+awesome_city
+├── config
+│   ├── clean.R
+│   ├── config.R
+│   ├── inventory.xlsx
+│   └── packages.R
+├── main.R
+├── main.Rproj
+├── network
+│   ├── net.gpkg
+│   └── net.rds
+├── scripts
+│   ├── evaporatives.R
+│   ├── exhaust.R
+│   ├── fuel_eval.R
+│   ├── net.R
+│   ├── pavedroads.R
+│   ├── plots.R
+│   ├── post.R
+│   ├── traffic.R
+│   └── wrf.R
+└── wrf
+└── wrfinput_d02
+```
 
 ```r
 library(vein) 
@@ -154,18 +213,30 @@ demo(VEIN)
 ```
 
 
-## What is new?
+You have to open the file `main.Rproj` with Rstudio and then open and run `main.R`
 
-- Added Fortran function to speedup calculations (currently, without speed)
-- Improved [ef_cetesb](https://atmoschem.github.io/vein/reference/ef_cetesb.html).
-future steps:
-- Enhance [inventory](https://atmoschem.github.io/vein/reference/inventory.html). The idea is to 
-configurate a whole emissions inventory for emission factors of CETESB, COPERT.
-- Improve plots.
-- Adds or connect traffic from gtfs services.
-- Add HBEFA EF.
-- Estimation of evaporative emissions with Copert Tier 3.
-- Group species by chemical mechanism.
+To run `main.R` you will need these extra packages:
+
+- ggplot2
+- readxl
+- eixport (If you plan to generate WRF Chem emissions file)
+
+If you do not have them already, you can install:
+
+
+```{r, eval = F}
+install.packages(c("ggplot2", "readxl", "eixport"))
+```
+
+## Too complicated? Watch a YouTube video in Portuguese:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6-07Y0Eimng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[here](https://www.youtube.com/watch?v=6-07Y0Eimng)
+
+
+
+### 2. Use inventory (a bit not so easy)
+
 
 ## How does it work?
 
@@ -187,7 +258,9 @@ Using [inventory](https://atmoschem.github.io/vein/reference/inventory.html)
 **Inventory will experience some changes, please be patient and check https://github.com/atmoschem/vein/projects/3**
 Please, read the examples in the documentation of each function and run the demo. 
 
-**Brazilian users, just use get_project and run a project read**
+**Brazilian users, just use `get_project` and run a project read**
+
+- https://ibarraespinosa.github.io/cursovein
 
 ### 1) Examples with traffic data:
 
@@ -352,7 +425,7 @@ Thanks and enjoy VEIN!
 
 ## Citation
 
-If you use VEIN, please, cite it ([BIBTEX](https://www.geosci-model-dev.net/11/2209/2018/gmd-11-2209-2018.bib), [ENDNOTE](https://www.geosci-model-dev.net/11/2209/2018/gmd-11-2209-2018.ris)):
+If you use VEIN, please, cite it ([BIBTEX](https://gmd.copernicus.org/articles/11/2209/2018/gmd-11-2209-2018.bib), [ENDNOTE](https://gmd.copernicus.org/articles/11/2209/2018/gmd-11-2209-2018.ris)):
 
 Ibarra-Espinosa, S., Ynoue, R., O'Sullivan, S., Pebesma, E., Andrade, M. D. F., and
   Osses, M.: VEIN v0.2.2: an R package for bottom-up vehicular emissions inventories,
@@ -367,7 +440,7 @@ volume = {11},
 year = {2018},
 number = {6},
 pages = {2209--2229},
-url = {https://www.geosci-model-dev.net/11/2209/2018/},
+url = {https://gmd.copernicus.org/articles/11/2209/2018/},
 doi = {10.5194/gmd-11-2209-2018}
 }
 ```

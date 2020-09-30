@@ -1,5 +1,4 @@
-#' vein_notes for writting technical notes about the inventory
-#'
+#' @title  Notes with sysinfo
 #' @description \code{\link{vein_notes}} creates aa text file '.txt' for
 #' writting technical notes about this emissions inventory
 #'
@@ -24,8 +23,7 @@
 #' #do not run
 #' a <- "delete"
 #' f <- vein_notes("notes", file = a)
-#' file.edit(f)
-#' file.remove("delete")
+#' file.remove(f)
 #' }
 vein_notes <- function (notes,
                         file = "README",
@@ -148,7 +146,7 @@ vein_notes <- function (notes,
   cat("========================================\n") # 40
   cat("\n\n\nThanks for using VEIN\n")
   sink()
-  cat("File at:", file, "\n")
+  # message("File at: ")
   return(file)
 }
 

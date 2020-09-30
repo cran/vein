@@ -4,7 +4,16 @@
 \alias{emis_hot_td}
 \title{Estimation of hot exhaust emissions with top-down approach}
 \usage{
-emis_hot_td(veh, lkm, ef, pro_month, params, verbose = FALSE, fortran = FALSE)
+emis_hot_td(
+  veh,
+  lkm,
+  ef,
+  pro_month,
+  params,
+  verbose = FALSE,
+  fortran = FALSE,
+  nt = ifelse(check_nt() == 1, 1, check_nt()/2)
+)
 }
 \arguments{
 \item{veh}{"Vehicles" data-frame or spatial feature, where columns are the
@@ -27,6 +36,9 @@ monthly profile.}
 \item{verbose}{Logical; To show more information}
 
 \item{fortran}{Logical; to try the fortran calculation.}
+
+\item{nt}{Integer; Number of threads wich must be lower than max available. See \code{\link{check_nt}}.
+Only when fortran = TRUE}
 }
 \value{
 Emissions data.frame
@@ -41,6 +53,20 @@ In general was designed so that each simple feature is a region with
 different average monthly temperature.
 This funcion, as other in this package, adapts to the class of the input data.
 providing flexibility to the user.
+}
+\details{
+List  to make easier to use this function.
+\enumerate{
+ \item{`pro_month` is data.frame AND rows of `ef` and `veh` are equal.}
+ \item{`pro_month` is numeric AND rows of `ef` and `veh` are equal.}
+ \item{`pro_month` is data.frame AND rows of `ef` is 12X rows of `veh`.}
+ \item{`pro_month` is numeric AND rows of `ef` is 12X rows of `veh`.}
+ \item{`pro_month` is data,frame AND class of `ef` is 'units'.}
+ \item{`pro_month` is numeric AND class of `ef` is 'units'.}
+ \item{NO `pro_month` AND class of `ef` is 'units'.}
+ \item{NO `pro_month` AND `ef` is data.frame.}
+ \item{`pro_month` is numeric AND rows of `ef` is 12 (monthly `ef`).}
+}
 }
 \examples{
 \dontrun{

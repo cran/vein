@@ -1,5 +1,6 @@
 context("emis")
 data(net)
+net <- sf::st_as_sf(net)[1:10, ]
 data(pc_profile)
 data(profiles)
 data(fe2015)
@@ -112,9 +113,29 @@ test_that("emis works", {
 test_that("emis works", {
   expect_equal(round(emis(veh = pc1,
                           lkm = net$lkm,
-                          ef = EmissionFactors(3),
+                          ef = EmissionFactors(rep(3, ncol(pc1))),
                           fortran = TRUE)[1,1]),
                Emissions(81))
+})
+
+
+test_that("emis works", {
+  expect_equal(round(emis(veh = pc1,
+                          lkm = net$lkm,
+                          ef = EmissionFactors(rep(3, ncol(pc1))),
+                          fortran = TRUE,
+                          nt = 1)[1,1]),
+               Emissions(81))
+})
+
+
+test_that("emis error", {
+  expect_error(emis(veh = pc1,
+                          lkm = net$lkm,
+                          ef = EmissionFactors(3),
+                          fortran = TRUE,
+                          nt = 100),
+               ".?")
 })
 
 
@@ -144,12 +165,14 @@ test_that("emis stops", {
                "Add.?\\(?")
 })
 
-test_that("emis works", {
-  expect_equal(round(emis(veh = pc1,
-                    lkm = net$lkm,
-                    ef = EmissionFactorsList(1:nrow(pc1)),
-                    speed = speed$S1)$V1[1]),
-               Emissions(27))
+test_that("emis NOT works", {
+  expect_equal(round(
+    emis(veh = pc1,
+         lkm = net$lkm,
+         # one ef for each type of vehicle (ncol veh)
+         ef = EmissionFactorsList(1:ncol(pc1)),
+         speed = speed$S1)$V1[1]),
+    Emissions(27))
 })
 
 
@@ -175,6 +198,18 @@ test_that("emis works", {
 })
 
 test_that("emis works", {
+  expect_equal(round(emis(veh = pc1[, 1:2],
+                          lkm = net$lkm,
+                          ef = lef,
+                          speed = speed,
+                          profile = profiles$PC_JUNE_2014$Monday,
+                          fortran = TRUE,
+                          nt = 1)[1], 2),
+               1.2)
+})
+
+
+test_that("emis works", {
   expect_equal(round(emis(veh = list(pc1, pc1),
                           lkm = net$lkm,
                           ef = lef,
@@ -193,10 +228,11 @@ test_that("emis works", {
 })
 test_that("emis message", {
   expect_message(emis(veh = list(pc1[, 1:2], pc1[, 1:2]),
-                          lkm = net$lkm,
-                          ef = lef,
-                          speed = speed,
-                          profile = profiles$PC_JUNE_2014$Monday,
-                          verbose = TRUE),
+                      lkm = net$lkm,
+                      ef = lef,
+                      speed = speed,
+                      profile = profiles$PC_JUNE_2014$Monday,
+                      verbose = TRUE),
                  "Number.?\\(?")
 })
+
