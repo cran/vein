@@ -19,9 +19,6 @@ A Spatial data.frame (sf) with 1796 rows and 1 variables:
   \item{geometry}{geometry}
 }
 }
-\source{
-\url{http://www.cetsp.com.br/}
-}
 \usage{
 data(net)
 }

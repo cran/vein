@@ -1,7 +1,7 @@
 Package: vein
 Type: Package
 Title: Vehicular Emissions Inventories
-Version: 0.9.0
+Version: 0.9.0.1
 Date: 2020-09-23
 Authors@R: c( 
   person(given = "Sergio", family = "Ibarra-Espinosa",
@@ -26,10 +26,10 @@ RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: yes
 Config/testthat/parallel: true
-Packaged: 2020-09-24 16:45:30 UTC; sergio
+Packaged: 2020-10-07 18:00:38 UTC; sergio
 VignetteBuilder: knitr
 Author: Sergio Ibarra-Espinosa [aut, cre, wdc]
     (<https://orcid.org/0000-0002-3162-1905>)
 Maintainer: Sergio Ibarra-Espinosa <sergio.ibarra@usp.br>
 Repository: CRAN
-Date/Publication: 2020-09-30 08:00:02 UTC
+Date/Publication: 2020-10-13 23:50:02 UTC
