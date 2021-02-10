@@ -4,21 +4,25 @@
 \alias{get_project}
 \title{Download vein project}
 \usage{
-get_project(directory, case = "brasil")
+get_project(directory, case = "brasil", url)
 }
 \arguments{
-\item{directory}{Character; Path to an existing or a new directory to be created.
-It needs absolute path.}
+\item{directory}{Character; Path to an existing or a new directory to be created.}
 
 \item{case}{Character; One of  of the following:
 \tabular{llll}{
   \strong{case}       \tab \strong{Description}\tab  \strong{EF} \tab \strong{Outputs}   \cr
-  brazil or brazil_bu or brasil or brasil_bu\tab Bottom-up \tab CETESB \tab  .rds       \cr
+  brazil or brazil_bu or brasil or brasil_bu\tab Bottom-up \tab CETESB \tab  .rds\cr
   emislacovid         \tab Bottom-up March 2020\tab CETESB \tab  .rds\cr
-  brazil_bu_csvgz     \tab Bottom-up \tab CETESB \tab  .csv.gz    \cr
-  brazil_bu_csv       \tab Bottom-up. Faster but heavier\tab CETESB\tab  .csv  \cr
-  brazil_bu_cb05      \tab Bottom-up CB05\tab CETESB\tab  .rds       \cr
+  brazil_bu_csvgz     \tab Bottom-up \tab CETESB+tunnel \tab  .csv.gz\cr
+  brazil_csv         \tab Bottom-up. Faster but heavier\tab CETESB\tab  .csv\cr
+  brazil_td_chem      \tab Top-down with chemical mechanisms\tab CETESB\tab  .csv and .rds\cr
+  brazil_bu_chem      \tab Bottom-up  chemical mechanisms\tab CETESB+tunnel\tab  .rds\cr
+  sebr_cb05co2      \tab Top-down SP, MG and RJ, CB05+CO2\tab CETESB+tunnel\tab  .rds\cr
+  amazon2014      \tab Top-down Amazon, Mozart\tab CETESB+tunnel\tab  csv and.rds\cr
 }}
+
+\item{url}{String, with the URL to download VEIN project}
 }
 \description{
 \code{\link{get_project}} downloads a project for running vein.

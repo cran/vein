@@ -34,111 +34,23 @@ knitr::opts_chunk$set(
 ![GitHub issues](https://img.shields.io/github/issues/atmoschem/vein)
 <!-- ![Liberapay giving](https://img.shields.io/liberapay/gives/sergio.ibarra) -->
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/ibarraespinosa/vein)
+[![R build status](https://github.com/atmoschem/vein/workflows/R-CMD-check/badge.svg)](https://github.com/atmoschem/vein/actions)
+
 <!-- ![](https://github.com/atmoschem/vein/raw/master/all_comp.gif) -->
 
 
 # **V**ehicular **E**missions **IN**ventories (VEIN)
 
-Cover the following pollutants:
-
-### European emission factors for all available vehicle categories exhaust:
-
-- **Criteria (g/km)**: "CO", "NOx", "HC", "PM", "CH4", "NMHC", "CO2", "SO2",
-"Pb", "FC" (Fuel Consumption),"NO", "NO2".
-- **PAH and POP**: "indeno(1,2,3-cd)pyrene", "benzo(k)fluoranthene",
- "benzo(b)fluoranthene", "benzo(ghi)perylene", "fluoranthene",
-"benzo(a)pyrene", "pyrene", "perylene",  "anthanthrene", "benzo(b)fluorene",
-"benzo(e)pyrene", "triphenylene", "benzo(j)fluoranthene",
-"dibenzo(a,j)anthacene", "dibenzo(a,l)pyrene", "3,6-dimethyl-phenanthrene",
-"benzo(a)anthracene", "acenaphthylene", "acenapthene",
-"chrysene", "phenanthrene", "napthalene",  "anthracene", "coronene",
-"dibenzo(ah)anthracene".
-- **Dioxins and Furans (g/km)**: "PCDD", "PCDF", "PCB".
-- **Metals (g/km)**: "As", "Cd", "Cr", "Cu", "Hg", "Ni", "Pb", "Se", "Zn".
-- **NMHC (g/km)**:
-- _ALKANES_: "ethane", "propane", "butane", "isobutane", "pentane",
-"isopentane", "hexane", "heptane", "octane", "2-methylhexane", "nonane",
-"2-methylheptane", "3-methylhexane", "decane", "3-methylheptane",
-"alkanes_C10_C12", "alkanes_C13".
-- _CYCLOALKANES_: "cycloalcanes".
-- _ALKENES_: "ethylene", "propylene", "propadiene", "1-butene",
-"isobutene", "2-butene", "1,3-butadiene", "1-pentene", "2-pentene",
-"1-hexene", "dimethylhexene".
-- _ALKYNES_:"1-butyne", "propyne", "acetylene".
-- _ALDEHYDES_: "formaldehyde", "acetaldehyde", "acrolein", "benzaldehyde",
-"crotonaldehyde", "methacrolein", "butyraldehyde", "isobutanaldehyde",
-"propionaldehyde", "hexanal", "i_valeraldehyde", "valeraldehyde",
-"o_tolualdehyde", "m_tolualdehyde", "p_tolualdehyde".
-- _KETONES_: "acetone", "methylethlketone".
-- _AROMATICS_: "toluene", "ethylbenzene",
-"m-xylene",  "p-xylene", "o-xylene",
-"1,2,3-trimethylbenzene", "1,2,4-trimethylbenzene",
-"1,3,5-trimethylbenzene", "styrene", "benzene", "C9", "C10", "C13".
-- **Active Surface (cm2/km)**
-- "AS_urban", "AS_rural", "AS_highway".
-- **Total Number of particles (N/km)**
-- "N_urban", "N_rural", "N_highway", "N_50nm_urban", "N_50_100nm_rural", "N_100_1000nm_highway".
-
-### European emission factors speciation for evapoative emissions:
-
-- **Criteria (g/km)**: "NMHC".
-- **NMHC (g/km)**:
-- _ALKANES_: "ethane", "propane", "n-butane", "i-pentane", "n-pentane",
-"2-methylheptane", "3-methylheptane", "n-hexane", "n-heptane"
-- _ALKENES_: "ethene", "propene", "1-butene", "trans-2-butene", "isobutene", 
-"cis-2-butene",  "1,3-butadiene", "trans-2-pentene", "cis-2-pentene", "isoprene"
-- _ALKYNES_:"propyne", "acetylene".
-- _AROMATICS_: "benzene", "toluene", "ethylbenzene", "m-xylene", "o-xylene",
-"1,2,3-trimethylbenzene" and "1,3,5-trimethylbenzene", 
-
-### Brazilian emission factors for all available vehicle categories:
-
-- "COd", "HCd", "NMHCd", "CH4", "NOxd", "CO2"
-"PM", "N2O", "KML", "FC", "NO2d", "NOd", "gCO2/KWH", "RCHOd",
-"CO", "HC", "NMHC", "NOx", "NO2" ,"NO", "RCHO" and scaled factors based on tunnel measurements
-see [ef_cetesb](https://atmoschem.github.io/vein/reference/ef_cetesb.html).
-
-### Brazilian speciation based on IAG/USP (Fátima's group) studies:
-
-- "e_eth", "e_hc3", "e_hc5", "e_hc8", "e_ol2", "e_olt", "e_oli", "e_iso",
-"e_tol", "e_xyl", "e_c2h5oh", "e_ald", "e_hcho", "e_ch3oh", "e_ket",
-"E_SO4i", "E_SO4j", "E_NO3i", "E_NO3j", "E_MP2.5i", "E_MP2.5j", "E_ORGi",
-"E_ORGj", "E_ECi", "E_ECj" with option to scaled based on tunnel measurements.
-
-### Base emission factors from International Emission Model (IVE)  for all available vehicle categories:
-
-- "VOC_gkm", "CO_gkm", "NOx_gkm", "PM_gkm", "Pb_gkm", "SO2_gkm", "NH3_gkm", 
-"ONE_3_butadiene_gkm", "formaldehyde_gkm", "acetaldehyde_gkm", "benzene_gkm",
-"EVAP_gkm", "CO2_gkm", "N20_gkm", "CH4_gkm", "VOC_gstart", "CO_gstart", 
-"NOx_gstart", "PM_gstart", "Pb_gstart", "SO2_gstart", "NH3_gstart",
-"ONE_3butadiene_gstart", "formaldehyde_gstart","acetaldehyde_gstart",
-"benzene_gstart", "EVAP_gstart", "CO2_gstart", "N20_gstart", 
-"CH4_gstart"
-
-### Emission factors from Chinese emission guidelines 你好中国朋友
-
-- "CO", "NOx", "HC", "PM10", "PM2.5".
-- They depend on humidity, temperature, altitude and  other parameters.
-
-## What is new?
-
-*REMOVED OpenMP because of MacOS issues. I hope in the version 1.0 of vein I can add this*
-
-### TODO
-
-- get_project with top-down approaches
-- get_project with Europe and Chinese EF
-- Add EF from EMFAC and MOVES
-- Update ef_ldv* and ef_hdv* to EEA2019
-- Include speed functions with Fortran and OpenMP
-- Include several chemical mechanism
-- Add EF from HBEFA?
-- See issues [GitHub](https://github.com/atmoschem/vein/issues) and [GitLab](https://gitlab.com/ibarraespinosa/vein/-/issues)
-
-
-# New in VEIN?
-
 ![](https://i.imgur.com/bsA6iDU.png)
+
+### What is new?
+
+- *Added OpenMP AGAIN and also, imported dotCall64 to avoid copying*
+- New VEIN project: sebr_cb05co2 covers SP, MG, RJ with CB05+CO2 for 2019
+and amazon2014.
+
+
+## New in VEIN?
 
 No worries! Just install [R](https://www.google.com/search?q=install+R&oq=install+R&aqs=chrome..69i57j35i39l2j0l3j69i60l2.1308j0j7&sourceid=chrome&ie=UTF-8), [Rstudio](https://www.google.com/search?sxsrf=ALeKk00EtkaL-W834eJbAfWxSgAtHlzAuw%3A1600952042358&ei=6pZsX7G5FaS65OUP9NuOqAk&q=install+Rstudio&oq=install+Rstudio&gs_lcp=CgZwc3ktYWIQAzIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywE6BAgAEEdQiaIBWJSoAWCPqgFoAHABeAGAAaMCiAGuB5IBBTAuNS4xmAEAoAEBqgEHZ3dzLXdpesgBCMABAQ&sclient=psy-ab&ved=0ahUKEwix1qWO64HsAhUkHbkGHfStA5UQ4dUDCA0&uact=5) and then
 
@@ -156,8 +68,14 @@ VEIN can be installed via CRAN or github
 install.packages("vein")
 ```
 
+gitlab (faster than github)
 ```r
 remotes::install_gitlab("ibarraespinosa/vein")
+```
+
+github
+```r
+remotes::install_github("atmoschem/vein")
 ```
 
 ## Approaches
@@ -221,15 +139,17 @@ If you do not have them already, you can install:
 install.packages(c("ggplot2", "readxl", "eixport"))
 ```
 
-## Too complicated? Watch a YouTube video in Portuguese:
+## Too complicated? Watch a YouTube
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/tHSWIjg26vg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[English](https://www.youtube.com/embed/tHSWIjg26vg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6-07Y0Eimng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-[here](https://www.youtube.com/watch?v=6-07Y0Eimng)
+[Portuguese](https://www.youtube.com/watch?v=6-07Y0Eimng)
 
 
 
 ### 2. Use inventory (a bit not so easy)
-
 
 run the demo to see vein in action
 
@@ -445,6 +365,25 @@ url = {https://gmd.copernicus.org/articles/11/2209/2018/},
 doi = {10.5194/gmd-11-2209-2018}
 }
 ```
+
+## Special thanks to all the contributors
+
+- [Daniel Schuch](https://github.com/Schuch666)
+- [Avraham Adler](https://github.com/aadler)
+- [Pedro Andrade](https://github.com/pedro-andrade-inpe)
+- [Edzer Pebesma](https://github.com/edzer)
+- [Amanda Rehbein](https://github.com/salvatirehbein)
+
+
+## TODO
+
+- get_project with Europe and Chinese EF
+- Update ef_ldv* and ef_hdv* to EEA2019
+- Include speed functions with Fortran
+- Include CB6
+- Add EF from HBEFA?
+- See issues [GitHub](https://github.com/atmoschem/vein/issues) and [GitLab](https://gitlab.com/ibarraespinosa/vein/-/issues)
+
 
 
 ## Communications, doubts etc

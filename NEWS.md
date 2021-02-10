@@ -3,16 +3,35 @@ NEWS
 
 ## TODO
 
-- get_project with top-down approaches
 - get_project with Europe and Chinese EF
-- Add EF from EMFAC and MOVES
+- Add EF from HBEFA
 - Update ef_ldv* and ef_hdv* to EEA2019
-- Include speed functions with Fortran and OpenMP
-- Include several chemical mechanism
-- Add EF from HBEFA?
+- Include speed with Fortran?
+- Reduce size of sysdata
 
-### vein 0.9.0.1 (Release date: 2020-10-07)
-- REMOVED OPENMP DUE TO MAC OS ISSUES
+### vein 0.9.1 (Release date: 2020-01-31)
+- Add deterioration factors in ef_cetesb
+- Add OpenMP again and dotCall64. Thanks to Avraham Adler @aadler
+- Add project sebr_cb05co2
+
+### vein 0.9.1 (Release date: 2020-12-05)
+- Update speciate (2020-11-27)
+- Add top-down approach with chemistry for WRF (2020-12-04)
+- Update ef_cetesb with scale = "tunnel"
+- Update speciate for exhaust E100 and chem_vein (2020-12-28)
+- remove NMHC species form ef_hdv_speed because already available in speciate
+
+### vein 0.9.0.2 (Release date: 2020-10-07)
+
+- Add mechanisms neu_cb05, neu_cb05v2, pmneu, pmneu2 (thanks to Daniel Schuch from Northeastern University) (2020-10-13)
+- Add x to colplot (2020-11-14)
+- Add ELEC EF to ef_cetesb (2020-11-14)
+- Add ef_emfac (2020-11-14)
+- speciate names upper and without point (e_pm2.55i -> E_PM25I) (2020-11-17)
+- Update scale tunnel in ef_cetesb (2020-11-23)
+
+### vein 0.9.0.1 (Release date: 2020-10-13)
+- REMOVED OPENMP DUE TO MAC OS ISSUES ANd FORTRAN
 
 ### vein 0.9.0 (Release date: 2020-09-23) "Stuck-at-home"
 
