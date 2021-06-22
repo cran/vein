@@ -5,7 +5,7 @@
 #'
 #' Pollutants: "CO", "HC", "NMHC", "CH4", "NOx", "CO2",
 #' "RCHO" (aldehydes + formaldehyde), "ETOH",
-#' "PM", "N2O", "KML", "FC", "NO2", "NO",
+#' "PM", "N2O", "KML", "FC", "NO2", "NO", "NH3",
 #' "gD/KWH", "gCO2/KWH", "RCHO_0km" (aldehydes + formaldehyde), "PM25RES", "PM10RES",
 #' "CO_0km", "HC_0km", "NMHC_0km", "NOx_0km", "NO2_0km" ,"NO_0km",
 #' "RCHO_0km" and "ETOH_0km", "FS" (fuel sales) (g/km). If scale = "tunnel" is
@@ -146,6 +146,8 @@
 #' derived form a bottom-up resuspension emissions from metropolitan area
 #' of Sao Paulo 2018, assuming 50000 streets
 #'
+#' NH3 from EEA Tier 2
+#'
 #' @export
 #' @examples \dontrun{
 #' a <- ef_cetesb(p = "CO", veh = "PC_G")
@@ -202,7 +204,7 @@ ef_cetesb <- function(p,
 
   Age <- Year <- .N <- Pollutant <- NULL
   ef[, Age := 1:.N, by= Pollutant]
-  ef[, Year := 2019:(2019-max(ef$Age) + 1), by= Pollutant]
+  ef[, Year := max(ef$Year):(max(ef$Year)-max(ef$Age) + 1), by= Pollutant]
 
   # deterioration ####
   ef <- ef[ef$Year <= year, ]
@@ -352,7 +354,7 @@ ef_cetesb <- function(p,
   efhcd$Pollutant <-  "HC_0km"
   for(i in seq_along(ve4s)) efhcd[[ve4s[i]]] <- det2[det2$veh == ve4s[i] & det2$pol == "HC", ]$efd
 
-  efrchod <- efrcho <- ef[ef$Pollutant == "NOx", ]
+  efrchod <- efrcho <- ef[ef$Pollutant == "RCHO", ]
   efrcho$Pollutant <-  "RCHO_0km"
   for(i in seq_along(ve4s)) efrchod[[ve4s[i]]] <- det2[det2$veh == ve4s[i] & det2$pol == "RCHO", ]$efd
 
@@ -572,12 +574,11 @@ ef_cetesb <- function(p,
   }
 
   # Selecting
-
   evapd <- c("D_20_35","D_10_25","D_0_15")
   evap <- c("S_20_35", "R_20_35", "S_10_25", "R_10_25", "S_0_15", "R_0_15")
   pols <- as.character(unique(ef$Pollutant))
 
-  if(!p %in% c(pols, "SO2")){
+    if(!p %in% c(pols, "SO2")){
     stop(cat("Please, choose one of the following pollutants:\n", pols, "\n"))
   }
 
