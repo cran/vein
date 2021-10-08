@@ -13,7 +13,7 @@ EmissionsArray(x, ...)
 
 \method{summary}{EmissionsArray}(object, ...)
 
-\method{plot}{EmissionsArray}(x, ...)
+\method{plot}{EmissionsArray}(x, main = "average emissions", ...)
 }
 \arguments{
 \item{x}{Object with class "data.frame", "matrix" or "numeric"}
@@ -21,6 +21,8 @@ EmissionsArray(x, ...)
 \item{...}{ignored}
 
 \item{object}{object with class "EmissionsArray'}
+
+\item{main}{Title for plot}
 }
 \value{
 Objects of class "EmissionsArray"

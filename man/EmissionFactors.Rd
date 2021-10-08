@@ -7,20 +7,54 @@
 \alias{plot.EmissionFactors}
 \title{Construction function for class "EmissionFactors"}
 \usage{
-EmissionFactors(x, ...)
+EmissionFactors(x, mass = "g", dist = "km", ...)
 
 \method{print}{EmissionFactors}(x, ...)
 
 \method{summary}{EmissionFactors}(object, ...)
 
-\method{plot}{EmissionFactors}(x, ...)
+\method{plot}{EmissionFactors}(
+  x,
+  pal = "mpl_viridis",
+  rev = TRUE,
+  fig1 = c(0, 0.8, 0, 0.8),
+  fig2 = c(0, 0.8, 0.55, 1),
+  fig3 = c(0.7, 1, 0, 0.8),
+  mai1 = c(0.2, 0.82, 0.82, 0.42),
+  mai2 = c(1.3, 0.82, 0.82, 0.42),
+  mai3 = c(0.7, 0.62, 0.82, 0.42),
+  bias = 1.5,
+  ...
+)
 }
 \arguments{
 \item{x}{Object with class "data.frame", "matrix" or "numeric"}
 
+\item{mass}{Character to be the time units as numerator, default "g" for grams}
+
+\item{dist}{String indicating the units of the resulting distance in speed.}
+
 \item{...}{ignored}
 
-\item{object}{Object with class "EmissionFactors"}
+\item{object}{object with class "EmissionFactors'}
+
+\item{pal}{Palette of colors available or the number of the position}
+
+\item{rev}{Logical; to internally revert order of rgb color vectors.}
+
+\item{fig1}{par parameters for fig, \code{\link{par}}.}
+
+\item{fig2}{par parameters for fig, \code{\link{par}}.}
+
+\item{fig3}{par parameters for fig, \code{\link{par}}.}
+
+\item{mai1}{par parameters for mai, \code{\link{par}}.}
+
+\item{mai2}{par parameters for mai, \code{\link{par}}.}
+
+\item{mai3}{par parameters for mai, \code{\link{par}}.}
+
+\item{bias}{positive number. Higher values give more widely spaced colors at the high end.}
 }
 \value{
 Objects of class "EmissionFactors" or "units"

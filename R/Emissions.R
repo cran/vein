@@ -8,10 +8,24 @@
 #' @return Objects of class "Emissions" or "units"
 #'
 #' @param x Object with class "data.frame", "matrix" or "numeric"
+#' @param mass Character to be the time units as numerator, default "g" for grams
+#' @param time Character to be the time units as denominator, eg "h"
 #' @param object object with class "Emissions"
-#' @param time Character to be the time units as denominator, eg "1/h"
+#' @param pal Palette of colors available or the number of the position
+#' @param rev Logical; to internally revert order of rgb color vectors.
+#' @param fig1 par parameters for fig, \code{\link{par}}.
+#' @param mai1 par parameters for mai, \code{\link{par}}.
+#' @param fig2 par parameters for fig, \code{\link{par}}.
+#' @param mai2 par parameters for mai, \code{\link{par}}.
+#' @param fig3 par parameters for fig, \code{\link{par}}.
+#' @param mai3 par parameters for mai, \code{\link{par}}.
+#' @param bias  positive number. Higher values give more widely spaced colors at the high end.
+#' @param main title of plot
 #' @param ... ignored
 #' @importFrom units as_units as_units
+#' @importFrom graphics par plot abline
+#' @importFrom fields image.plot
+#' @importFrom grDevices rgb colorRamp
 #'
 #' @rdname Emissions
 #' @aliases Emissions print.Emissions summary.Emissions plot.Emissions
@@ -42,10 +56,11 @@
 #' class(E_CO)
 #' plot(E_CO)
 #' ####
-#' Emissions(1, time = "1/h")
+#' Emissions(1)
+#' Emissions(1, time = "h")
 #' }
 #' @export
-Emissions <- function(x, time, ...) {
+Emissions <- function(x, mass = "g", time, ...) {
 
   if(inherits(x, "sf")) {
     geo <- sf::st_geometry(x)
@@ -53,11 +68,11 @@ Emissions <- function(x, time, ...) {
     e <- sf::st_set_geometry(x, NULL)
 
     for(i in 1:ncol(e)){
-      e[,i] <- e[,i]*units::as_units("g")
+      e[,i] <- e[,i]*units::as_units(mass)
     }
 
     if(!missing(time)){
-      for(i in 1:ncol(e)) e[,i] <- e[,i]*units::as_units(1, time)
+      for(i in 1:ncol(e)) e[,i] <- e[,i]*units::as_units(1, paste0(time, "-1"))
     }
     e <- sf::st_sf(e, geometry = geo)
 
@@ -66,25 +81,25 @@ Emissions <- function(x, time, ...) {
     e <- as.data.frame(x)
 
     for(i in 1:ncol(e)){
-      e[,i] <- e[,i]*units::as_units("g")
+      e[,i] <- e[,i]*units::as_units(mass)
     }
 
     if(!missing(time)){
-      for(i in 1:ncol(e)) e[,i] <- e[,i]*units::as_units(1, time)
+      for(i in 1:ncol(e)) e[,i] <- e[,i]*units::as_units(1, paste0(time, "-1"))
     }
 
     class(e) <- c("Emissions", class(e))
 
   } else if ( is.data.frame(x) ) {
 
-    e <- x
+    e <- as.data.frame(x)
 
     for(i in 1:ncol(x)){
-      e[,i] <- e[,i]*units::as_units("g")
+      e[,i] <- e[,i]*units::as_units(mass)
     }
 
     if(!missing(time)){
-      for(i in 1:ncol(e)) e[,i] <- e[,i]*units::as_units(1, time)
+      for(i in 1:ncol(e)) e[,i] <- e[,i]*units::as_units(1, paste0(time, "-1"))
     }
 
     class(e) <- c("Emissions",class(x))
@@ -93,14 +108,20 @@ Emissions <- function(x, time, ...) {
 
     e <- x
 
-    if(units(x)$numerator != "g") stop("units are not 'g'")
+    if(as.character(units(e)) != paste0(mass, "/", time) ){
+      message("Converting ", as.character(units(e)), " to ", mass, "/", time)
+      e <- units::as_units(e, paste0(mass, " ", time, "-1"))
+    } else {
+      message("Units are the same and no cerversions will be made")
+    }
+
 
   } else if( class(x) == "numeric" | class(x) == "integer") {
 
     e <- x*units::as_units("g")
 
     if(!missing(time)){
-      e <- e*units::as_units(1, time)
+      e <- e*units::as_units(1, paste0(time, "-1"))
     }
   }
   return(e)
@@ -144,11 +165,64 @@ summary.Emissions <- function(object, ...) {
 #' @rdname Emissions
 #' @method plot Emissions
 #' @export
-plot.Emissions <- function(x,  ...) {
-  e <- x
-  avage <- sum(seq(1,ncol(e)) * colSums(e)/sum(e))
-  Emission <- Emissions(colSums(e))
-  graphics::plot(Emission, type="l", ...)
-  graphics::abline(v = avage, col="red")
-  cat("\nAverage = ",round(avage,2))
+plot.Emissions <- function(x,
+                           pal = "colo_angelafaye_Coloured_sky_in",
+                           rev = FALSE,
+                           fig1 = c(0,0.8,0,0.8),
+                           fig2 = c(0,0.8,0.55,1),
+                           fig3 = c(0.7,1,0,0.8),
+                           mai1 = c(0.2, 0.82, 0.82, 0.42),
+                           mai2 = c(1.3, 0.82, 0.82, 0.42),
+                           mai3 = c(0.7, 0.72, 0.82, 0.42),
+                           main = NULL,
+                           bias = 1.5,
+                           ...) {
+  oldpar <- par(no.readonly = TRUE)       # code line i
+  on.exit(par(oldpar))                    # code line i + 1
+  # e <- x
+  #
+  if(ncol(x) > 1) {
+    graphics::par(fig=fig1, #new=TRUE,
+                  mai = mai1,
+                  ...)
+    col <- grDevices::rgb(grDevices::colorRamp(colors = cptcity::cpt(pal, rev = rev),
+                                               bias = bias)(seq(0, 1,0.01)),
+                          maxColorValue = 255)
+
+    fields::image.plot(
+      x = 1:ncol(x),
+      xaxt = "n",
+      z =t(as.matrix(x))[, nrow(x):1],
+      xlab = "",
+      ylab = paste0("Emissions by streets [",as.character(units(x[[1]])), "]"),
+      col = col, horizontal = TRUE)
+
+    graphics::par(fig=fig2,
+                  mai = mai2,
+                  new=TRUE,
+                  ...)
+    avage <- sum(seq(1,ncol(x)) * colSums(x)/sum(x, na.rm = T))
+    graphics::plot(colSums(x, na.rm = T),
+                   type="l",
+                   ylab = paste0("Emissions [",as.character(units(x[[1]])), "]"),
+                   xlab = "",
+                   frame = FALSE,
+                   xaxt = 'n')
+    graphics::axis(3)
+
+    graphics::abline(v = avage, col="red")
+    cat("Weighted mean = ",round(avage,2), "\n")
+
+    graphics::par(fig=fig3, new=TRUE,
+                  mai = mai3,
+                  ...)
+    graphics::plot(x = rowSums(x, na.rm = T), y = nrow(x):1,
+                   type = "l", frame = FALSE, yaxt = "n",
+                   ylab = NULL, xlab = NULL
+    )
+    graphics::abline(v = avage, col="red")
+
+  } else {
+    graphics::plot(unlist(x), type = "l", main = "1 column data")
+  }
 }

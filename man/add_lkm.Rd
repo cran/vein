@@ -23,3 +23,8 @@ b <- add_lkm(matrix(rnorm(100)*10, ncol = 10))
 print(head(b))
 }
 }
+\seealso{
+Other Add distance unitts: 
+\code{\link{add_miles}()}
+}
+\concept{Add distance unitts}

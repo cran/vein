@@ -19,9 +19,14 @@ get_project(directory, case = "brasil", url)
   brazil_td_chem      \tab Top-down with chemical mechanisms\tab CETESB\tab  .csv and .rds\cr
   brazil_bu_chem      \tab Bottom-up  chemical mechanisms\tab CETESB+tunnel\tab  .rds\cr
   brazil_bu_chem_streets      \tab Bottom-up  chemical mechanisms for streets and MUNICH\tab CETESB+tunnel\tab  .rds\cr
-  sebr_cb05co2      \tab Top-down SP, MG and RJ, CB05+CO2\tab CETESB+tunnel\tab  .rds\cr
-  amazon2014      \tab Top-down Amazon, Mozart\tab CETESB+tunnel\tab  csv and.rds\cr
-  curitiba      \tab Bottom-down +GTFS, RADM2\tab CETESB+tunnel\tab  csv and.rds\cr
+  sebr_cb05co2      \tab Top-down SP, MG and RJ\tab CETESB+tunnel\tab  .rds\cr
+  amazon2014      \tab Top-down Amazon\tab CETESB+tunnel\tab  csv and.rds\cr
+  curitiba      \tab Bottom-down +GTFS\tab CETESB+tunnel\tab  csv and.rds\cr
+  masp2020      \tab Bottom-down\tab CETESB+tunnel\tab  csv and.rds\cr
+  ecuador_td      \tab Top-down\tab EEA\tab  csv and.rds\cr
+  ecuador_td_hot      \tab Top-down\tab EEA\tab  csv and.rds\cr
+  ecuador_td_hot_month      \tab Top-down\tab EEA\tab  csv and.rds\cr
+  moves      \tab Bottom-up\tab US/EPA MOVES \tab  csv and.rds (requires MOVES >=3.0 on Windows)\cr
 }}
 
 \item{url}{String, with the URL to download VEIN project}
@@ -33,6 +38,8 @@ The projects are available on Github.com/atmoschem/vein/projects
 \note{
 default case can be any of "brasil", "brazil", "brazil_bu", "brasil_bu", they are
 the same
+Projects for Ecuador are in development.
+In any case, if you find any error, please, send a pull request in github or gitlab.
 }
 \examples{
 \dontrun{

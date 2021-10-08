@@ -7,22 +7,57 @@
 \alias{plot.Emissions}
 \title{Construction function for class "Emissions"}
 \usage{
-Emissions(x, time, ...)
+Emissions(x, mass = "g", time, ...)
 
 \method{print}{Emissions}(x, ...)
 
 \method{summary}{Emissions}(object, ...)
 
-\method{plot}{Emissions}(x, ...)
+\method{plot}{Emissions}(
+  x,
+  pal = "colo_angelafaye_Coloured_sky_in",
+  rev = FALSE,
+  fig1 = c(0, 0.8, 0, 0.8),
+  fig2 = c(0, 0.8, 0.55, 1),
+  fig3 = c(0.7, 1, 0, 0.8),
+  mai1 = c(0.2, 0.82, 0.82, 0.42),
+  mai2 = c(1.3, 0.82, 0.82, 0.42),
+  mai3 = c(0.7, 0.72, 0.82, 0.42),
+  main = NULL,
+  bias = 1.5,
+  ...
+)
 }
 \arguments{
 \item{x}{Object with class "data.frame", "matrix" or "numeric"}
 
-\item{time}{Character to be the time units as denominator, eg "1/h"}
+\item{mass}{Character to be the time units as numerator, default "g" for grams}
+
+\item{time}{Character to be the time units as denominator, eg "h"}
 
 \item{...}{ignored}
 
 \item{object}{object with class "Emissions"}
+
+\item{pal}{Palette of colors available or the number of the position}
+
+\item{rev}{Logical; to internally revert order of rgb color vectors.}
+
+\item{fig1}{par parameters for fig, \code{\link{par}}.}
+
+\item{fig2}{par parameters for fig, \code{\link{par}}.}
+
+\item{fig3}{par parameters for fig, \code{\link{par}}.}
+
+\item{mai1}{par parameters for mai, \code{\link{par}}.}
+
+\item{mai2}{par parameters for mai, \code{\link{par}}.}
+
+\item{mai3}{par parameters for mai, \code{\link{par}}.}
+
+\item{main}{title of plot}
+
+\item{bias}{positive number. Higher values give more widely spaced colors at the high end.}
 }
 \value{
 Objects of class "Emissions" or "units"
@@ -61,6 +96,7 @@ dim(E_CO) # streets x vehicle categories x hours x days
 class(E_CO)
 plot(E_CO)
 ####
-Emissions(1, time = "1/h")
+Emissions(1)
+Emissions(1, time = "h")
 }
 }

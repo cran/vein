@@ -9,10 +9,23 @@
 #'
 #' @param x Object with class "Vehicles"
 #' @param object Object with class "Vehicles"
+#' @param time Character to be the time units as denominator, default is NULL
+#' @param pal Palette of colors available or the number of the position
+#' @param rev Logical; to internally revert order of rgb color vectors.
+#' @param bk Break points in sorted order to indicate the intervals for assigning the colors.
+#' @param fig1 par parameters for fig, \code{\link{par}}.
+#' @param mai1 par parameters for mai, \code{\link{par}}.
+#' @param fig2 par parameters for fig, \code{\link{par}}.
+#' @param mai2 par parameters for mai, \code{\link{par}}.
+#' @param fig3 par parameters for fig, \code{\link{par}}.
+#' @param mai3 par parameters for mai, \code{\link{par}}.
+#' @param bias  positive number. Higher values give more widely spaced colors at the high end.
 #' @param ... ignored
-#' @param message message with average age
 #' @param time Character to be the time units as denominator, eg "1/h"
 #' @importFrom units as_units install_unit
+#' @importFrom graphics par plot abline
+#' @importFrom fields image.plot
+#' @importFrom grDevices rgb colorRamp
 #'
 #' @rdname Vehicles
 #' @aliases Vehicles print.Vehicles summary.Vehicles plot.Vehicles
@@ -27,8 +40,8 @@
 #' plot(LT_B5)
 #' }
 #' @export
-Vehicles <- function(x, ..., time) {
- # units::install_unit("veh", warn = F)
+Vehicles <- function(x, ..., time=NULL) {
+ # units::install_unit("veh")
 
   if(inherits(x, "sf")) {
 
@@ -127,17 +140,80 @@ summary.Vehicles <- function(object, ...) {
 #' @rdname Vehicles
 #' @method plot Vehicles
 #' @export
-plot.Vehicles <- function(x,  ..., message = TRUE) {
-  # units::install_unit("veh", warn = F)
-  veh <- x
-  if ( inherits(veh, "data.frame") ) {
-    avage <- sum(seq(1,ncol(veh)) * colSums(veh)/sum(veh))
-    Veh <- colSums(veh)
-    Veh <- Veh*units::as_units("veh")
-    graphics::plot(Veh, type = "l", ...)
-    graphics::abline(v = avage, col = "red")
-    if(message){
-    cat("\nAverage = ",round(avage,2))
-  }}
+plot.Vehicles <- function(x,
+                          pal = "colo_lightningmccarl_into_the_night",
+                          rev = TRUE,
+                          bk =  NULL,
+                          fig1 = c(0,0.8,0,0.8),
+                          fig2 = c(0,0.8,0.55,1),
+                          fig3 = c(0.7,1,0,0.8),
+                          mai1 = c(0.2, 0.82, 0.82, 0.42),
+                          mai2 = c(1.3, 0.82, 0.82, 0.42),
+                          mai3 = c(0.7, 0.62, 0.82, 0.42),
+                          bias = 1.5,
+                          ...) {
+  # # units::install_unit("veh", warn = F)
+  # veh <- x
+  # if ( inherits(veh, "data.frame") ) {
+  #   avage <- sum(seq(1,ncol(veh)) * colSums(veh)/sum(veh))
+  #   Veh <- colSums(veh)
+  #   Veh <- Veh*units::as_units("veh")
+  #   graphics::plot(Veh, type = "l", ...)
+  #   graphics::abline(v = avage, col = "red")
+  #   if(message){
+  #   cat("\nAverage = ",round(avage,2))
+  #   }}
+  #
+  oldpar <- par(no.readonly = TRUE)       # code line i
+  on.exit(par(oldpar))                    # code line i + 1
+
+  if(ncol(x) > 1) {
+    graphics::par(fig=fig1, #new=TRUE,
+                  mai = mai1,
+                  ...)
+
+    col <- grDevices::rgb(grDevices::colorRamp(colors = cptcity::cpt(pal, rev = rev),
+                                               bias = bias)(seq(0, 1,0.01)),
+                          maxColorValue = 255)
+
+
+    fields::image.plot(
+      x = 1:ncol(x),
+      xaxt = "n",
+      z =t(as.matrix(x))[, nrow(x):1],
+      xlab = "",
+      ylab = paste0("Vehicles by streets [",as.character(units(x[[1]])), "]"),
+      breaks = bk,
+      col = col, horizontal = TRUE)
+
+    graphics::par(fig=fig2,
+                  mai = mai2,
+                  new=TRUE,
+                  ...)
+    avage <- sum(seq(1,ncol(x)) * colSums(x)/sum(x, na.rm = T))
+    graphics::plot(colSums(x, na.rm = T),
+                   type="l",
+                   ylab = paste0("Sum vehicles [",as.character(units(x[[1]])), "]"),
+                   xlab = "",
+                   frame = FALSE,
+                   xaxt = 'n')
+    graphics::axis(3)
+
+    graphics::abline(v = avage, col="red")
+    cat("Weighted mean = ",round(avage,2), "\n")
+
+    graphics::par(fig=fig3, new=TRUE,
+                  mai = mai3,
+                  ...)
+    graphics::plot(x = rowSums(x, na.rm = T), y = nrow(x):1,
+                   type = "l", frame = FALSE, yaxt = "n",
+                   ylab = NULL, xlab = NULL
+    )
+    graphics::abline(v = mean(rowSums(x, na.rm = T), na.rm = T), col="red")
+
+  } else {
+    graphics::plot(unlist(x), type = "l", main = "1 column data")
+  }
+
 }
 
