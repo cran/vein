@@ -1,31 +1,42 @@
 #' Emissions factors from European European Environment Agency
 #'
 #' \code{\link{ef_cetesb}} returns a vector or data.frame of Brazilian emission factors.
-#' @param category String: "Passenger Cars", "Light Commercial Vehicles", "Heavy Duty Trucks",
-#' "Buses" or "L-Category".
-#' @param fuel String;  "Petrol", "Petrol Hybrid", "Petrol PHEV ~ Petrol",
-#' "Petrol PHEV ~ Electricity",  "Diesel", "Diesel PHEV ~ Diesel",
-#' "Diesel PHEV ~ Electricity", "LPG Bifuel ~ LPG", "LPG Bifuel ~ Petrol",
-#' "CNG Bifuel ~ CNG", "CNG Bifuel ~ Petrol", "Diesel Hybrid ~ Diesel",
-#' "Diesel Hybrid ~ Electricity", "CNG", "Biodiesel"
-#' @param segment String for type of vehicle.
-#' @param euro String; euro standard.
-#' @param tech String; technology.
-#' @param pol String; "CO", "NOx", "VOC", "PM Exhaust", "EC", "CH4", "NH3", "N2O"
+#' @param category String: "PC" (Passenger Cars), "LCV" (Light Commercial Vehicles),
+#' "TRUCKS" (Heavy Duty Trucks),
+#' "BUS" (Buses) or "MC" (Motorcycles or L-Category as in EEA 2019).
+#' @param fuel String;  "G", "G HY", "G PHEV G",
+#' "G PHEV ELEC",  "D", "D PHEV D",
+#' "D PHEV ELEC", "LPG BIFUEL LPG", "LPG BIFUEL G",
+#' "CNG BIFUEL CNG", "CNG BIFUEL G", "D HY D",
+#' "D HY ELEC", "CNG", "BIO D"
+#' @param segment String for type of vehicle (try different, the function will show values).
+#' @param euro String; euro standard:
+#' "PRE", "IMPROVED CONVENTIONAL", "OPEN LOOP",
+#' "ECE 15/00-01", "ECE 15/02", "ECE 15/03", "ECE 15/04".
+#' "I", "II", "III", "IV", "V",
+#' "VI A/B/C", "VI D", "VI D-TEMP", "VI D/E",
+#' "EEV".
+#' @param tech String; technology:
+#' "DPF", "DPF With S/W Update", "DPF+SCR"
+#' "EGR", "GDI", "GDI+GPF", "LNT+DPF", "PFI", "SCR".
+#' @param pol String; "CO", "NOx", "NMHC" (VOC), "PM" (PM Exhaust), "EC", "CH4", "NH3", "N2O"
 #' @param mode String; "Urban Peak", "Urban Off Peak", "Rural", "Highway", NA.
 #' @param slope Numeric; 0.00, -0.06, -0.04, -0.02,  0.02,  0.04,  0.06, or NA
 #' @param load Numeric; 0.0,0.5, 1.0 or NA
 #' @param speed Numeric; optional numeric in km/h.
+#' @param fcorr Numeric; Correction by fuel properties by euro technology.
+#' See \code{\link{fuel_corr}}. The order from first to last is
+#' "PRE", "I", "II", "III", "IV", "V", "VI", "or other VI. Default is 1
 #' @return Return a function depending of speed or numeric (g/km)
 #' @importFrom data.table setDT
 #' @keywords  emission factors
 #' @export
-#' @examples \dontrun{
+#' @examples {
 #' # ef_eea(category = "I DONT KNOW")
-#' ef_eea(category = "Passenger Cars",
-#' fuel = "Petrol",
+#' ef_eea(category = "PC",
+#' fuel = "G",
 #' segment = "Small",
-#' euro = "Euro 1",
+#' euro = "I",
 #' tech = NA,
 #' pol = "CO",
 #' mode = NA,
@@ -42,8 +53,10 @@ ef_eea <- function(
   mode,
   slope,
   load,
-  speed
+  speed,
+  fcorr = rep(1, 8)
 ) {
+
 
   eea <- data.table::setDT(sysdata$eea)
 
@@ -52,6 +65,24 @@ ef_eea <- function(
 
   Category <- Fuel <- Segment <- EuroStandard <- Technology <- NULL
   Pollutant <- Mode <- RoadSlope <- Load <-  NULL
+
+
+  #Function to case when
+  lala <- function(x) {
+    ifelse(x == "PRE", fcorr[1],
+           ifelse(
+             x == "I", fcorr[2],
+             ifelse(
+               x == "II", fcorr[3],
+               ifelse(
+                 x == "III", fcorr[4],
+                 ifelse(
+                   x == "IV", fcorr[5],
+                   ifelse(
+                     x == "V", fcorr[6],
+                     ifelse(
+                       x == "VI", fcorr[7],
+                       fcorr[8])))))))}
 
   # category
   u_cat <- unique(eea$Category)
@@ -80,6 +111,8 @@ ef_eea <- function(
     stop("Select categories from:\n", paste(u_euro, collapse = "\n"))
   }
   ef <- ef[EuroStandard %in% euro]
+
+  k2 <- lala(euro) #requires length euro = 1
 
   # tech
   u_tech <- unique(ef$Technology)

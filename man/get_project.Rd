@@ -30,9 +30,11 @@ get_project(directory, case = "brasil", url)
   ecuador_td_im      \tab Top-down\tab EEA\tab  csv and.rds\cr
   ecuador_td_hot      \tab Top-down\tab EEA\tab  csv and.rds\cr
   ecuador_td_hot_month      \tab Top-down\tab EEA\tab  csv and.rds\cr
-  moves      \tab Bottom-up\tab US/EPA MOVES \tab  csv and.rds (requires MOVES >=3.0 on Windows)\cr
+  moves_bu      \tab Bottom-up\tab US/EPA MOVES \tab  csv and.rds (requires MOVES >=3.0 on Windows)\cr
   manizales_bu      \tab Bottom-up  chemical mechanisms\tab EEA\tab  csv, csv.gz, .rds\cr
   sebr_cb05co2_im  \tab Top-down SP, MG and RJ IM\tab CETESB+tunnel\tab  .rds\cr
+  eu_bu_chem      \tab Bottom-up  chemical mechanisms\tab EEA 2019\tab  .rds\cr
+  eu_bu_chem_simple \tab Bottom-up  chemical mechanisms 7 veh\tab EEA 2019\tab  .rds\cr
 }}
 
 \item{url}{String, with the URL to download VEIN project}
@@ -46,7 +48,7 @@ default case can be any of "brasil", "brazil", "brazil_bu", "brasil_bu", they ar
 the same
 In any case, if you find any error, please, send a pull request in github.
 
-In Sao Paulo the IM programs was functioning until 2011. Since then,
+In Sao Paulo the IM programs was functioning until 2011.
 }
 \examples{
 \dontrun{

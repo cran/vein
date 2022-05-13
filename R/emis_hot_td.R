@@ -1,13 +1,13 @@
-#' Estimation of hot exhaust emissions with top-down approach
+#' Estimation of hot exhaust emissions with a top-down approach
 #'
-#' @description \code{\link{emis_hot_td}} estimates cld start emissions with
+#' @description \code{\link{emis_hot_td}} estimates cold start emissions with
 #' a top-down appraoch. This is, annual or monthly emissions or region.
-#' Especifically, the emissions are esitmated for row of the simple feature (row
+#' Especifically, the emissions are estimated for the row of the simple feature (row
 #' of the spatial feature).
 #'
 #' In general was designed so that each simple feature is a region with
 #' different average monthly temperature.
-#' This funcion, as other in this package, adapts to the class of the input data.
+#' This function, as others in this package, adapts to the class of the input data.
 #' providing flexibility to the user.
 #'
 #' @param veh "Vehicles" data-frame or spatial feature, where columns are the
@@ -18,13 +18,13 @@
 #' along 12 months. For instance, if you have 10 regions the number
 #' of rows of ef can also be 120 (10 * 120).
 #' when you have emission factors that varies with month, see \code{\link{ef_china}}.
-#' @param pro_month Numeric or data.frame; montly profile to distribuite annual mileage
+#' @param pro_month Numeric or data.frame; monthly profile to distribute annual mileage
 #' in each month. When it is a data.frame, each region (row) can have a different
 #' monthly profile.
 #' @param params List of parameters; Add columns with information to returning data.frame
 #' @param verbose Logical; To show more information
 #' @param fortran Logical; to try the fortran calculation.
-#' @param nt Integer; Number of threads wich must be lower than max available. See \code{\link{check_nt}}.
+#' @param nt Integer; Number of threads which must be lower than max available. See \code{\link{check_nt}}.
 #' Only when fortran = TRUE
 #' @importFrom dotCall64 .C64 vector_dc
 #' @return Emissions data.frame
@@ -239,7 +239,7 @@ emis_hot_td <- function(veh,
                         fortran = FALSE,
                         nt = ifelse(check_nt() == 1, 1, check_nt() / 2)) {
   # Checking sf
-  if (any(class(veh) %in% "sf")) {
+  if (inherits(veh, "sf")) {
     if (verbose) message("converting sf to data.frame")
     veh <- sf::st_set_geometry(veh, NULL)
   }
@@ -249,7 +249,7 @@ emis_hot_td <- function(veh,
   }
 
   # Check units
-  if (class(lkm) != "units") {
+  if (!inherits(lkm, "units")) {
     stop("lkm neeeds to has class 'units' in 'km'. Please, check package '?units::set_units'")
   }
   if (units(lkm)$numerator == "m") {
@@ -263,7 +263,7 @@ emis_hot_td <- function(veh,
   # Checking ef
   if (is.matrix(ef) | is.data.frame(ef)) {
     ef <- as.data.frame(ef)
-    if (class(ef[, 1]) != "units") {
+    if (!inherits(ef[, 1], "units")) {
       stop("columns of ef must has class 'units' in 'g/km'. Please, check ?EmissionFactors")
     }
     if (units(ef[, 1])$numerator == "g" | units(ef[, 1])$denominator == "km") {
@@ -277,7 +277,7 @@ emis_hot_td <- function(veh,
       ef <- as.numeric(ef)
     }
   } else {
-    if (class(ef) != "units") {
+    if (!inherits(ef, "units")) {
       stop("ef must has class 'units' in 'g/km'. Please, check ?EmissionFactors")
     }
     if (units(ef)$numerator == "g" | units(ef)$denominator == "km") {

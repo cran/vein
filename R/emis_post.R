@@ -1,8 +1,8 @@
 #' Post emissions
 #'
 #' @description \code{emis_post} simplify emissions estimated as total per type category of
-#' vehicle or by street. It reads EmissionsArray and Emissions classes. It can return an dataframe
-#' with hourly emissions at each street, or a data base with emissions by vehicular
+#' vehicle or by street. It reads EmissionsArray and Emissions classes. It can return a dataframe
+#' with hourly emissions at each street, or a database with emissions by vehicular
 #' category, hour, including size, fuel and other characteristics.
 #'
 #' @param arra Array of emissions 4d: streets x category of vehicles x hours x days or
@@ -102,7 +102,8 @@ emis_post <- function(arra,
                       net,
                       type_emi,
                       k = 1) {
-   if (class(arra)[1] == "EmissionsArray" & length(dim(arra)) == 4){
+
+   if (inherits(arra, "EmissionsArray") & length(dim(arra)) == 4){
     if (by == "veh"){
       x <- unlist(lapply(1:dim(arra)[4], function(j) {
         unlist(lapply (1:dim(arra)[3],function(i) {
@@ -191,7 +192,7 @@ emis_post <- function(arra,
       }
     }
 
-  } else if(class(arra)[1] == "EmissionsArray" & length(dim(arra) == 3)){
+  } else if(inherits(arra, "EmissionsArray") & length(dim(arra) == 3)){
     if (by == "veh"){
       x <- as.vector(apply(X = arra, MARGIN = c(2,3), FUN = sum, na.rm = TRUE))
       df <- cbind(deparse(substitute(arra)),
@@ -255,7 +256,7 @@ emis_post <- function(arra,
     }
 
 
-  } else if(class(arra)[1] == "Emissions" & length(dim(arra) == 2)) {
+  } else if(inherits(arra, "Emissions") & length(dim(arra) == 2)) {
     if(by != "veh") stop("Only by  == 'veh' accepted")
     x_DF <- data.frame(array_x = paste0("array_", 1:nrow(arra)))
     x_DF$g <- arra$emissions*k

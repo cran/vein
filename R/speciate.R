@@ -96,8 +96,8 @@
 #' @importFrom units as_units
 #' @importFrom sf st_as_sf st_set_geometry
 #' @return dataframe of speciation in grams or mols
-#' @references "bcom": Ntziachristos and Zamaras. 2016. Passneger cars, light
-#' commercial trucks, heavy-duty vehicles including buses and motor cycles. In:
+#' @references "bcom": Ntziachristos and Zamaras. 2016. Passenger cars, light
+#' commercial trucks, heavy-duty vehicles including buses and motorcycles. In:
 #' EEA, EMEP. EEA air pollutant emission inventory guidebook-2009. European
 #' Environment Agency, Copenhagen, 2016
 #' @references "tyre", "brake" and "road": Ntziachristos and Boulter 2016.
@@ -512,9 +512,9 @@ speciate <- function(x = 1,
     if(verbose) message("Input emissions must be in g/(km^2)/h\n")
     if(verbose) message("Output flux will be  ug/(m^2)/s\n")
     if(verbose) message("PM.2.5-10 must be calculated as substraction of PM10-PM2.5 to enter this variable into WRF")
-    if (class(x)[1] == "sf") {
+    if (inherits(x, "sf")) {
       x <- sf::st_set_geometry(x, NULL)
-    } else if (class(x) == "Spatial") {
+    } else if (inherits(x, "Spatial")) {
       x <- sf::st_as_sf(x)
       x <- sf::st_set_geometry(x, NULL)
     }

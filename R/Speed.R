@@ -1,10 +1,10 @@
 #' Construction function for class "Speed"
 #'
-#' @description \code{Speed} returns a tranformed object with class "Speed" and units
-#'  km/h. This functions includes two arguments, distance and time. Therefore,
-#'  it is posibel to change the units of the speed to "m" to "s" for example.
-#'  This function returns a dataframe with units for speed. When this function
-#'  is applied to numeric vectors it add class "units".
+#' @description \code{Speed} returns a transformed object with class "Speed" and units
+#'  km/h. This function includes two arguments, distance and time. Therefore,
+#'  it is possible to change the units of the speed to "m" to "s" for example.
+#'  This function returns a data.frame with units for speed. When this function
+#'  is applied to numeric vectors it adds class "units".
 #'
 #' @return Constructor for class "Speed" or "units"
 #'
@@ -65,7 +65,7 @@ Speed <- function(x, ..., dist = "km", time = "h") {
   } else if ( is.list(x) ) {
     stop("List not supported")
     #SpeedList?
-  } else if ( class(x) == "units" ) {
+  } else if ( inherits(x, "units" )) {
     spd <- x
     if(as.character(units(spd)) != paste0(dist, "/", time) ){
       message("Converting ", as.character(units(spd)), " to ", dist, "/", time)
@@ -75,7 +75,7 @@ Speed <- function(x, ..., dist = "km", time = "h") {
     }
 
 
-  } else if( class(x) == "numeric" | class(x) == "integer" ) {
+  } else if( inherits(x, "numeric") | inherits(x, "integer" )) {
     spd <- x*units::as_units(paste0(dist, " ", time, "-1"))
   }
   return(spd)

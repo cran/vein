@@ -1,6 +1,6 @@
 #' Construction function for class "EmissionFactors"
 #'
-#' @description \code{EmissionFactors} returns a tranformed object with class
+#' @description \code{EmissionFactors} returns a transformed object with class
 #' "EmissionFactors" and units g/km.
 #'
 #' @return Objects of class "EmissionFactors" or "units"
@@ -53,7 +53,7 @@ EmissionFactors <- function(x, mass = "g", dist = "km", ...) {
       ef[,i] <- ef[,i]*units::as_units(paste0(mass, " ", dist, "-1"))
     }
     class(ef) <- c("EmissionFactors",class(ef))
-  } else if ( class(x) == "units" ) {
+  } else if ( inherits(x, "units")) {
     ef <- x
 
     ef <- x
@@ -64,7 +64,7 @@ EmissionFactors <- function(x, mass = "g", dist = "km", ...) {
       message("Units are the same and no cerversions will be made")
     }
 
-  } else if( class(x) == "numeric" | class(x) == "integer" ) {
+  } else if( inherits(x, "numeric") | inherits(x, "integer" )) {
     ef <- x*units::as_units(paste0(mass, " ", dist, "-1"))
   }
   return(ef)

@@ -1,8 +1,8 @@
 #' Allocate emissions into a grid returning point emissions or flux
 #'
 #' @description \code{\link{emis_grid}} allocates emissions proportionally to each grid
-#'  cell. The process is performed by intersection between geometries and the grid.
-#' It means that requires "sr" according with your location for the projection.
+#'  cell. The process is performed by the intersection between geometries and the grid.
+#' It means that requires "sr" according to your location for the projection.
 #' It is assumed that spobj is a Spatial*DataFrame or an "sf" with the pollutants
 #' in data. This function returns an object of class "sf".
 #'
@@ -79,7 +79,7 @@ emis_grid <- function (spobj = net,
   g$id <- 1:nrow(g)
   if (!missing(sr)) {
     "+init=epsg:31983"
-    if (class(sr)[1] == "character") {
+    if (inherits(sr, "character")) {
       sr <- as.numeric(substr(sr, 12, nchar(sr)))
     }
     message("Transforming spatial objects to 'sr' ")
