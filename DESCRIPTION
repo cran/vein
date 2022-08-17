@@ -1,8 +1,8 @@
 Package: vein
 Type: Package
 Title: Vehicular Emissions Inventories
-Version: 0.9.6
-Date: 2022-05-1
+Version: 0.9.9
+Date: 2022-08-17
 Authors@R: c( 
   person(given = "Sergio", family = "Ibarra-Espinosa",
          role = c("aut", "cre"),
@@ -27,15 +27,15 @@ Depends: R (>= 3.5.0)
 Imports: sf (>= 1.0.1), data.table, units, graphics, stats, dotCall64,
         cptcity, fields, grDevices
 Suggests: knitr, rmarkdown, testthat
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Encoding: UTF-8
 NeedsCompilation: yes
 Config/testthat/parallel: true
-Packaged: 2022-05-13 13:43:31 UTC; sergio
+Packaged: 2022-08-17 16:18:52 UTC; sergio
 VignetteBuilder: knitr
 Author: Sergio Ibarra-Espinosa [aut, cre]
     (<https://orcid.org/0000-0002-3162-1905>),
   Joao Bazzo [ctb] (<https://orcid.org/0000-0003-4536-5006>)
 Maintainer: Sergio Ibarra-Espinosa <zergioibarra@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-05-13 14:10:02 UTC
+Date/Publication: 2022-08-17 17:40:02 UTC
