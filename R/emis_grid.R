@@ -179,7 +179,9 @@ emis_grid <- function (spobj = net,
 
     dfm$id <- NULL
 
-    area <- units::set_units(sf::st_area(g), "km^2")
+    area <- sf::st_area(g)
+
+    area <- units::set_units(area, "km^2")
 
     for(i in 1:ncol(dfm)) dfm[[i]] <- dfm[[i]]*k
 
@@ -232,7 +234,10 @@ emis_grid <- function (spobj = net,
                .SDcols = namesnet]
     id <- dfm$id
     dfm$id <- NULL
-    area <- units::set_units(sf::st_area(g), "km^2")
+
+    area <- sf::st_area(g)
+
+    area <- units::set_units(area, "km^2")
 
     for(i in 1:ncol(dfm)) dfm[[i]] <- dfm[[i]]*k
 

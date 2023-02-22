@@ -1,8 +1,8 @@
 Package: vein
 Type: Package
 Title: Vehicular Emissions Inventories
-Version: 0.9.9
-Date: 2022-08-17
+Version: 1.0.0
+Date: 2023-02-22
 Authors@R: c( 
   person(given = "Sergio", family = "Ibarra-Espinosa",
          role = c("aut", "cre"),
@@ -11,6 +11,10 @@ Authors@R: c(
          person(given="Joao", family="Bazzo", 
          role="ctb", 
          email="joao.bazzo@gmail.com",
+         comment = c(ORCID = "0000-0002-7371-1116")),
+         person(given="Mario", family="Gavidia-Calderón", 
+         role="ctb", 
+         email="mario.calderon@iag.usp.br",
          comment = c(ORCID = "0000-0003-4536-5006"))) 
 Description: Elaboration of vehicular emissions inventories,
     consisting in four stages, pre-processing activity data, preparing 
@@ -31,11 +35,12 @@ RoxygenNote: 7.2.1
 Encoding: UTF-8
 NeedsCompilation: yes
 Config/testthat/parallel: true
-Packaged: 2022-08-17 16:18:52 UTC; sergio
+Packaged: 2023-02-22 23:39:01 UTC; sergio
 VignetteBuilder: knitr
 Author: Sergio Ibarra-Espinosa [aut, cre]
     (<https://orcid.org/0000-0002-3162-1905>),
-  Joao Bazzo [ctb] (<https://orcid.org/0000-0003-4536-5006>)
+  Joao Bazzo [ctb] (<https://orcid.org/0000-0002-7371-1116>),
+  Mario Gavidia-Calderón [ctb] (<https://orcid.org/0000-0003-4536-5006>)
 Maintainer: Sergio Ibarra-Espinosa <zergioibarra@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-08-17 17:40:02 UTC
+Date/Publication: 2023-02-23 00:00:02 UTC

@@ -1,9 +1,43 @@
 NEWS
 ===========
 
-## TODO
 
-- Add EF from HBEFA
+### vein 1.0.0
+
+- Integrates all the recent changes.
+- Todo: Add weather effects at hourly and street level
+in the emission factors of all projects.
+- Decrease the number of projects adding more scripts
+as in the new chinese project.
+- Add project to develop ensembles
+
+### vein 0.9.94
+
+- add chinese voc profiles
+
+### vein 0.9.92
+
+- add more env chinese ef
+- remove ive. It is better to run MOVES and extract EF
+- add project china_bu_chem
+- add more vehicles in ef_wear
+- update brazil_bu_chem
+- emis_chem2 now return al variables for chemical mechanisms,
+not only the matching pollutants. In this way, there will be
+more pollutants with 0 mass as a result of emis_chem2
+- add argument units_area into emis_grid, which allows to
+generate flux as mass / cm2 (for chimere) or other area unit.
+- merge several projects into brazil_bu_chem
+
+### vein 0.9.91
+
+- add hybrid gasoline and diesel to chinese EF
+- Preparing chinese bottom-up project
+- Mario added PM scale in ef_cetesb
+
+### vein 0.9.9
+
+- CRAN release
 
 ### vein 0.9.7
 

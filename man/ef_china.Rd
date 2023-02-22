@@ -29,7 +29,7 @@ ef_china(
 "Large", "Taxi", "Motorcycles", "Moped", PV Diesel: "Mediumbus", "Largebus",
  "3-Wheel". Trucks: "Mini", "Light" , "Medium", "Heavy"}
 
-\item{f}{Character;fuel: "G", "D"}
+\item{f}{Character;fuel: "G", "D", "CNG", "ALL"}
 
 \item{standard}{Character or data.frame; "PRE", "I", "II", "III", "IV", "V". When
 it is a data.frame, it each row is a different region and ta, humidity,
@@ -79,6 +79,10 @@ http://www.mee.gov.cn/gkml/hbb/bgth/201407/W020140708387895271474.pdf
 Combination of vehicles:
 \tabular{ccc}{
   v    \tab t      \tab    f  \cr
+  PV   \tab Mini   \tab   G HY   \cr
+  PV   \tab Bus   \tab   D HY D   \cr
+  PV   \tab Mini   \tab   CNG   \cr
+  PV   \tab Bus   \tab   CNG   \cr
   PV   \tab Mini   \tab   G   \cr
   PV   \tab Small   \tab   G   \cr
   PV   \tab Medium   \tab   G   \cr
@@ -90,6 +94,7 @@ Combination of vehicles:
   PV   \tab Mini   \tab   D   \cr
   PV   \tab Small   \tab   D   \cr
   PV   \tab Mediumbus   \tab   D   \cr
+  PV   \tab Medium   \tab   D   \cr
   PV   \tab Largebus   \tab   D   \cr
   PV   \tab Bus   \tab   D   \cr
   PV   \tab 3-Wheel   \tab   D   \cr
@@ -108,6 +113,8 @@ Combination of vehicles:
   Trucks   \tab Low Speed   \tab   D   \cr
   Trucks   \tab Mini   \tab   D   \cr
 }
+
+standard VI is assumed as V
 }
 \examples{
 \dontrun{
@@ -181,7 +188,20 @@ dim(a)
 }
 \seealso{
 \code{\link{ef_ldv_speed}} \code{\link{emis_hot_td}}
+
+Other China: 
+\code{\link{ef_china_det}()},
+\code{\link{ef_china_hu}()},
+\code{\link{ef_china_h}()},
+\code{\link{ef_china_long}()},
+\code{\link{ef_china_speed}()},
+\code{\link{ef_china_s}()},
+\code{\link{ef_china_te}()},
+\code{\link{ef_china_th}()},
+\code{\link{emis_china}()},
+\code{\link{emis_long}()}
 }
+\concept{China}
 \keyword{China}
 \keyword{ef_china}
 \keyword{emission}
