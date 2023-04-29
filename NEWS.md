@@ -1,6 +1,16 @@
 NEWS
 ===========
 
+### vein 1.0.2
+
+- Change all units according units package version 0.8.2.
+- Deprecated some functions.
+
+### vein 1.0.1
+
+- Add emis_emfac.
+- Add ef_emfac.
+- moves_rpdy reads tfs for when veh is data.frame
 
 ### vein 1.0.0
 

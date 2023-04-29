@@ -23,6 +23,7 @@ Useful links:
 
 Other contributors:
 \itemize{
+  \item Daniel Schuch \email{underschuch@gmail.com} (\href{https://orcid.org/0000-0001-5977-4519}{ORCID}) [contributor]
   \item Joao Bazzo \email{joao.bazzo@gmail.com} (\href{https://orcid.org/0000-0002-7371-1116}{ORCID}) [contributor]
   \item Mario Gavidia-Calderón \email{mario.calderon@iag.usp.br} (\href{https://orcid.org/0000-0003-4536-5006}{ORCID}) [contributor]
 }
