@@ -1,5 +1,35 @@
 NEWS
 ===========
+### vein 1.1.2 (date: 2024-01-24)
+
+- fix speciation "pm2023"
+
+### vein 1.1.1 (date: 2023-10-03)
+
+- speciation voc according EDGAR (voc 1..25)
+
+
+### vein 1.1.0 (date: 2023-08-01)
+
+- fortran files now end on .90
+- manizales and europe now adds wear
+
+
+### vein 1.0.5 (date: 2023-06-14)
+
+- ef_china_speed now has long argument to process in long format
+
+
+### vein 1.0.4 (date: 2023-05-31)
+
+- project newer cetesb emission factors
+add project to estimate emissions in Brazil
+by state a year
+
+### vein 1.0.3 (date: 2023-05-05)
+
+- Converts ef_emfac FC gallons to grams
+- add survival logical parameter in projects
 
 ### vein 1.0.2
 

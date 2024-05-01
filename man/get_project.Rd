@@ -4,39 +4,32 @@
 \alias{get_project}
 \title{Download vein project}
 \usage{
-get_project(directory, case = "brazil_bu_chem", url)
+get_project(directory, case, url)
 }
 \arguments{
 \item{directory}{Character; Path to an existing or a new directory to be created.}
 
 \item{case}{Character; One of  of the following:
 \tabular{llll}{
-  \strong{case}       \tab \strong{Description}\tab  \strong{EF} \tab \strong{Outputs}   \cr
-  brazil or brazil_bu or brasil or brasil_bu\tab Bottom-up \tab CETESB \tab  .rds\cr
-  emislacovid         \tab Bottom-up March 2020\tab CETESB \tab  .rds\cr
-  brazil_bu_csvgz     \tab Bottom-up \tab CETESB+tunnel \tab  .csv.gz\cr
-  brazil_csv         \tab Bottom-up. Faster but heavier\tab CETESB\tab  .csv\cr
-  brazil_td_chem      \tab Top-down with chemical mechanisms\tab CETESB\tab  .csv and .rds\cr
-  brazil_bu_chem      \tab Bottom-up  chemical mechanisms\tab CETESB+tunnel\tab  .rds\cr
-  brazil_bu_chem_streets      \tab Bottom-up  chemical mechanisms for streets and MUNICH\tab CETESB+tunnel\tab  .rds\cr
-  brazil_td_chem_im      \tab Top-down with chemical mechanisms+IM\tab CETESB\tab  .csv and .rds\cr
-  brazil_bu_chem_im      \tab Bottom-up  chemical mechanisms+IM\tab CETESB+tunnel\tab  .rds\cr
-  brazil_bu_chem_month  \tab Bottom-up  chemical mechanisms\tab CETESB+tunnel\tab  .rds\cr
-  brazil_bu_chem_streets_im      \tab Bottom-up  chemical mechanisms for streets and MUNICH+IM\tab CETESB+tunnel\tab  .rds\cr
-  sebr_cb05co2      \tab Top-down SP, MG and RJ\tab CETESB+tunnel\tab  .rds\cr
-  amazon2014      \tab Top-down Amazon\tab CETESB+tunnel\tab  csv and.rds\cr
-  curitiba      \tab Bottom-down +GTFS\tab CETESB+tunnel\tab  csv and.rds\cr
-  masp2020      \tab Bottom-down\tab CETESB+tunnel\tab  csv and.rds\cr
-  ecuador_td      \tab Top-down\tab EEA\tab  csv and.rds\cr
-  ecuador_td_im      \tab Top-down\tab EEA\tab  csv and.rds\cr
-  ecuador_td_hot      \tab Top-down\tab EEA\tab  csv and.rds\cr
-  ecuador_td_hot_month      \tab Top-down\tab EEA\tab  csv and.rds\cr
-  moves_bu      \tab Bottom-up\tab US/EPA MOVES \tab  csv and.rds (requires MOVES >=3.0 on Windows)\cr
-  manizales_bu      \tab Bottom-up  chemical mechanisms\tab EEA\tab  csv, csv.gz, .rds\cr
-  sebr_cb05co2_im  \tab Top-down SP, MG and RJ IM\tab CETESB+tunnel\tab  .rds\cr
-  eu_bu_chem      \tab Bottom-up  chemical mechanisms\tab EEA 2019\tab  .rds\cr
-  eu_bu_chem_simple \tab Bottom-up  chemical mechanisms 7 veh\tab EEA 2019\tab  .rds\cr
-  china_bu_chem      \tab Bottom-up  chemical mechanisms\tab MEE China\tab  .rds\cr
+  \strong{case}  \tab \strong{Description}\tab  \strong{EF} \tab \strong{Notes}   \cr
+  emislacovid  \tab Bottom-up March 2020\tab CETESB \tab  .rds\cr
+  brazil_bu_chem     \tab Bottom-up  chemical mechanisms\tab CETESB+tunnel\tab  .rds\cr
+  brazil_bu_chem_streets \tab Bottom-up  chemical mechanisms for streets and MUNICH\tab CETESB+tunnel\tab  .rds\cr
+  brazil_td_chem     \tab Top-down with chemical mechanisms\tab CETESB\tab  .csv and .rds\cr
+  brazil_country     \tab Top down \tab CETESB+tunnel\tab  .rds\cr
+  brazil_countryv2     \tab Top down \tab CETESB+tunnel\tab  .rds\cr
+  masp2020       \tab Bottom-down\tab CETESB+tunnel\tab  csv and.rds\cr
+  sebr_cb05co2   \tab Top-down SP, MG and RJ\tab CETESB+tunnel\tab  .rds\cr
+  amazon2014     \tab Top-down Amazon\tab CETESB+tunnel\tab  csv and.rds\cr
+  curitiba       \tab Bottom-down +GTFS\tab CETESB+tunnel\tab  csv and.rds\cr
+  ecuador_td     \tab Top-down. Renamed ecuador_td_im\tab EEA\tab  csv and.rds\cr
+  ecuador_td_hot_month  \tab Top-down\tab EEA\tab  csv and.rds\cr
+  moves_bu         \tab Bottom-up\tab US/EPA MOVES \tab  csv and.rds (requires MOVES >=3.0 on Windows)\cr
+  manizales_bu     \tab Bottom-up  chemical mechanisms\tab EEA\tab  csv, csv.gz, .rds\cr
+  eu_bu_chem       \tab Bottom-up  chemical mechanisms\tab EEA 2019\tab  .rds\cr
+  eu_bu_chem_simple\tab Bottom-up  chemical mechanisms 7 veh\tab EEA 2019\tab  .rds\cr
+  china_bu_chem    \tab Bottom-up  chemical mechanisms\tab MEE China\tab  .rds\cr
+  china_bu_chem_1h    \tab Bottom-up  chemical mechanisms\tab MEE China\tab  .rds\cr
 }}
 
 \item{url}{String, with the URL to download VEIN project}
@@ -46,16 +39,43 @@ get_project(directory, case = "brazil_bu_chem", url)
 The projects are available on Github.com/atmoschem/vein/projects
 }
 \note{
-default case can be any of "brasil", "brazil", "brazil_bu", "brasil_bu", they are
-the same
+All projects include option to apply survival functions
+
+\strong{brazil_bu_chem} covers
+"brazil",
+"brazil_bu",
+"brasil_bu",
+"brazil_bu_chem",
+"brazil_bu_csvgz",
+"brazil_bu_csv",
+"brazil_bu_cb05",
+"brazil_mech",
+"brazil_bu_chem_month",
+"brazil_bu_chem_im"
+"brazil_bu_chem_streets_im" (type <- 'streets')
+"brazil_bu_chem_streets" (type <- 'streets')
+
+\strong{brazil_td_chem} covers
+"brazil_td_chem_im"
+
+\strong{sebr_cb05co2} covers
+"sebr_cb05co2_im"
+
+\strong{ecuador_td} covers
+"ecuador_td",
+"ecuador_td_hot",
+"ecuador_td_im"
+
 In any case, if you find any error, please, send a pull request in github.
 
 In Sao Paulo the IM programs was functioning until 2011.
+
+brazil_countryv2 has scripts updated
 }
 \examples{
 \dontrun{
 #do not run
-get_project("awesomecity")
+get_project("awesomecity", case = "brazil_bu_chem")
 }
 
 }

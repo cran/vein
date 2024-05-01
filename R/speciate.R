@@ -7,43 +7,44 @@
 #' @param x Emissions estimation
 #' @param spec The speciations are:
 #' \itemize{
-#' \item{"bcom"}{: Splits PM2.5 in black carbon and organic matter.}
-#' \item{"tyre" or "tire"}{: Splits PM in PM10, PM2.5, PM1 and PM0.1.}
-#' \item{"brake"}{: Splits PM in PM10, PM2.5, PM1 and PM0.1.}
-#' \item{"road"}{: Splits PM in PM10 and PM2.5.}
-#' \item{"nox"}{: Splits NOx in NO and NO2.}
-#' \item{"nmhc"}{: Splits NMHC in compounds, see \code{\link{ef_ldv_speed}}.}
-#' \item{"pmiag", "pmneu",  "pmneu2"}{: Splits PM in groups, see note below.}
+#' \item "bcom": Splits PM2.5 in black carbon and organic matter.
+#' \item "tyre" or "tire": Splits PM in PM10, PM2.5, PM1 and PM0.1.
+#' \item "brake": Splits PM in PM10, PM2.5, PM1 and PM0.1.
+#' \item "road": Splits PM in PM10 and PM2.5.
+#' \item "nox": Splits NOx in NO and NO2.
+#' \item "nmhc": Splits NMHC in compounds, see \code{\link{ef_ldv_speed}}.
+#' \item "voc": Splits NMHC in voc groups according EDGAR.
+#' \item "pmiag", "pmneu",  "pmneu2", "pm2023": Splits PM in groups, see note below.
 #' }
 #' @param veh Type of vehicle:
 #' \itemize{
-#' \item{"bcom"}{: veh can be "PC", "LCV", HDV" or "Motorcycle".}
-#' \item{"tyre" or "tire"}{: not necessary.}
-#' \item{"brake"}{: not necessary.}
-#' \item{"road"}{: not necessary.}
-#' \item{"nox"}{: veh can be "PC", "LCV", HDV" or "Motorcycle".}
-#' \item{"nmhc"}{see below}
-#' \item{""pmiag", "pmneu",  "pmneu2"}{: not necessary.}
+#' \item "bcom": veh can be "PC", "LCV", HDV" or "Motorcycle".
+#' \item "tyre" or "tire": not necessary.
+#' \item "brake": not necessary.
+#' \item "road": not necessary.
+#' \item "nox": veh can be "PC", "LCV", HDV" or "Motorcycle".
+#' \item "nmhc":see below
+#' \item ""pmiag", "pmneu",  "pmneu2", "pm2023": not necessary.
 #' }
 #' @param fuel Fuel.
 #' \itemize{
-#' \item{"bcom"}{: "G" or "D".}
-#' \item{"tyre" or "tire"}{: not necessary.}
-#' \item{"brake"}{: not necessary.}
-#' \item{"road"}{: not necessary.}
-#' \item{"nox"}{: "G", "D", "LPG", "E85" or "CNG".}
-#' \item{"nmhc"}{see below}
-#' \item{"pmiag", "pmneu",  "pmneu2"}{: not necessary.}
+#' \item "bcom": "G" or "D".
+#' \item "tyre" or "tire": not necessary.
+#' \item "brake": not necessary.
+#' \item "road": not necessary.
+#' \item "nox": "G", "D", "LPG", "E85" or "CNG".
+#' \item "nmhc":see below
+#' \item "pmiag", "pmneu",  "pmneu2", "pm2023": not necessary.
 #' }
 #' @param eu Emission standard
 #' \itemize{
-#' \item{"bcom"}{: "G" or "D".}
-#' \item{"tyre" or "tire"}{: not necessary.}
-#' \item{"brake"}{: not necessary.}
-#' \item{"road"}{: not necessary.}
-#' \item{"nox"}{: "G", "D", "LPG", "E85" or "CNG".}
-#' \item{"nmhc"}{see below}
-#' \item{"pmiag", "pmneu",  "pmneu2"}{: not necessary.}
+#' \item "bcom": "G" or "D".
+#' \item "tyre" or "tire": not necessary.
+#' \item "brake": not necessary.
+#' \item "road": not necessary.
+#' \item "nox": "G", "D", "LPG", "E85" or "CNG".
+#' \item "nmhc":see below
+#' \item "pmiag", "pmneu",  "pmneu2", "pm2023": not necessary.
 #' }
 #' @param list when TRUE returns a list with number of elements of the list as
 #' the number species of pollutants
@@ -110,12 +111,12 @@
 #' after eu = OM, all profiles are Chinese
 #' # the following specs will be removed soon
 #' \itemize{
-#' \item{"iag_racm"}{: ethanol emissions added in hc3.}
-#' \item{"iag" or "iag_cb05"}{: Splits NMHC by CB05 (WRF exb05_opt1) group .}
-#' \item{"petroiag_cb05"}{: Splits NMHC by CB05 (WRF exb05_opt1) group .}
-#' \item{"iag_cb05v2"}{: Splits NMHC by CB05 (WRF exb05_opt2) group .}
-#' \item{"neu_cb05"}{: Splits NMHC by CB05 (WRF exb05_opt2) group alternative.}
-#' \item{"petroiag_cb05v2"}{: Splits NMHC by CB05 (WRF exb05_opt2) group alternative.}
+#' \item"iag_racm": ethanol emissions added in hc3.
+#' \item"iag" or "iag_cb05": Splits NMHC by CB05 (WRF exb05_opt1) group .
+#' \item"petroiag_cb05": Splits NMHC by CB05 (WRF exb05_opt1) group .
+#' \item"iag_cb05v2": Splits NMHC by CB05 (WRF exb05_opt2) group .
+#' \item"neu_cb05": Splits NMHC by CB05 (WRF exb05_opt2) group alternative.
+#' \item"petroiag_cb05v2": Splits NMHC by CB05 (WRF exb05_opt2) group alternative.
 #' }
 #' @importFrom units as_units
 #' @importFrom sf st_as_sf st_set_geometry
@@ -163,6 +164,12 @@
 #'
 #'
 #' pmiag2 pass the mass only on j fraction
+#'
+#' @note spec \strong{"voc"} splits nmhc into the 25 VOC
+#' groups according: Huang et al 2019, "Speciation of anthropogenic
+#' emissions of non-methane volatile
+#' organic compounds: a global gridded data set for
+#' 1970-2012" ACP. Speciation In development.
 #' @export
 #' @examples
 #' \dontrun{
@@ -209,7 +216,7 @@ speciate <- function(x = 1,
       BC = x * df$BC / 100,
       OM = (df$OM / 100) * (x * df$BC / 100)
     ))
-     if (list == TRUE) {
+    if (list == TRUE) {
       dfb <- as.list(dfb)
     }
     # tyre ####
@@ -243,7 +250,7 @@ speciate <- function(x = 1,
       PM1 = x * 0.1,
       PM0.1 = x * 0.08
     ))
-   if (list == TRUE) {
+    if (list == TRUE) {
       dfb <- as.list(dfb)
     }
     # road ####
@@ -252,7 +259,7 @@ speciate <- function(x = 1,
                      PM2.5 = 0.27)
     dfb <- Emissions(data.frame(PM10 = x * 0.5,
                                 PM2.5 = x * 0.27))
-     if (list == TRUE) {
+    if (list == TRUE) {
       dfb <- as.list(dfb)
     }
     # iag ####
@@ -293,8 +300,8 @@ speciate <- function(x = 1,
     iag$VEH_FUEL_STANDARD <- NULL
 
     df <- iag[iag$VEH == veh &
-      iag$FUEL == fuel &
-      iag$STANDARD == eu, ]
+                iag$FUEL == fuel &
+                iag$STANDARD == eu, ]
 
     df <- df[, 1:(ncol(df) - 3)]
 
@@ -363,12 +370,62 @@ speciate <- function(x = 1,
 
     } else {
 
-        dfb <- data.table::rbindlist(lapply(1:nrow(df), function(i) {
+      dfb <- data.table::rbindlist(lapply(1:nrow(df), function(i) {
         data.frame(x = df[i, ]$x * x / 100,
                    pol = df$species[i])
       }))
-        if(!is.null(names(x))) names(dfb) <- c(names(x), "pol")
+      if(!is.null(names(x))) names(dfb) <- c(names(x), "pol")
     }
+
+
+    # voc ####
+  } else if (spec == "voc") {
+    nmhc <- sysdata$mech
+    nmhc <- as.data.frame(nmhc)
+
+    if(!veh %in% unique(nmhc$veh)) {
+      choice <- utils::menu(unique(nmhc$veh),
+                            title="Choose veh")
+      veh <- unique(nmhc$veh)[choice]
+    }
+    nmhc <- nmhc[nmhc$veh == veh , ]
+
+    if(!fuel %in% unique(nmhc$fuel)) {
+      choice <- utils::menu(unique(nmhc$fuel),
+                            title="Choose fuel")
+      fuel <- unique(nmhc$fuel)[choice]
+    }
+    nmhc <- nmhc[nmhc$fuel == fuel , ]
+
+    if(!eu %in% unique(nmhc$eu)) {
+      choice <- utils::menu(unique(nmhc$eu),
+                            title="Choose eu")
+      eu <- unique(nmhc$eu)[choice]
+    }
+    df <- nmhc[nmhc$eu == eu , ]
+
+    df <- data.table::as.data.table(df)
+    voc <- NULL
+    df <- df[, sum(x), by = voc]
+    names(df)[2] <- "x"
+
+    if (list == T) {
+
+      dfb <- lapply(1:nrow(df), function(i) {
+        df[i, ]$x * x / 100
+      })
+      names(dfb) <- df$voc
+
+    } else {
+
+      dfb <- data.table::rbindlist(lapply(1:nrow(df), function(i) {
+        data.frame(x = df[i, ]$x * x / 100,
+                     pol = df$voc[i])
+      }))
+      if(!is.null(names(x))) names(dfb) <- c(names(x), "pol")
+    }
+
+
 
     # pah ####
   } else if (spec == "pah") {
@@ -534,7 +591,7 @@ speciate <- function(x = 1,
       if(!is.null(names(x))) names(dfb) <- c(names(x), "pol")
     }
 
-        # nox ####
+    # nox ####
   } else if (spec == "nox") {
     bcom <- sysdata$nox
     df <- bcom[bcom$VEH == veh & bcom$FUEL == fuel & bcom$STANDARD == eu, ]
@@ -546,7 +603,7 @@ speciate <- function(x = 1,
       dfb <- as.list(dfb)
     }
     # PM ####
-  } else if (spec %in% c("pmiag", "pmneu", "pmneu2")) {
+  } else if (spec %in% c("pmiag", "pmneu", "pmneu2","pm2023")) {
     if(verbose) message("Input emissions must be in g/(km^2)/h\n")
     if(verbose) message("Output flux will be  ug/(m^2)/s\n")
     if(verbose) message("PM.2.5-10 must be calculated as substraction of PM10-PM2.5 to enter this variable into WRF")
@@ -595,16 +652,16 @@ speciate <- function(x = 1,
         )
       } else if (spec == "pm2023") {
         df <- data.frame(
-          e_so4i = 0.027,
-          e_so4j = 0.008,
-          e_no3i = 0.015,
-          e_no3j = 0.001,
-          e_pm25i = 0.193,
-          e_pm25j = 0.,
-          e_orgi = 0,
-          e_orgj = 0.0304 + 0.1296,
-          e_eci = 0,
-          e_ecj = 0.056 + 0.024#,h2o = 0.277
+          e_so4i = 0.00646,
+          e_so4j = 0.04104,
+          e_no3i = 0.004025,
+          e_no3j = 0.013475,
+          e_pm25i = 0.114,
+          e_pm25j = 0.342,
+          e_orgi = 0.041515,
+          e_orgj = 0.176985,
+          e_eci = 0.24487,
+          e_ecj = 0.01563#,h2o = 0.277
         )
       } else if (spec == "pmneu2") {
         df <- data.frame(
@@ -622,7 +679,7 @@ speciate <- function(x = 1,
       }
     }
 
-names(df) <- toupper(names(df))
+    names(df) <- toupper(names(df))
 
     if (is.data.frame(x)) {
       for (i in 1:ncol(x)) {

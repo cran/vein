@@ -8,34 +8,31 @@ emis_emfac(
   ef,
   veh,
   lkm,
+  tfs,
   speed,
   vehname,
   pol = "CO_RUNEX",
   modelyear = 2021:1982,
-  noyear = 2022,
-  hours = paste0("S", 1:24),
   vkm = TRUE,
   verbose = TRUE
 )
 }
 \arguments{
-\item{ef}{Character path to EMFAC ef (g/miles)}
+\item{ef}{data.frame or character path to EMFAC ef (g/miles)}
 
 \item{veh}{Vehicles data.frame}
 
 \item{lkm}{Distance per street-link in miles}
 
-\item{speed}{Speed data.frame in niles/hour}
+\item{tfs}{vector to project activity by hour}
+
+\item{speed}{Speed data.frame in miles/hour}
 
 \item{vehname}{numeric vector for heavy good vehicles or trucks}
 
 \item{pol}{character, "CO_RUNEX"}
 
 \item{modelyear}{numeric vector, 2021:1982}
-
-\item{noyear}{newest numeric year to take out from ef}
-
-\item{hours}{Character, name of hours in speed, paste0("S", 1:24) data-frame profile for passenger cars, 24 hours only.}
 
 \item{vkm}{logical, to return vkm}
 
@@ -48,6 +45,9 @@ data.table with emission estimation in long format
 \code{\link{emis_emfac}} estimates emissions based on
 an emission factors database from EMFAC.You must download the
 emission factors from EMFAC website.
+}
+\note{
+Emission factors must be in g/miles
 }
 \examples{
 \dontrun{
