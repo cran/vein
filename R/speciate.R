@@ -13,7 +13,7 @@
 #' \item "road": Splits PM in PM10 and PM2.5.
 #' \item "nox": Splits NOx in NO and NO2.
 #' \item "nmhc": Splits NMHC in compounds, see \code{\link{ef_ldv_speed}}.
-#' \item "voc": Splits NMHC in voc groups according EDGAR.
+#' \item "voc": Splits NMHC in voc groups according EDGAR-CAMS.
 #' \item "pmiag", "pmneu",  "pmneu2", "pm2023": Splits PM in groups, see note below.
 #' }
 #' @param veh Type of vehicle:
@@ -24,6 +24,7 @@
 #' \item "road": not necessary.
 #' \item "nox": veh can be "PC", "LCV", HDV" or "Motorcycle".
 #' \item "nmhc":see below
+#' \item "voc": read options while running.
 #' \item ""pmiag", "pmneu",  "pmneu2", "pm2023": not necessary.
 #' }
 #' @param fuel Fuel.
@@ -34,6 +35,7 @@
 #' \item "road": not necessary.
 #' \item "nox": "G", "D", "LPG", "E85" or "CNG".
 #' \item "nmhc":see below
+#' \item "voc": read options while running.
 #' \item "pmiag", "pmneu",  "pmneu2", "pm2023": not necessary.
 #' }
 #' @param eu Emission standard
@@ -44,6 +46,7 @@
 #' \item "road": not necessary.
 #' \item "nox": "G", "D", "LPG", "E85" or "CNG".
 #' \item "nmhc":see below
+#' \item "voc": read options while running.
 #' \item "pmiag", "pmneu",  "pmneu2", "pm2023": not necessary.
 #' }
 #' @param list when TRUE returns a list with number of elements of the list as
@@ -120,6 +123,7 @@
 #' }
 #' @importFrom units as_units
 #' @importFrom sf st_as_sf st_set_geometry
+#' @importFrom data.table as.data.table dcast.data.table
 #' @return dataframe of speciation in grams or mols
 #' @references "bcom": Ntziachristos and Zamaras. 2016. Passenger cars, light
 #' commercial trucks, heavy-duty vehicles including buses and motorcycles. In:
@@ -276,12 +280,14 @@ speciate <- function(x = 1,
                                    iag$STANDARD,
                                    sep = "_")
 
-    iag2 <- long_to_wide(
-      df = iag,
-      column_with_new_names = "groups",
-      column_with_data = "x",
-      column_fixed = "VEH_FUEL_STANDARD"
-    )
+    VEH_FUEL_STANDARD <- groups <- NULL
+
+    iag2 <- data.table::dcast.data.table(
+      data.table::as.data.table(iag),
+      formula = VEH_FUEL_STANDARD ~ groups,
+      value.var = "x")
+
+    iag2 <- as.data.frame(iag2)
 
     iag2 <- cbind(
       iag2,

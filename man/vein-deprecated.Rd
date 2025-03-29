@@ -2,12 +2,24 @@
 % Please edit documentation in R/vein-deprecated.R
 \name{vein-deprecated}
 \alias{vein-deprecated}
+\alias{emis_chem}
+\alias{long_to_wide}
+\alias{wide_to_long}
+\alias{invcop}
 \alias{EmissionsList}
 \alias{running_losses}
 \alias{hot_soak}
 \alias{Evaporative}
 \title{Deprecated functions in package \pkg{vein}.}
 \usage{
+emis_chem(...)
+
+long_to_wide(...)
+
+wide_to_long(...)
+
+invcop(...)
+
 EmissionsList(...)
 
 running_losses()
@@ -21,10 +33,5 @@ The functions listed below are deprecated and will be defunct in
   the near future. When possible, alternative functions with similar
   functionality are also mentioned. Help pages for deprecated functions are
   available at \code{help("-deprecated")}.
-}
-\references{
-Mellios G and Ntziachristos 2016. Gasoline evaporation. In:
-EEA, EMEP. EEA air pollutant emission inventory guidebook-2009. European
-Environment Agency, Copenhagen, 2009
 }
 \keyword{internal}

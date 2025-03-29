@@ -1,6 +1,6 @@
 #' Construction function for class "EmissionFactors"
 #'
-#' @description \code{EmissionFactors} returns a transformed object with class
+#' @description EmissionFactors returns a transformed object with class
 #' "EmissionFactors" and units g/km.
 #'
 #' @return Objects of class "EmissionFactors" or "units"
@@ -27,18 +27,14 @@
 #' @aliases EmissionFactors print.EmissionFactors summary.EmissionFactors
 #' plot.EmissionFactors
 #' @examples \dontrun{
-#' data(fe2015)
-#' names(fe2015)
-#' class(fe2015)
-#' df <- fe2015[fe2015$Pollutant=="CO", c(ncol(fe2015)-1,ncol(fe2015))]
-#' ef1 <- EmissionFactors(df)
-#' class(ef1)
-#' summary(ef1)
-#' plot(ef1)
-#' print(ef1)
+#' #do not run
+#' EmissionFactors(1)
 #' }
 #' @export
-EmissionFactors <- function(x, mass = "g", dist = "km", ...) {
+EmissionFactors <- function(x,
+                            mass = "g",
+                            dist = "km",
+                            ...) {
   if ( is.matrix(x) ) {
     ef <- as.data.frame(x)
     for(i in 1:ncol(ef)){
@@ -71,6 +67,7 @@ EmissionFactors <- function(x, mass = "g", dist = "km", ...) {
 
 #' @rdname EmissionFactors
 #' @method print EmissionFactors
+#' @param... print arguments
 #' @export
 print.EmissionFactors <- function(x, ...) {
   nr <- ifelse(nrow(x) <= 5, nrow(x), 5)
@@ -78,9 +75,9 @@ print.EmissionFactors <- function(x, ...) {
     ndf <- names(x)
     df <- data.frame(ndf = x[1:nr, ])
     names(df) <- ndf
-    print.data.frame(df)
+    print.data.frame(df, ...)
   } else {
-    print.data.frame(x[1:nr, ])
+    print.data.frame(x[1:nr, ], ...)
   }
   if(nrow(x) > 5)     cat(paste0("... and ", nrow(x) - 5, " more rows\n"))
 }
@@ -89,14 +86,16 @@ print.EmissionFactors <- function(x, ...) {
 
 #' @rdname EmissionFactors
 #' @method summary EmissionFactors
+#' @param ... summary arguments
 #' @export
 summary.EmissionFactors <- function(object, ...) {
   cat("Mean EmissionFactors in study area = \n")
-  print(summary.data.frame(object))
+  print(summary.data.frame(object), ...)
 }
 
 #' @rdname EmissionFactors
 #' @method plot EmissionFactors
+#' @param ... par arguments if needed
 #' @export
 plot.EmissionFactors <- function(x,
                                  pal = "mpl_viridis",
@@ -109,26 +108,8 @@ plot.EmissionFactors <- function(x,
                                  mai3 = c(0.7, 0.62, 0.82, 0.42),
                                  bias = 1.5,
                                  ...) {
-  # ef <- x
-  # if (ncol(ef) >= 1 & ncol(ef) <= 3) {
-  #   graphics::par(mfrow=c(1, ncol(ef)), tcl = -0.5)
-  # } else if (ncol(ef) == 4) {
-  #   graphics::par(mfrow=c(2, 2), tcl = -0.5)
-  # } else if (ncol(ef) >= 5 & ncol(ef) <= 6 ) {
-  #   graphics::par(mfrow=c(2, 3), tcl = -0.5)
-  # } else if (ncol(ef) >= 7 & ncol(ef) <= 9 ) {
-  #   graphics::par(mfrow=c(3, 3), tcl = -0.5)
-  # } else {
-  #   message("Plotting first 9 plots")
-  #   graphics::par(mfrow=c(3, 3), tcl = -0.5)
-  # }
-  # nc <- ifelse(ncol(ef) <= 9, ncol(ef), 9)
-  # for (i in 1:nc) {
-  #   graphics::plot(ef[,i], type = "l", ...)
-  # }
-  # graphics::par(mfrow=c(1,1))
-  #
-  oldpar <- par(no.readonly = TRUE)       # code line i
+
+    oldpar <- par(no.readonly = TRUE)       # code line i
   on.exit(par(oldpar))                    # code line i + 1
 
   if(ncol(x) > 1) {
@@ -139,14 +120,6 @@ plot.EmissionFactors <- function(x,
     col <- grDevices::rgb(grDevices::colorRamp(colors = cptcity::cpt(pal, rev = rev),
                                                bias = bias)(seq(0, 1,0.01)),
                           maxColorValue = 255)
-
-    # fields::image.plot(
-    #   x = 1:ncol(x),
-    #   xaxt = "n",
-    #   z =t(as.matrix(x))[, nrow(x):1],
-    #   xlab = "",
-    #   ylab = paste0("EF by streets [",as.character(units(x[[1]])), "]"),
-    #   col = col, horizontal = TRUE)
 
     graphics::image(x = 1:ncol(x),
                     xaxt = "n",

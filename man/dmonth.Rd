@@ -15,17 +15,17 @@ dmonth(year, month)
 days of the month
 }
 \description{
-\code{\link{ef_ldv_speed}} return the number of day sof the month
+\code{\link{ef_ldv_speed}} return the number of days of the month
 }
 \examples{
 \dontrun{
 dmonth(2022, 1)
+dmonth(Sys.Date())
 }
 }
 \seealso{
 Other helpers: 
 \code{\link{colplot}()},
-\code{\link{to_latex}()},
-\code{\link{wide_to_long}()}
+\code{\link{to_latex}()}
 }
 \concept{helpers}

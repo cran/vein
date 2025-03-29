@@ -179,6 +179,14 @@
 #' xlab = "Speed", ylab = "Age")
 #' persp(x = as.matrix(a), theta = 35, xlab = "Speed", ylab = "Euros",
 #' zlab = "CO [g/km]", col = cptcity::lucky(), phi = 25)
+#'
+#' ef <- ef_ldv_speed(v = "LCV",
+#'                    t = "4S",
+#'                    cc = "<3.5",
+#'                    f = "G",
+#'                    p = "FC",
+#'                    eu = c("I", "II"),
+#'                    speed = Speed(10))
 #' }
 ef_ldv_speed <- function(
   v,
@@ -201,7 +209,7 @@ ef_ldv_speed <- function(
 
 
   # try to solve error of negative values present in EEA guidelines
-  if(v == "LCV" && eu == "V") {
+  if(v == "LCV" && any(eu %in% "V")) {
     warning("When `v` is 'LCV' and `eu` is 'V', I replaces `v` by 'PC' and `cc` by >'2000' see issue #204")
     v <- "PC"
     cc <- ">2000"

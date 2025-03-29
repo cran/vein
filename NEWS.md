@@ -1,5 +1,23 @@
 NEWS
 ===========
+### vein 1.3.0 (date: 2025-03-16)
+
+- Deprecated long_to_wide, wide_to_long, 
+- emis_chem, in favor of emis_chem2 (Carter 2015)
+
+### vein 1.2.1 (date: 2025-03-16)
+
+- Update speciation for "voc": (CAMS)
+
+### vein 1.2.0 (date: 2024-12-25)
+
+- Deprecated age_ldv, age_hdv and age_mc in favor of age_veh.
+- Deleted emis_merge, now all projects store emissions in databases.
+
+### vein 1.1.4 (date: 2024-08-20)
+
+- ef_ldv_speed when LCV G and eu longer than 1,  works 
+
 ### vein 1.1.2 (date: 2024-01-24)
 
 - fix speciation "pm2023"

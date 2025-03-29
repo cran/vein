@@ -32,7 +32,7 @@ Emissions estimates
 data(net)
 net <- net[1:100, ]
 data(pc_profile)
-x <- age_ldv(net$ldv)
+x <- age_veh(net$ldv)
 pc_week <- temp_fact(net$ldv+net$hdv, pc_profile[[1]])
 df <- netspeed(pc_week,
                net$ps,
@@ -66,15 +66,15 @@ ae <- emis_long(x = x,
 }
 \seealso{
 Other China: 
+\code{\link{ef_china}()},
 \code{\link{ef_china_det}()},
-\code{\link{ef_china_hu}()},
 \code{\link{ef_china_h}()},
+\code{\link{ef_china_hu}()},
 \code{\link{ef_china_long}()},
-\code{\link{ef_china_speed}()},
 \code{\link{ef_china_s}()},
+\code{\link{ef_china_speed}()},
 \code{\link{ef_china_te}()},
 \code{\link{ef_china_th}()},
-\code{\link{ef_china}()},
 \code{\link{emis_china}()}
 }
 \concept{China}

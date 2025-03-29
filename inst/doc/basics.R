@@ -12,10 +12,10 @@ library(vein)
 
 
 ## ----eval = F-----------------------------------------------------------------
-#  get_project(directory = "awesome_city")
-#  system("tree  awesome_city")
-#  
+# get_project(directory = "awesome_city")
+# system("tree  awesome_city")
+# 
 
 ## ----eval = F-----------------------------------------------------------------
-#  install.packages(c("ggplot2", "readxl", "eixport"))
+# install.packages(c("ggplot2", "readxl", "eixport"))
 
