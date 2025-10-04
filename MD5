@@ -1,7 +1,7 @@
-405c619a771bcbd7ca46a29afaba7755 *DESCRIPTION
+70d7043c732c74cc56a4de4e4049c78a *DESCRIPTION
 4afdb6ec62bc393f0b3af2a1952541d0 *LICENSE
 f01670d6a29014be5b4b4d04a36db75a *NAMESPACE
-dbe964e277b69d9a867099e2633b340b *NEWS.md
+336f14304bd8c6ec3c13eedab12331d1 *NEWS.md
 ae5e40da9fa3920e4bf3d007379e8acd *R/EmissionFactors.R
 e63652e5f5d064468a270a170e49b511 *R/EmissionFactorsList.R
 984d6461b256a56c3d34da66a96bccf0 *R/Emissions.R
@@ -23,7 +23,7 @@ a86bb38afd53ff277396f235fb5dcfb2 *R/aw.R
 40e98f121cbd2c43f4b57bfc17d4bc8a *R/cold_mileage.R
 b261db3b6ac0f0e23c7da28fa0335de2 *R/colplot.R
 d5a8136c5034633f4e3c015589642122 *R/decoder.R
-0397c22f91cebf1ac7549be8e055ec24 *R/dmonth.R
+0d2c2aae1ef352046e08c901d7bbd6f4 *R/dmonth.R
 1a1c03d8b251a995c1db01179007b3ce *R/ef_cetesb.R
 a79f34a4f596b4df718760c24515d1b2 *R/ef_china.R
 35a5708dacb55a9bae810f0641765ed9 *R/ef_eea.R
@@ -82,9 +82,9 @@ c60232291981472cf1de05a8bcfd9082 *R/pc_profile.R
 4ffeddb66a7b6a0295a43fa4f3458df7 *R/pollutants.R
 25ce0f5d897b6433d5ed50f839af3ca0 *R/profiles.R
 8556052e12da88543716e99d03cb48d7 *R/remove_units.R
-aad8014c78b96bbcea9fb214868f6cfe *R/speciate.R
+0de0f4d08c11be6218f5a853d643faba *R/speciate.R
 887c33a4345a04b2a0eed6d96f73c285 *R/split_emis.R
-b188c6b87e8f48d8af1e36dc52d5ab72 *R/sysdata.rda
+5b3b06b86fe26f9a524e79b6d2346810 *R/sysdata.rda
 950ba1a40099eafe696fe9cbe0e9dbd2 *R/temp_fact.R
 3d25ef46d6349fdb928ce4fa01c9869a *R/temp_veh.R
 818882a1fdbd6d8ac51564c778e751c3 *R/threads.R
@@ -94,8 +94,8 @@ b4fe12876c37f8a22cde06e9701eecf0 *R/vein-package.R
 0d17d9dc72a0f12281f7d26bf3e18751 *R/vein_notes.R
 e9cbc860a058c6d8865afad2e66ed087 *R/vkm.R
 3c390286161112f593d0c7bfb517e568 *R/zzz.R
-aa5e5a2cbfaea3d9b6cdbe378ac48cee *build/partial.rdb
-73589fb2b3584b192e15684bd2d62579 *build/vignette.rds
+20c8d3f97d93e2e318a22508275b5a02 *build/partial.rdb
+89357b53052d0bd4ea8828a9db3d7b93 *build/vignette.rds
 0f6841b2bbe0f81aeadf67b3b0c24ecb *data/decoder.rda
 49d00ebc2a2fda898e8442b4e0fdd389 *data/fe2015.rda
 dcee621fff4adbc42be30cebc4929f66 *data/fkm.rda
@@ -107,7 +107,7 @@ dcee621fff4adbc42be30cebc4929f66 *data/fkm.rda
 7b4e66b6afcc5aa025ae9821540a184c *inst/CITATION
 d0b888f794e6318c9347c5c75f627647 *inst/doc/basics.R
 22268165202a142cbb719a33840c1f36 *inst/doc/basics.Rmd
-96c2a03be2e4f8313b72888742442608 *inst/doc/basics.html
+4d05973d13c71d50c67592d73619e74b *inst/doc/basics.html
 9c3482d9d261ef9e851c73f7542415fc *man/EmissionFactors.Rd
 324a5537d42b520afb5a10f6131f1263 *man/EmissionFactorsList.Rd
 14f6492c983d5970495bd22ba6ecf81f *man/Emissions.Rd
@@ -207,7 +207,7 @@ fe8477d60b7e6f72afbd195b3751d7fd *man/moves_rpsy_sf.Rd
 63d11cb312e7521fff802c1eae489ca2 *man/pollutants.Rd
 e25db65ef42f3e1e9b49dbdb65eee236 *man/profiles.Rd
 9aea24b4a92693df702eeed9c106f21e *man/remove_units.Rd
-7856d46078d6e9999656516bacd0ae13 *man/speciate.Rd
+eb041c7a4272fdbd8ea9e230a82036ac *man/speciate.Rd
 8619e0353e38513e9a76619498e5a62c *man/split_emis.Rd
 3b126fda53e876829fc34f127540fa35 *man/temp_fact.Rd
 df1b993217ab8e1700654fdda19e9f1d *man/temp_veh.Rd

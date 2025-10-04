@@ -1,6 +1,21 @@
 NEWS
 ===========
-### vein 1.3.0 (date: 2025-03-16)
+### vein 1.5.0 (date: 2025-10-04)
+
+- Update ecuador excel config file
+
+
+### vein 1.4.0 (date: 2025-03-30)
+
+- Add spec pm2025 for LDV and HDV
+
+### vein 1.3.1 (date: 2025-03-30)
+
+- Update spec "voc"
+- In R 4.04 as.Date origin must be specified.
+- This fixed dmonth
+
+### vein 1.3.0 (date: 2025-03-28)
 
 - Deprecated long_to_wide, wide_to_long, 
 - emis_chem, in favor of emis_chem2 (Carter 2015)
